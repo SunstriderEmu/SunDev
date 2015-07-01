@@ -1,0 +1,73 @@
+{% extends "layout.html.twig" %}
+    {% block title %}SmartAI - {{ parent() }}{% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>What do you want to script?</h2>
+            <form class="form-group col-md-4">
+                <div class="input-group col-sm-12">
+                    <span class="input-group-addon" id="entryorguidname">Entry or Guid</span>
+                    <input type="text" class="form-control" id="entryorguid" name="entryorguid">
+                </div>
+                <label>Type</label>
+                <select class="form-control" name="type" id="type">
+                    <option value="0">Creature</option>
+                    <option value="1">Gameobject</option>
+                </select><br/>
+                <a href="" id="go"><button type="button" class="btn btn-primary">SmartAI</button></a>
+                <a href="" id="text"><button type="button" class="btn btn-primary">Creature Text</button></a>
+            </form>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            $('#text').hide();
+
+            $('#entryorguid').keyup(function() {
+                var TYPE    = $('#type').val();
+                var ID      = $(this).val();
+
+                if(isNaN(ID)) {
+                    return;
+                }
+
+                switch(TYPE) {
+                    case "0": TYPE = "creature"; break;
+                    case "1": TYPE = "gameobject"; break;
+                    default: return;
+                }
+
+                $('#entryorguidname').html();
+
+                if(ID > 0) {
+                    $.ajax({
+                        type : 'GET',
+                        url : '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID + '/name',
+                        success:
+                                function(data) {
+                                    $('#entryorguidname').html(data);
+                                    $('#go').attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID);
+                                    if(TYPE == "creature") {
+                                        $('#text').show().attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID + '/text');
+                                    }
+                                }
+                    });
+                } else {
+                    ID = Math.abs(ID);
+                    $.ajax({
+                        type : 'GET',
+                        url : '{{ app.request.basepath }}/smartai/' + TYPE + '/guid/' + ID + '/name',
+                        success:
+                                function(data) {
+                                    $('#entryorguidname').html(data);
+                                    $('#go').attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/guid/' + ID);
+                                    $('#text').hide();
+                                }
+                    });
+                }
+
+                if(ID === null || ID == '') {
+                    $('#entryorguidname').html('Entry or Guid');
+                }
+            });
+        </script>
+    {% endblock %}

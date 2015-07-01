@@ -1,0 +1,8 @@
+/.idea/*
+/app/connection.php
+/var/cache
+/vendor/*
+/composer.lock
+/composer.phar
+/web/css/*.d
+/*.d

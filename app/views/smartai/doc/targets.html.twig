@@ -1,0 +1,54 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Targets - SmartAI - {{ parent() }}{% endblock %}
+    {% block head %}
+        <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/jquery.dataTables.css" />
+        <script src="{{ app.request.basepath }}/js/jquery.dataTables.min.js"></script>
+    {% endblock %}
+    {% block content %}
+        <div class="fluid-container">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <td><strong>Value</strong></td>
+                    <td><strong>Target</strong></td>
+                    <td><strong>Param1</strong></td>
+                    <td><strong>Param2</strong></td>
+                    <td><strong>Param3</strong></td>
+                    <td><strong>Target X</strong></td>
+                    <td><strong>Target Y</strong></td>
+                    <td><strong>Target Z</strong></td>
+                    <td><strong>Target O</strong></td>
+                    <td><strong>Comment</strong></td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for target in targets %}
+                    <tr>
+                        <td>{{ target.id }}</td>
+                        <td>{{ target.name }}</td>
+                        <td>{{ target.param1 }}</td>
+                        <td>{{ target.param2 }}</td>
+                        <td>{{ target.param3 }}</td>
+                        <td>{{ target.target_x }}</td>
+                        <td>{{ target.target_y }}</td>
+                        <td>{{ target.target_z }}</td>
+                        <td>{{ target.target_o }}</td>
+                        <td>{{ target.comment }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.table').dataTable( {
+                    "scrollY":        "calc(100vh - 72px)",
+                    "scrollCollapse": false,
+                    "paging":         false,
+                    "order": [[ 0, "asc" ]]
+                } );
+            } );
+        </script>
+    {% endblock %}

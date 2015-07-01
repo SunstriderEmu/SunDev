@@ -1,0 +1,26 @@
+{% extends "smartai/display.html.twig" %}
+    {% block title %}{{ creature.name }} - {{ parent() }}{% endblock %}
+        {% block script %}
+            <script src="{{ app.request.basepath }}/js/smartai.js"></script>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.table').DataTable( {
+                        "scrollY":        "379px",
+                        "paging":         false,
+                        "autoWidth":      false,
+                        "searching":      false,
+                    } );
+                } );
+
+                $('body').smartai({
+                    "User": "{{ app.user.id }}",
+                    "Entry": "-{{ creature.guid }}",
+                    "Name": "{{ creature.name }}",
+                    "Type": "0",
+                    "Lines": {{ lines|json_encode(constant('JSON_FORCE_OBJECT'))|raw }},
+                    "Events": {{ events|json_encode|raw }},
+                    "Actions": {{ actions|json_encode|raw }},
+                    "Targets": {{ targets|json_encode|raw }}
+                });
+            </script>
+        {% endblock %}

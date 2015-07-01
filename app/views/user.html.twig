@@ -1,0 +1,31 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Home - {{ parent() }}{% endblock %}
+    {% block content %}
+        <div class="col-md-8 col-md-offset-2">
+            <h1 class="text-center">Users</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="5%">ID</th>
+                        <th width="58%">Name</th>
+                        <th width="30%">Role</th>
+                        <th width="7%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <a href="{{ app.request.baseurl }}/admin/user/{{ user.id }}/edit"><span class="glyphicon glyphicon-edit"></span></a>
+                            <a href="{{ app.request.baseurl }}/admin/user/{{ user.id }}/delete"><span class="glyphicon glyphicon-remove"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ app.request.baseurl }}/admin/user/add"><button class="btn btn-primary">Add user</button></a>
+        </div>
+    {% endblock %}

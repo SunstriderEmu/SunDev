@@ -1,0 +1,35 @@
+button,
+button:active {
+	font-family: 'Open Sans', Arial, sans-serif;
+	background: @color-primary;
+	border: none;
+	font-size: 115%;
+	color: #fff;
+	font-weight: 700;
+	border-top: 1px solid @color-primary-light;
+	border-bottom: 1px solid @color-primary-dark;
+	text-transform: uppercase;
+	padding: 10px 15px;
+	.border-radius(2px);
+	margin: 30px 0;
+	text-shadow: 0 -1px 0 @color-primary-dark;
+    transition: background .2s linear;
+}
+
+button:hover {
+    background: @color-primary-hover;
+    transition: background .2s linear;
+}
+
+button:focus {
+	outline: none;
+	border-top: 1px solid @color-primary-dark;
+	border-bottom: 1px solid @color-primary-light;
+    transition: background .2s linear;
+}
+
+.comments {
+    font-size: 90%;
+    float: right;
+    margin: 5px 0;
+}

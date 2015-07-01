@@ -1,0 +1,349 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Smartai - {{ parent() }}{% endblock %}
+    {% block head %}
+        <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/chosen.min.css" />
+        <script src="{{ app.request.basepath }}/js/jquery.dataTables.min.js"></script>
+        <script src="{{ app.request.basepath }}/js/jquery.xcolor.min.js"></script>
+        <script src="{{ app.request.basepath }}/js/chosen.jquery.min.js"></script>
+        <style type="text/css">
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+            table {
+                font-size: 13px;
+            }
+            .table {
+                margin-bottom: 0;
+                flex: 1 1 auto;
+            }
+            .table > tbody > tr > td {
+                vertical-align: middle;
+            }
+            td.options {
+                width: 5%;
+                text-align: center;
+            }
+            .clear {
+                clear: both;
+            }
+            .glyphicon {
+                cursor: pointer;
+            }
+            .form-group-sm .form-control {
+                height: 25px;
+            }
+            .form-group-sm select[multiple].form-control {
+                height: 23px;
+            }
+            #event_flags_value:hover {
+                height: 102px;
+            }
+            #event_phase_mask_value:hover {
+                height: 147px;
+            }
+            #target_flags_value {
+                font-size: 10px;
+                padding: 3px 3px;
+                letter-spacing: -0.5px;
+            }
+            #target_flags_value:hover {
+                height: 73px;
+            }
+            .pad-right-0 {
+                padding-right: 0;
+            }
+            .dataTables_info {
+                display: none;
+            }
+            .npc_flags {
+                height: 158px!important;
+                width: 175px;
+            }
+            .spell_flags {
+                height: 87px!important;
+                width: 175px;
+            }
+            .display_flags {
+                margin-left: -65px;
+            }
+            option {
+                position: relative;
+            }
+            option[title]:hover:after {
+                content: attr(title);
+                padding: 4px 8px;
+                color: #333;
+                position: absolute;
+                left: 0;
+                top: 100%;
+                white-space: nowrap;
+                z-index: 20px;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                border-radius: 5px;
+                -moz-box-shadow: 0px 0px 4px #222;
+                -webkit-box-shadow: 0px 0px 4px #222;
+                box-shadow: 0px 0px 4px #222;
+                background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+                background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+                background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+                background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+                background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+                background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div id="smartai" class="col-md-12">
+        <div class="row">
+        <div id="event" class="col-md-5">
+            <h4>Event</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm row">
+                            <label class="col-sm-4 control-label" id="id">ID</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="id_val">
+                            </div>
+                            <label class="col-sm-4 control-label" id="event_chance">Chance</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="event_chance_val">
+                            </div>
+                            <label class="col-sm-4 control-label" id="link">Link</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="link_val">
+                            </div>
+                            <label class="col-sm-4 control-label" id="event_flags">Flags</label>
+                            <div class="col-sm-8">
+                                <select multiple class="form-control chosen-select" data-placeholder="Select Flags" id="event_flags_value">
+                                    <option value="1">NOT_REPEATABLE</option>
+                                    <option value="2">NORMAL_DUNGEON</option>
+                                    <option value="4">HEROIC_DUNGEON</option>
+                                    <option value="8">NORMAL_RAID</option>
+                                    <option value="16">HEROIC_RAID</option>
+                                    <option value="32">DEBUG_ONLY</option>
+                                </select>
+                            </div>
+                            <label class="col-sm-4 control-label" id="event_phase_mask">Phasemask</label>
+                            <div class="col-sm-8">
+                                <select multiple class="form-control chosen-select" data-placeholder="Select Phases" id="event_phase_mask_value">
+                                    <option value="1">PHASE_1</option>
+                                    <option value="2">PHASE_2</option>
+                                    <option value="4">PHASE_3</option>
+                                    <option value="8">PHASE_4</option>
+                                    <option value="16">PHASE_5</option>
+                                    <option value="32">PHASE_6</option>
+                                    <option value="64">PHASE_7</option>
+                                    <option value="128">PHASE_8</option>
+                                    <option value="256">PHASE_9</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <select class="form-control input-sm chosen-select" id="event_type">
+                            {% for event in events %}
+                                <option value="{{ event.id }}" title="coucou">{{ event.id }} - {{ event.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-group form-group-sm row">
+                            <div class="clear">
+                                <label class="col-sm-6 control-label" id="event_param1">Param1</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="event_param1_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-6 control-label" id="event_param2">Param2</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="event_param2_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-6 control-label" id="event_param3">Param3</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="event_param3_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-6 control-label" id="event_param4">Param4</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" id="event_param4_val">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="action" class="col-md-3">
+            <h4>Action</h4>
+            <form class="form-horizontal">
+                <select class="form-control input-sm chosen-select" id="action_type">
+                    {% for action in actions %}
+                        <option value="{{ action.id }}">{{ action.id }} - {{ action.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-group form-group-sm">
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param1">Param1</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param1_val">
+                        </div>
+                    </div>
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param2">Param2</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param2_val">
+                        </div>
+                    </div>
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param3">Param3</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param3_val">
+                        </div>
+                    </div>
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param4">Param4</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param4_val">
+                        </div>
+                    </div>
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param5">Param5</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param5_val">
+                        </div>
+                    </div>
+                    <div class="clear">
+                        <label class="col-sm-7 control-label" id="action_param6">Param6</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" id="action_param6_val">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="target" class="col-md-4">
+            <h4>Target</h4>
+            <form class="form-horizontal">
+                <select class="form-control input-sm chosen-select" id="target_type">
+                    {% for target in targets %}
+                        <option value="{{ target.id }}">{{ target.id }} - {{ target.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="row">
+                    <div class="form-group form-group-sm col-sm-6">
+                        <div class="clear">
+                            <label class="col-sm-4 control-label" id="target_flags">Flags</label>
+                            <div class="col-sm-8 pad-right-0">
+                                <select multiple class="form-control input-sm chosen-select" data-placeholder="Select Target Flags" id="target_flags_value" name="target_flags[]">
+                                    <option value="1">IC_ONLY</option>
+                                    <option value="2">OOC_ONLY</option>
+                                    <option value="4">UNIQUE_TARGET</option>
+                                    <option value="8">CAN_TARGET_DEAD</option>
+                                    <option value="16">SAME_FACTION</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-4 control-label" id="target_param1">Param1</label>
+                            <div class="col-sm-8 pad-right-0">
+                                <input class="form-control" type="text" id="target_param1_val">
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-4 control-label" id="target_param2">Param2</label>
+                            <div class="col-sm-8 pad-right-0">
+                                <input class="form-control" type="text" id="target_param2_val">
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-4 control-label" id="target_param3">Param3</label>
+                            <div class="col-sm-8 pad-right-0">
+                                <input class="form-control" type="text" id="target_param3_val">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm col-sm-7">
+                        <div class="clear">
+                            <label class="col-sm-5 control-label" id="target_x">Target X</label>
+                            <div class="col-sm-7 pad-right-0">
+                                <input class="form-control" type="text" id="target_x_val">
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-5 control-label" id="target_y">Target Y</label>
+                            <div class="col-sm-7 pad-right-0">
+                                <input class="form-control" type="text" id="target_y_val">
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-5 control-label" id="target_z">Target Z</label>
+                            <div class="col-sm-7 pad-right-0">
+                                <input class="form-control" type="text" id="target_z_val">
+                            </div>
+                        </div>
+                        <div class="clear">
+                            <label class="col-sm-5 control-label" id="target_o">Target O</label>
+                            <div class="col-sm-7 pad-right-0">
+                                <input class="form-control" type="text" id="target_o_val">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+        </div>
+        <div class="col-md-12" style="text-align: right;">
+            {% if is_granted('ROLE_DEV') %}
+            <button id="new_line" class="btn btn-info btn-xs">New Line</button>
+            <button id="generate_comments" class="btn btn-info btn-xs">Generate comments</button>
+            <button id="generate_sql" class="btn btn-warning btn-xs">Generate SQL</button>
+            <button id="apply" class="btn btn-success btn-xs">Apply</button>
+            <button id="review" class="btn btn-success btn-xs">Review</button>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+            {% endif %}
+        </div>
+        <div id="lines" class="col-md-12">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Link</th>
+                    <th>Event</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Comment</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for line in lines %}
+                    <tr>
+                        <td><strong>{{ line.id }}</strong></td>
+                        <td>{{ line.link }}</td>
+                        <td>{{ events[line.eventtype].name[6:] }}</td>
+                        <td>{{ actions[line.actiontype].name[7:] }}</td>
+                        <td>{{ targets[line.targettype].name[7:] }}</td>
+                        <td>{{ line.comment }}</td>
+                        <td class="options">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+    {% block script %}
+    {% endblock %}

@@ -181,12 +181,13 @@
             generateComments(Lines);
         });
         function generateComments(Lines) {
-            $('table > tbody > tr > td:nth-child(6)').each(function () {
-                var ID = $(this).closest('tr').find('> td:first-child').text();
+            for (var i in Lines) {
+                var TR = $('td:first-child').filter(function() { return $.text([this]) == i; }).closest('tr');
+                var ID = $('td:first-child').filter(function() { return $.text([this]) == i; }).closest('tr').find('> td:first-child').text();
                 var Comment = Name + ' - ' + generateEventComment(ID) + ' - ' + generateActionComment(ID) + " " + generateFlagsComment(ID) + generatePhaseComment(ID);
-                $(this).html(Comment);
+                TR.find('td:nth-child(6)').html(Comment);
                 Lines[ID].comment = $(this).text();
-            });
+            }
         }
 
         $('#apply').click(function () {
@@ -2768,7 +2769,7 @@
                 case "58":
                     ActionParam1.addClass('display_flags');
                     ActionParam1DIV.empty();
-                    $('<select class="form-control" id="action_param1_val">' +
+                    $('<select class="form-control flags" id="action_param1_val">' +
                     '   <option value="0">BASIC</option>' +
                     '   <option value="1">CASTER</option>' +
                     '   <option value="2">TURRET</option>' +
@@ -2778,16 +2779,35 @@
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
 
-                    if (Lines[id].action_param1 == "0") {
-                        displayActionValDefault(2, id);
-                        displayActionValDefault(3, id);
-                        displayActionValDefault(4, id);
-                        displayActionValDefault(5, id);
-                        displayActionValDefault(6, id);
-                    } else if (Lines[id].action_param1 == "1") {
-                        ActionParam1
-                    }
-                    break;
+                    switch(Lines[id].action_param1) {
+                        case "4":
+                            displayActionValDefault(2, id);
+                            ActionParam3DIV.empty();
+                            $('<select class="form-control" id="action_param3_val">' +
+                            '   <option value="0">No</option>' +
+                            '   <option value="1">Yes</option>' +
+                            '</select>').appendTo(ActionParam3DIV);
+                            $('#action_param3_val').val(Lines[id].action_param3);
+                            break;
+                        case "5":
+                            displayActionValDefault(2, id);
+                            displayActionValDefault(3, id);
+                            ActionParam4DIV.empty();
+                            $('<select class="form-control" id="action_param4_val">' +
+                            '   <option value="0">No</option>' +
+                            '   <option value="1">Yes</option>' +
+                            '</select>').appendTo(ActionParam4DIV);
+                            $('#action_param4_val').val(Lines[id].action_param4);
+                            displayActionValDefault(5, id);
+                            displayActionValDefault(6, id);
+                            break;
+                        default:
+                            displayActionValDefault(2, id);
+                            displayActionValDefault(3, id);
+                            displayActionValDefault(4, id);
+                            displayActionValDefault(5, id);
+                            displayActionValDefault(6, id);
+                    } break;
                 case "80":
                     displayActionValDefault(1, id);
                     ActionParam2DIV.empty();

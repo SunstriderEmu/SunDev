@@ -68,30 +68,37 @@
             .display_flags {
                 margin-left: -65px;
             }
-            option {
-                position: relative;
+            .flags {
+                width: 175px;
             }
-            option[title]:hover:after {
-                content: attr(title);
-                padding: 4px 8px;
-                color: #333;
+            #event_comment,
+            #action_comment {
+                display: none;
                 position: absolute;
-                left: 0;
-                top: 100%;
-                white-space: nowrap;
-                z-index: 20px;
-                -moz-border-radius: 5px;
-                -webkit-border-radius: 5px;
-                border-radius: 5px;
-                -moz-box-shadow: 0px 0px 4px #222;
-                -webkit-box-shadow: 0px 0px 4px #222;
-                box-shadow: 0px 0px 4px #222;
-                background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-                background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
-                background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-                background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-                background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-                background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+                left: 96%;
+                z-index: 9;
+                top: 50px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                word-wrap: break-word;
+                padding: 5px 8px;
+                line-height: 1.2;
+                font-size: 13px;
+            }
+            #target_comment {
+                display: none;
+                position: absolute;
+                right: 97%;
+                z-index: 9;
+                top: 50px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                word-wrap: break-word;
+                padding: 5px 8px;
+                line-height: 1.2;
+                font-size: 13px;
             }
         </style>
     {% endblock %}
@@ -148,9 +155,10 @@
                     <form class="form-horizontal">
                         <select class="form-control input-sm chosen-select" id="event_type">
                             {% for event in events %}
-                                <option value="{{ event.id }}" title="coucou">{{ event.id }} - {{ event.name }}</option>
+                                <option value="{{ event.id }}">{{ event.id }} - {{ event.name }}</option>
                             {% endfor %}
                         </select>
+                        <div id="event_comment" class="col-md-10"></div>
                         <div class="form-group form-group-sm row">
                             <div class="clear">
                                 <label class="col-sm-6 control-label" id="event_param1">Param1</label>
@@ -189,6 +197,7 @@
                         <option value="{{ action.id }}">{{ action.id }} - {{ action.name }}</option>
                     {% endfor %}
                 </select>
+                <div id="action_comment" class="col-md-10"></div>
                 <div class="form-group form-group-sm">
                     <div class="clear">
                         <label class="col-sm-7 control-label" id="action_param1">Param1</label>
@@ -237,6 +246,7 @@
                         <option value="{{ target.id }}">{{ target.id }} - {{ target.name }}</option>
                     {% endfor %}
                 </select>
+                <div id="target_comment" class="col-md-7"></div>
                 <div class="row">
                     <div class="form-group form-group-sm col-sm-6">
                         <div class="clear">
@@ -346,4 +356,45 @@
         </div>
     {% endblock %}
     {% block script %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var Events = {{ events|json_encode|raw }};
+                var Actions = {{ actions|json_encode|raw }};
+                var Targets = {{ targets|json_encode|raw }};
+
+                var EventChosen = $("#event_type_chosen");
+                var EventComment = $("#event_comment");
+                var ActionChosen = $("#action_type_chosen");
+                var ActionComment = $("#action_comment");
+                var TargetChosen = $("#target_type_chosen");
+                var TargetComment = $("#target_comment");
+
+                EventChosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Events[ID].comment != null) {
+                        EventComment.html('<h5>Help</h5>' + Events[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    EventComment.hide();
+                });
+
+                ActionChosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Actions[ID].comment != null) {
+                        ActionComment.html('<h5>Help</h5>' + Actions[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    ActionComment.hide();
+                });
+
+                TargetChosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Actions[ID].comment != null) {
+                        TargetComment.html('<h5>Help</h5>' + Targets[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    TargetComment.hide();
+                });
+            });
+        </script>
     {% endblock %}

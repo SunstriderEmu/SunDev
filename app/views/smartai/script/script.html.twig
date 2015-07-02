@@ -3,6 +3,7 @@
         {% block script %}
             <script src="{{ app.request.basepath }}/js/smartai.js"></script>
             <script type="text/javascript">
+                {{ parent() }}
                 $(document).ready(function() {
                     $('.table').DataTable( {
                         "scrollY":        "379px",

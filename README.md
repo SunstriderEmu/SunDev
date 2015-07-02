@@ -25,3 +25,11 @@ To view the website, you need to edit your `host` file in `C:\Windows\System32\d
 | ROLE_FULL     | Access Development and Testing parts  |
 | ROLE_DEV      | Access Development part               |
 | ROLE_TESTER   | Access Testing part                   |
+
+# To Do
+Implement:
+* SunClasses
+* SunEquip
+* SunGossip
+* SunWaypoints
+* SunWorld

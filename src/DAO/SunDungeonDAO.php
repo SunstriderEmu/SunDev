@@ -66,6 +66,15 @@ class SunDungeonDAO extends DAO {
 		$query->execute();
 	}
 
+	public function setComment($creature) {
+		$query = $this->tools->prepare('INSERT INTO dungeons_test (entry, comment)
+								VALUE (:entry, :comment)
+								ON DUPLICATE KEY UPDATE comment = :comment');
+		$query->bindValue(':entry', $creature->entry, PDO::PARAM_INT);
+		$query->bindValue(':comment', $creature->comment, PDO::PARAM_STR);
+		$query->execute();
+	}
+
 	function getGlobalProgress() {
 		return new Zone([
 			"name"		=> "Global",

@@ -60,3 +60,10 @@ $app->post('/dungeon/apply/tester', function () use ($app) {
 	$manager->setTester($creature);
 	return "Success";
 });
+
+$app->post('/dungeon/apply/comment', function () use ($app) {
+	$creature  = json_decode($_POST['info']);
+	$manager= new SUN\DAO\SunDungeonDAO($app);
+	$manager->setComment($creature);
+	return "Success";
+});

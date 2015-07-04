@@ -1,0 +1,63 @@
+{% extends 'layout.html.twig' %}
+    {% block title %}SunClasses - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .progress {
+                clear: both;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>SunClasses</h2>
+            <p>
+                <a href="https://github.com/Nqsty/Sunstrider-Classes-Issues/issues">Issue Tracker</a> - <a href="https://github.com/Nqsty/Sunstrider-Classes-Issues/wiki">Wiki</a>
+            </p>
+        </div>
+        <div class="col-md-3">
+            <h2>Global - {{ (global.tested / global.total * 100)[:5] }}%</h2>
+            <p class="col-md-6">
+                <strong>Total spells:</strong> {{ global.spells }}<br />
+                <strong>Total tested:</strong> {{ global.spellstested }}
+            </p>
+            <p class="col-md-6">
+                <strong>Total talents:</strong> {{ global.talents }}<br />
+                <strong>Total tested:</strong> {{ global.talentstested }}
+            </p>
+            <p class="col-md-6">
+                <strong>Success:</strong> {{ global.success }}
+            </p>
+            <p class="col-md-6">
+                <strong>Bugged:</strong> {{ global.bugged }}
+            </p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" style="width: {{ (global.success / global.total) * 100 }}%"></div>
+                <div class="progress-bar progress-bar-danger" style="width: {{ (global.bugged / global.total) * 100 }}%">
+                </div>
+            </div>
+        </div>
+        {% for class in classes %}
+        <div class="col-md-3">
+            <h2><a href="{{ app.request.basepath }}/classes/{{ class.name|lower }}">{{ class.name }}</a> - {{ (class.tested / class.total * 100)[:5] }}%</h2>
+            <p class="col-md-6">
+                <strong>Total spells:</strong> {{ class.spells }}<br />
+                <strong>Total tested:</strong> {{ class.spellstested }}
+            </p>
+            <p class="col-md-6">
+                <strong>Total talents:</strong> {{ class.talents }}<br />
+                <strong>Total tested:</strong> {{ class.talentstested }}
+            </p>
+            <p class="col-md-6">
+                <strong>Success:</strong> {{ class.success }}
+            </p>
+            <p class="col-md-6">
+                <strong>Bugged:</strong> {{ class.bugged }}
+            </p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" style="width: {{ (class.success / class.total) * 100 }}%"></div>
+                <div class="progress-bar progress-bar-danger" style="width: {{ (class.bugged / class.total) * 100 }}%">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endblock %}

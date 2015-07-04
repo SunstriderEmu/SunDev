@@ -1,6 +1,8 @@
 /.idea/*
 /app/connection.php
-/var/cache
+/app/env.php
+/logs/*
+/cache/*
 /vendor/*
 /composer.lock
 /composer.phar

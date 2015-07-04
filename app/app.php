@@ -52,6 +52,35 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app['dao.user'] = $app->share(function ($app) {
 	return new SUN\DAO\UserDAO($app);
 });
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+	'monolog.logfile' => __DIR__.'/../logs/sunstrider.log',
+	'monolog.name' => 'SUN',
+	'monolog.level' => $app['monolog.level']
+));
+$app->register(new Silex\Provider\HttpFragmentServiceProvider());
+$app->register(new Silex\Provider\ServiceControllerServiceProvider());
+if (isset($app['debug']) && $app['debug']) {
+	$app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
+		'profiler.cache_dir' => __DIR__.'/../cache/profiler'
+	));
+}
+
+if($app['debug'] == false) {
+	$app->error(function (\Exception $e, $code) use ($app) {
+		switch ($code) {
+			case 403:
+				$message = 'Access denied.';
+				break;
+			case 404:
+				$message = 'The requested resource could not be found.';
+				break;
+			default:
+				$message = "Something went wrong.";
+		}
+		return $app['twig']->render('error.html.twig', array('message' => $message));
+	});
+}
+
 
 require_once __DIR__.'/connection.php';
 
@@ -59,4 +88,5 @@ require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/SmartAI.php';
 require_once __DIR__.'/controllers/SunQuest.php';
 require_once __DIR__.'/controllers/SunDungeon.php';
+require_once __DIR__.'/controllers/SunClasses.php';
 require_once __DIR__.'/controllers/User.php';

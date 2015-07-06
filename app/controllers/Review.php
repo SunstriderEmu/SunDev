@@ -26,6 +26,19 @@ $app->post('/review/edit', function() use($app) {
 
 // SEND REVIEW
 $app->post('/review/new', function() use($app) {
+	if(isset($_POST['sql'])) {
+		$script = json_decode($_POST['sql']);
+		$manager = new \SUN\DAO\SmartAIDAO($app);
+		if(isset($script->update)) {
+			$manager->setQuery($script->update, 'test');
+		}
+		if(isset($script->delete)) {
+			$manager->setQuery($script->delete, 'test');
+		}
+		if(isset($script->insert)) {
+			$manager->setQuery($script->insert, 'test');
+		}
+	}
 	$script = json_decode($_POST['review']);
 	$manager= new \SUN\DAO\ReviewDAO($app);
 	$manager->createReview($script);

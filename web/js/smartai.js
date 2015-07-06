@@ -223,12 +223,12 @@
             });
         });
         $('#review').click(function () {
-            var Review = { "entryorguid": Entry, "source_type": Type, "user": User, };
-            console
+            generateComments(Lines);
+            var Review = { "entryorguid": Entry, "source_type": Type, "user": User };
             $.ajax({
                 type: "POST",
                 url: '/review/new',
-                data: 'review=' + JSON.stringify(Review),
+                data: 'sql=' + generateSQL(Lines) + '&review=' + JSON.stringify(Review),
                 success: function (data) {
                     console.log(Date() + " - " + data);
                 },

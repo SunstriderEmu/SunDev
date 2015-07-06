@@ -2,14 +2,14 @@
     {% block title %}Script {{ script }}({{ creature.name }}) - {{ parent() }}{% endblock %}
         {% block script %}
             <script src="{{ app.request.basepath }}/js/smartai.js"></script>
+            {{ parent() }}
             <script type="text/javascript">
-                {{ parent() }}
                 $(document).ready(function() {
                     $('.table').DataTable( {
                         "scrollY":        "379px",
                         "paging":         false,
                         "autoWidth":      false,
-                        "searching":      false,
+                        "searching":      false
                     } );
                 } );
                 $('body').smartai({

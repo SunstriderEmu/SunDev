@@ -3,7 +3,7 @@
 use Symfony\Component\HttpFoundation\Request;
 
 $app->get('/', function() use($app) {
-	$manager	= new \SUN\DAO\SmartAIDAO($app);
+	$manager	= new \SUN\DAO\ReviewDAO($app);
 	$scripts	= $manager->getReview();
 
 	return $app['twig']->render('index.html.twig', array(

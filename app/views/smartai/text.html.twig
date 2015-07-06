@@ -188,7 +188,7 @@
                 var Review = { "entryorguid": "{{ creature.entry }}", "source_type": "4", "user": "{{ app.user.id }}" };
                 $.ajax({
                     type: "POST",
-                    url: '/smartai/review',
+                    url: '/review/new',
                     data: 'review=' + JSON.stringify(Review),
                     success: function (data) {
                         console.log(Date() + " - " + data);
@@ -203,7 +203,7 @@
                 var Review = { "entryorguid": "{{ creature.entry }}", "source_type": "4", "user": "{{ app.user.id }}" };
                 $.ajax({
                     type: "POST",
-                    url: '/smartai/review/validate',
+                    url: '/review/edit',
                     data: 'sql=' + generateSQL(Texts) + '&review=' + JSON.stringify(Review),
                     success: function (data) {
                         console.log(Date() + " - " + data);

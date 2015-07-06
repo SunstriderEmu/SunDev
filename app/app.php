@@ -12,6 +12,11 @@ $app['twig'] = $app->share($app->extend('twig', function(Twig_Environment $twig)
 	$twig->addExtension(new Twig_Extensions_Extension_Text());
 	return $twig;
 }));
+$app["twig"] = $app->share($app->extend("twig", function (Twig_Environment $twig) use ($app) {
+	$twig->addExtension(new SUN\Twig\SUNExtension($app));
+
+	return $twig;
+}));
 $app->register(new Silex\Provider\FormServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider());
@@ -85,8 +90,10 @@ if($app['debug'] == false) {
 require_once __DIR__.'/connection.php';
 
 require_once __DIR__.'/controllers/Home.php';
+require_once __DIR__.'/controllers/Review.php';
 require_once __DIR__.'/controllers/SmartAI.php';
 require_once __DIR__.'/controllers/SunQuest.php';
 require_once __DIR__.'/controllers/SunDungeon.php';
 require_once __DIR__.'/controllers/SunClasses.php';
 require_once __DIR__.'/controllers/User.php';
+require_once __DIR__.'/controllers/Waypoints.php';

@@ -7,6 +7,7 @@ class DAO {
 	protected $dbc;
 	protected $world;
 	protected $tools;
+	protected $test;
 
 	/**
 	 * @param \Silex\Application $app
@@ -17,5 +18,6 @@ class DAO {
 		$this->dbc = $app['dbs']['dbc'];
 		$this->world = $app['dbs']['world'];
 		$this->tools = $app['dbs']['suntools'];
+		$this->test = $app['dbs']['test_world'];
 	}
 } 

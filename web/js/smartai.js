@@ -208,10 +208,10 @@
 
         $('#validate').click(function () {
             generateComments(Lines);
-            var Review = { "entryorguid": Entry, "source_type": Type, "user": User };
+            var Review = { "entryorguid": Entry, "source_type": Type, "user": User, "state": "1" };
             $.ajax({
                 type: "POST",
-                url: '/smartai/review/validate',
+                url: '/review/edit',
                 data: 'sql=' + generateSQL(Lines) + '&review=' + JSON.stringify(Review),
                 success: function (data) {
                     console.log(Date() + " - " + data);
@@ -224,9 +224,10 @@
         });
         $('#review').click(function () {
             var Review = { "entryorguid": Entry, "source_type": Type, "user": User, };
+            console
             $.ajax({
                 type: "POST",
-                url: '/smartai/review',
+                url: '/review/new',
                 data: 'review=' + JSON.stringify(Review),
                 success: function (data) {
                     console.log(Date() + " - " + data);

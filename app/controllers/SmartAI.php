@@ -189,35 +189,6 @@ $app->post('/smartai/apply', function() use($app) {
 	return "Success";
 });
 
-// VALIDATE SCRIPT
-$app->post('/smartai/review/validate', function() use($app) {
-	$script = json_decode($_POST['sql']);
-	$review = json_decode($_POST['review']);
-	$manager= new \SUN\DAO\SmartAIDAO($app);
-	if(isset($script->update)) {
-		$manager->setQuery($script->update, 'test');
-		$manager->setQuery($script->update, 'world');
-	}
-	if(isset($script->delete)) {
-		$manager->setQuery($script->delete, 'test');
-		$manager->setQuery($script->delete, 'world');
-	}
-	if(isset($script->insert)) {
-		$manager->setQuery($script->insert, 'test');
-		$manager->setQuery($script->insert, 'world');
-	}
-	$manager->deleteReview($review->entryorguid, $review->source_type);
-	return "Success";
-});
-
-// SEND REVIEW
-$app->post('/smartai/review', function() use($app) {
-	$script = json_decode($_POST['review']);
-	$manager= new \SUN\DAO\SmartAIDAO($app);
-	$manager->setReview($script->entryorguid, $script->source_type, $script->user);
-	return "Success";
-});
-
 // CREATURE TEXT
 $app->get('/smartai/creature/entry/{entry}/text', function($entry) use($app) {
 	$creature 	= new SUN\Domain\Creature(["entry" => $entry]);

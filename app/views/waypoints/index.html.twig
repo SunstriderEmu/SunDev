@@ -1,0 +1,182 @@
+{% extends 'layout.html.twig' %}
+    {% block title %}SunWaypoints - {{ parent() }}{% endblock %}
+    {% block head %}
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>Transfer waypoints_data to waypoints</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Waypoints needs the creature entry to store all the PathID points.</p>
+                    <form class="form-horizontal">
+                        <div class="form-group col-md-4" id="form-entry">
+                            <div class="input-group col-sm-11">
+                                <span class="input-group-addon" id="entry">Entry</span>
+                                <input type="text" class="form-control" name="entry" value="" id="entryid">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="input-group col-sm-11">
+                                <span class="input-group-addon" id="pathid">PathID</span>
+                                <input type="text" class="form-control" name="pathid" id="path" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary" id="transfer">Transfer</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6" id="errors"></div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h2>Pause a waypoint</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Waypoints needs the creature entry to store all the PathID points.</p>
+                    <form class="form-horizontal" action="pause.php" method="POST">
+                        <div class="form-group col-md-3">
+                            <div class="input-group col-sm-11">
+                                <span class="input-group-addon" id="pathid_pause">PathID</span>
+                                <input type="text" class="form-control" name="pathid" id="path_pause" value="">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2" id="form-point">
+                            <div class="input-group col-sm-11">
+                                <span class="input-group-addon" id="point">Point</span>
+                                <input type="text" class="form-control" name="point" value="" id="pointid">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <div class="input-group col-sm-11" id="form-delay">
+                                <span class="input-group-addon">Delay(ms)</span>
+                                <input type="text" class="form-control" name="delay" id="delay" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6" id="errors"></div>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            "use strict";
+
+            var Entry;
+            var Path;
+            var PathID;
+            var PointID;
+            var EntryName = $('#entry');
+            var PathIDInfos = $('#pathid');
+            var PathIDPauseInfos = $('#pathid_pause');
+            var Data;
+
+            // Transfer
+            $('#entryid').keyup(function() {
+                Entry = $(this).val();
+                EntryName.html("");
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ app.request.basepath }}/waypoints/entry/' + Entry,
+                    dataType: 'json',
+                    success: function (data) {
+                        EntryName.html(data.name);
+                        $('#form-entry').removeClass('has-warning');
+                        $('#errors').html('');
+
+                        if( data.free === false ) {
+                            $('#form-entry').addClass('has-warning');
+                            $('#errors').append('<div class="alert alert-warning" role="alert"><strong>Warning:</strong> this entry already has waypoints, submit replace the actual path with the submitted.</div>');
+                        }
+                    }
+                });
+                if (Entry === '') {
+                    EntryName.html("Entry");
+                }
+            });
+            $('#path').keyup(function() {
+                PathID = $(this).val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ app.request.basepath }}/waypoints/path/' + PathID,
+                    dataType: 'json',
+                    success: function(data) {
+                        PathIDInfos.html("PathID");
+                        console.log(data);
+                        PathIDInfos.append(' (' + data.points + ' points)');
+                    }
+                });
+
+                if (PathID === '') {
+                    PathIDInfos.html("PathID");
+                }
+            });
+            $('#transfer').click(function() {
+                Entry = $('#entryid').val();
+                Path = $('path').val();
+                if(Entry == "" || Path == "") {
+                    alert('Entry and/or Path should not be empty.');
+                    return;
+                } else {
+                    var info = { "entry": Entry.toString(), "path": Path.toString(), "user": "{{ app.user.id }}", "source": "3" };
+                    $.ajax({
+                        type: 'POST',
+                        data: 'info=' + JSON.stringify(Path),
+                        url: '{{ app.request.basepath }}/waypoints/transfer',
+                        success: function(data) {
+                            console.log(data);
+                        }
+                    });
+                }
+
+            });
+
+            $('#path_pause').keyup(function() {
+                PathID = $(this).val();
+                $('#pointid').val('');
+
+                $.ajax({
+                    type: 'GET',
+                    data: 'pathid=' + PathID,
+                    url: 'getPathid.php',
+                    dataType: 'json',
+                    success: function(data) {
+                        Data = data;
+                        PathIDPauseInfos.html("PathID");
+                        PathIDPauseInfos.append(' (' + data.points + ' points)');
+                    }
+                });
+
+                if (PathID === '') {
+                    PathIDPauseInfos.html("PathID");
+                }
+            });
+
+            $('#pointid').keyup(function() {
+                if(Data != null) {
+                    PointID = $(this).val();
+
+                    if(PointID < 1 || PointID > Data.points) {
+                        $('#form-point').removeClass('has-success').addClass('has-warning');
+                    } else {
+                        $('#form-point').removeClass('has-warning').addClass('has-success');
+                    }
+                }
+            });
+
+            $('#delay').keyup(function() {
+                var Delay = $(this).val();
+
+                if(Delay <= 0) {
+                    $('#form-delay').removeClass('has-success').addClass('has-warning');
+                } else {
+                    $('#form-delay').removeClass('has-warning').addClass('has-success');
+                }
+            });
+        </script>
+    {% endblock %}

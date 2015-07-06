@@ -1,5 +1,20 @@
 {% extends "layout.html.twig" %}
         {% block title %}Home - {{ parent() }}{% endblock %}
+        {% block head %}
+            <style type="text/css">
+                .glyphicon {
+                    cursor: pointer;
+                }
+                .ok,
+                .table-hover > tbody > tr.ok:hover > td {
+                    background-color: #ABFF92!important;
+                }
+                .bug,
+                .table-hover > tbody > tr.bug:hover > td {
+                    background-color: #FF9595!important;
+                }
+            </style>
+        {% endblock %}
         {% block content %}
         <div class="col-md-6">
             <h2>Welcome to SunDev</h2>
@@ -24,36 +39,109 @@
                 </ul>
             </div>
             {% endif %}
+            {% if is_granted('ROLE_DEV') %}
+            <div class="col-md-12">
+                <hr>
+                <h3>My reviews</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Code</th>
+                            <th>State</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for script in scripts %}
+                        {% if script.user == app.user.id %}
+                            <tr {% if script.state == 1 %}class="ok"{% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
+                                <td>{{ script.date|date("m-j-y G:i:s") }}</td>
+                                <td>
+                                    {% if script.source_type == 0 %}
+                                        {% if script.entryorguid > 0 %}
+                                            <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a>
+                                        {% else %}
+                                            <a href="{{ app.request.basepath }}/smartai/creature/guid/{{ script.entryorguid|abs }}">{{ script.entryorguid|getCreatureName }}</a>
+                                        {% endif %}
+                                    {% elseif script.source_type == 1 %}
+                                        {% if script.entryorguid > 0 %}
+                                            <a href="{{ app.request.basepath }}/smartai/object/entry/{{ script.entryorguid }}">{{ script.entryorguid|getGOName }}</a>
+                                        {% else %}
+                                            <a href="{{ app.request.basepath }}/smartai/object/guid/{{ script.entryorguid|abs }}">{{ script.entryorguid|getGOName }}</a>
+                                        {% endif %}
+                                    {% elseif script.source_type == 3 %}
+                                        {% if script.path > 0 %}
+                                            <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Set Path {{ script.path }}
+                                        {% else %}
+                                            <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Replace with Path {{ script.path }}
+                                        {% endif %}
+                                    {% elseif script.source_type == 4 %}
+                                        <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
+                                    {% elseif script.source_type == 9 %}
+                                        <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ script.state|getStateName }}</td>
+                                <td>{% if script.validation_date == null %}{% else %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
         </div>
         {% if is_granted('ROLE_ADMIN') %}
         <div class="col-md-6">
             <h2>Review</h2>
             <p>Code that needs to be validated before going on production.</p>
-            <h3>SmartAI</h3>
             {% if scripts != null %}
             <table class="table table-hover">
                 <thead>
-                    <th width="20%">User</th>
-                    <th width="55%">Name</th>
-                    <th width="25%">Date</th>
+                    <th width="17%">User</th>
+                    <th width="53%">Code</th>
+                    <th width="22%">Date</th>
+                    <th width="8%"></th>
                 </thead>
                 <tbody>
             {% for script in scripts %}
+                {% if script.state == 0 %}
                     <tr>
-                        <td>{{ script.user }}</td>
+                        <td>{{ script.user|getUsername }}</td>
                         <td>
-                            <a href="{{ app.request.basepath }}/smartai/{{ script.link }}{% if script.source_type == "4" %}/text{%  endif %}">
-                                {% if script.source_type == "9" %}
-                                    {{ script.name }} - Script {{ script.id }}
-                                {% elseif script.source_type == "4" %}
-                                    {{ script.name }} - Texts
+                            {% if script.source_type == 0 %}
+                                {% if script.entryorguid > 0 %}
+                                    <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a>
                                 {% else %}
-                                    {{ script.name }}
+                                    <a href="{{ app.request.basepath }}/smartai/creature/guid/{{ script.entryorguid|abs }}">{{ script.entryorguid|getCreatureName }}</a>
                                 {% endif %}
-                            </a></li>
+                            {% elseif script.source_type == 1 %}
+                                {% if script.entryorguid > 0 %}
+                                    <a href="{{ app.request.basepath }}/smartai/object/entry/{{ script.entryorguid }}">{{ script.entryorguid|getGOName }}</a>
+                                {% else %}
+                                    <a href="{{ app.request.basepath }}/smartai/object/guid/{{ script.entryorguid|abs }}">{{ script.entryorguid|getGOName }}</a>
+                                {% endif %}
+                            {% elseif script.source_type == 3 %}
+                                {% if script.path > 0 %}
+                                    <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Set Path {{ script.path }}
+                                {% else %}
+                                    <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Replace with Path {{ script.path }}
+                                {% endif %}
+                            {% elseif script.source_type == 4 %}
+                                <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
+                            {% elseif script.source_type == 9 %}
+                                <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
+                            {% endif %}
+                            </li>
                         </td>
                         <td>{{ script.date|date("m-j-y G:i:s") }}</td>
+                        <td>
+                            <span class="glyphicon glyphicon-ok" onclick="validate({{ script.entryorguid }}, {{ script.source_type }}, this)"></span>
+                            <span class="glyphicon glyphicon-remove" onclick="disprove({{ script.entryorguid }}, {{ script.source_type }}, this)"></span>
+                        </td>
                     </tr>
+                {% endif %}
             {% endfor %}
                 </tbody>
             </table>
@@ -64,4 +152,38 @@
         {% endif %}
         {% endblock %}
         {% block script %}
+            <script type="text/javascript">
+                function validate(Entry, Type, span) {
+                    var Review = { "entryorguid": Entry, "source_type": Type, "user": "{{ app.user.id }}", "state": "1" };
+                    $.ajax({
+                        type: "POST",
+                        url: '/review/edit',
+                        data: 'review=' + JSON.stringify(Review),
+                        success: function (data) {
+                            console.log(Date() + " - " + data);
+                            $(span).closest('tr').remove();
+                        },
+                        error: function (xhr, err) {
+                            console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+                function disprove(Entry, Type, span) {
+                    var Review = { "entryorguid": Entry, "source_type": Type, "user": "{{ app.user.id }}", "state": "2" };
+                    $.ajax({
+                        type: "POST",
+                        url: '/review/edit',
+                        data: 'review=' + JSON.stringify(Review),
+                        success: function (data) {
+                            console.log(Date() + " - " + data);
+                            $(span).closest('tr').remove();
+                        },
+                        error: function (xhr, err) {
+                            console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+            </script>
         {% endblock %}

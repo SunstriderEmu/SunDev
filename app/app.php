@@ -64,11 +64,6 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 ));
 $app->register(new Silex\Provider\HttpFragmentServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
-if (isset($app['debug']) && $app['debug']) {
-	$app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
-		'profiler.cache_dir' => __DIR__.'/../cache/profiler'
-	));
-}
 
 if($app['debug'] == false) {
 	$app->error(function (\Exception $e, $code) use ($app) {

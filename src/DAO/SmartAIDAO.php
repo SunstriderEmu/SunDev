@@ -152,14 +152,6 @@ class SmartAIDAO {
 	}
 
 	/*
-	 * SET SCRIPT
-	 */
-	public function setQuery($sql, $db) {
-		$query = $this->$db->query($sql);
-		return $query->execute();
-	}
-
-	/*
 	 * GET LINE
 	 */
 	public function getCreatureLine(Creature $creature, $line) {

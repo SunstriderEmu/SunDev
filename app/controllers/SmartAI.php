@@ -176,7 +176,7 @@ $app->get('/smartai/targets/{id}', function($id) use($app) {
 // APPLY TEST SCRIPT
 $app->post('/smartai/apply', function() use($app) {
 	$script = json_decode($_POST['sql']);
-	$manager= new \SUN\DAO\SmartAIDAO($app);
+	$manager= new \SUN\DAO\DAO($app);
 	if(isset($script->update)) {
 		$manager->setQuery($script->update, 'test');
 	}

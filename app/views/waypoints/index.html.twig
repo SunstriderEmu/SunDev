@@ -21,10 +21,10 @@
                                 <input type="text" class="form-control" name="pathid" id="path" value="">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary" id="transfer">Transfer</button>
-                        </div>
                     </form>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" id="transfer">Transfer</button>
+                    </div>
                 </div>
                 <div class="col-md-6" id="errors"></div>
             </div>
@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>Waypoints needs the creature entry to store all the PathID points.</p>
-                    <form class="form-horizontal" action="pause.php" method="POST">
+                    <form class="form-horizontal">
                         <div class="form-group col-md-3">
                             <div class="input-group col-sm-11">
                                 <span class="input-group-addon" id="pathid_pause">PathID</span>
@@ -53,10 +53,10 @@
                                 <input type="text" class="form-control" name="delay" id="delay" value="">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
                     </form>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" id="pause">Submit</button>
+                    </div>
                 </div>
                 <div class="col-md-6" id="errors"></div>
             </div>
@@ -117,8 +117,9 @@
                 }
             });
             $('#transfer').click(function() {
+                debugger;
                 Entry = $('#entryid').val();
-                Path = $('path').val();
+                Path = $('#path').val();
                 if(Entry == "" || Path == "") {
                     alert('Entry and/or Path should not be empty.');
                     return;
@@ -126,7 +127,7 @@
                     var info = { "entry": Entry.toString(), "path": Path.toString(), "user": "{{ app.user.id }}", "source": "3" };
                     $.ajax({
                         type: 'POST',
-                        data: 'info=' + JSON.stringify(Path),
+                        data: 'info=' + JSON.stringify(info),
                         url: '{{ app.request.basepath }}/waypoints/transfer',
                         success: function(data) {
                             console.log(data);
@@ -136,17 +137,16 @@
 
             });
 
+
             $('#path_pause').keyup(function() {
                 PathID = $(this).val();
-                $('#pointid').val('');
-
                 $.ajax({
                     type: 'GET',
-                    data: 'pathid=' + PathID,
-                    url: 'getPathid.php',
+                    url: '{{ app.request.basepath }}/waypoints/path/' + PathID,
                     dataType: 'json',
                     success: function(data) {
                         Data = data;
+                        console.log(Data);
                         PathIDPauseInfos.html("PathID");
                         PathIDPauseInfos.append(' (' + data.points + ' points)');
                     }
@@ -159,13 +159,16 @@
 
             $('#pointid').keyup(function() {
                 if(Data != null) {
-                    PointID = $(this).val();
-
-                    if(PointID < 1 || PointID > Data.points) {
+                    PointID = parseInt($(this).val());
+                    var Points = parseInt(Data.points);
+                    if(PointID < 1 || PointID > Points) {
                         $('#form-point').removeClass('has-success').addClass('has-warning');
                     } else {
                         $('#form-point').removeClass('has-warning').addClass('has-success');
                     }
+                }
+                if(isNaN(PointID)) {
+                    $('#form-point').removeClass('has-success').removeClass('has-warning');
                 }
             });
 
@@ -177,6 +180,30 @@
                 } else {
                     $('#form-delay').removeClass('has-warning').addClass('has-success');
                 }
+                if(isNaN(Delay) || Delay == "") {
+                    $('#form-delay').removeClass('has-success').removeClass('has-warning');
+                }
+            });
+
+            $('#pause').click(function() {
+                var Point = $('#pointid').val();
+                Path = $('#path_pause').val();
+                var Delay = $('#delay').val();
+                if(Path == "" || Point == "" || Delay == "") {
+                    alert('Path, Point or Delay should not be empty.');
+                    return;
+                } else {
+                    var info = { "path": Path.toString(), "point": Point.toString(), "delay": Delay.toString(), "user": "{{ app.user.id }}", "source": "5" };
+                    $.ajax({
+                        type: 'POST',
+                        data: 'info=' + JSON.stringify(info),
+                        url: '{{ app.request.basepath }}/waypoints/pause',
+                        success: function(data) {
+                            console.log(data);
+                        }
+                    });
+                }
+
             });
         </script>
     {% endblock %}

@@ -20,4 +20,12 @@ class DAO {
 		$this->tools = $app['dbs']['suntools'];
 		$this->test = $app['dbs']['test_world'];
 	}
+
+	/*
+	 * SET SCRIPT
+	 */
+	public function setQuery($sql, $db) {
+		$query = $this->$db->query($sql);
+		return $query->execute();
+	}
 } 

@@ -2674,7 +2674,7 @@
                     $('<select class="form-control" id="action_param1_val">' +
                     '   <option value="0">Stop</option>' +
                     '   <option value="1">Start</option>' +
-                    '</select>').appendTo(ActionParam2DIV);
+                    '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     break;
                 case "21":
@@ -2682,7 +2682,7 @@
                     $('<select class="form-control" id="action_param1_val">' +
                     '   <option value="0">Disable</option>' +
                     '   <option value="1">Enable</option>' +
-                    '</select>').appendTo(ActionParam2DIV);
+                    '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     break;
                 case "22": //ACTION_SET_EVENT_PHASE

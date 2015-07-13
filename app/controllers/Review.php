@@ -4,7 +4,7 @@
 $app->post('/review/edit', function() use($app) {
 	if(isset($_POST['sql'])) {
 		$script = json_decode($_POST['sql']);
-		$manager = new \SUN\DAO\SmartAIDAO($app);
+		$manager = new \SUN\DAO\DAO($app);
 		if(isset($script->update)) {
 			$manager->setQuery($script->update, 'test');
 			$manager->setQuery($script->update, 'world');

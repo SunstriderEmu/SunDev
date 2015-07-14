@@ -45,7 +45,7 @@ $app->get('/dungeon/{dungeon}', function ($dungeon) use ($app) {
 		"creatures" => $creatures,
 		"map"		=> $dungeon,
 	));
-});
+})->assert('dungeon', '\d+');
 
 $app->post('/dungeon/apply/status', function () use ($app) {
 	$creature  = json_decode($_POST['info']);

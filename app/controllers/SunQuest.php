@@ -54,7 +54,7 @@ $app->get('/quests/zone/{zone}', function ($zone) use ($app) {
 	return $app['twig']->render('quests/zone.html.twig', array(
 		"quests" => $quests,
 	));
-});
+})->assert('zone', '\d+');
 
 $app->post('/quests/apply/status', function () use ($app) {
 	$quest  = json_decode($_POST['info']);

@@ -34,6 +34,8 @@ class SUNExtension extends \Twig_Extension {
 	public function getFilters()
 	{
 		return array(
+			"getItemName" 		=> new \Twig_Filter_Method($this, "getItemName"),
+			"getSpellName" 		=> new \Twig_Filter_Method($this, "getSpellName"),
 			"getCreatureName" 	=> new \Twig_Filter_Method($this, "getCreatureName"),
 			"getGOName" 		=> new \Twig_Filter_Method($this, "getGOEntryName"),
 			"getScriptName" 	=> new \Twig_Filter_Method($this, "getScriptName"),
@@ -41,6 +43,14 @@ class SUNExtension extends \Twig_Extension {
 			"getUsername" 		=> new \Twig_Filter_Method($this, "getUsername"),
 			"getStateName" 		=> new \Twig_Filter_Method($this, "getStateName"),
 		);
+	}
+
+	public function getItemName($id) {
+		$query = $this->test->prepare('SELECT name FROM item_template WHERE entry = :id');
+		$query->bindValue(':id', $id, PDO::PARAM_INT);
+		$query->execute();
+		$item = $query->fetch();
+		return $item['name'];
 	}
 
 	public function getCreatureName($id) {

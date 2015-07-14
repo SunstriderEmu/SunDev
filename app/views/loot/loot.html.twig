@@ -1,0 +1,282 @@
+{% extends "layout.html.twig" %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>Loot ID: {{ loot.id }}</h2>
+            {% if loot.creatures is defined %}
+            <div class="col-md-4">
+                <p>
+                    Used by {{ loot.used }} creature{% if loot.used > 1 %}s{% endif %}.
+                </p>
+                <ul>
+                    {% for creature in loot.creatures %}
+                        <li><a href="http://wowhead.com/npc={{ creature.entry }}">{{ creature.entry|getCreatureName }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if loot.references is defined %}
+            <div class="col-md-4">
+                <p>
+                    Loot used in:
+                </p>
+                <ul>
+                    {% for reference in loot.references %}
+                    <li><a href="{{ app.request.basepath }}/loot/{{ reference.entry }}">Loot {{ reference.entry }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="text-right">
+                <button id="add" class="btn btn-info btn-xs">Add</button>
+                <button id="apply" class="btn btn-success btn-xs">Apply</button>
+                <button id="review" class="btn btn-success btn-xs">Review</button>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+                {% endif %}
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Chance</th>
+                        <th>GroupID</th>
+                        <th>MinCount</th>
+                        <th>MaxCount</th>
+                        <th>Condition</th>
+                        <th>Condition 1</th>
+                        <th>Condition 2</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in loot.items %}
+                    <tr>
+                        <td>{{ item.item }}</td>
+                        <td>
+                            {% if item.ChanceOrQuestChance > 0 and item.mincountOrRef < 0 %}
+                            <a href="{{ app.request.basepath }}/loot/reference/{{ item.item }}">Reference Loot {{ item.item }}</a>
+                            {% else %}
+                            <a href="http://wowhead.com/item={{ item.item }}">{{ item.item|getItemName }}</a>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.ChanceOrQuestChance }}</td>
+                        <td>{{ item.groupid }}</td>
+                        <td>{{ item.mincountOrRef }}</td>
+                        <td>{{ item.maxcount }}</td>
+                        <td>{{ item.lootcondition }}</td>
+                        <td>{{ item.condition_value1 }}</td>
+                        <td>{{ item.condition_value2 }}</td>
+                        <td><span class="glyphicon glyphicon-remove" onclick="removeItem({{ item.item }})"></span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            var Loot = {{ loot|json_encode|raw }};
+            var OldValue;
+            var i;
+            var Table = $('table');
+            console.log(Loot);
+
+            Table.on('click', 'td', function() {
+                event.stopPropagation();
+                if( !isNaN($(this).text()) ) {
+                    var Value = $(this).text();
+                    $(this).html('<input class="form-control" id="input" />').find('input').val(Value);
+                    $('#input').focus();
+                }
+            });
+
+            $(document).click(function() {
+                var Input = $('table > tbody > tr > td').find('input');
+                var Value = Input.val();
+                Input.closest('td').html(Value);
+            });
+
+            Table.on('change', 'td:first-child', function() {
+                var This = $(this);
+                var Value = $(this).find('input').val();
+                Loot.items[Value] = Loot.items[OldValue];
+                Loot.items[Value].item = Value;
+                delete Loot.items[OldValue];
+                $.ajax({
+                    type: 'GET',
+                    url: '/item/' + Value + '/name',
+                    dataType: 'text',
+                    'success': function (data) {
+                        This.closest('tr').find('td:nth-child(2)').html('<a href="http://wowhead.com/item=' + Value + '">' + data + '</a>');
+                    }
+                });
+            }).click(function() {
+                OldValue = $(this).find('input').val();
+            });
+
+            Table.on('change', 'td:nth-child(3)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].ChanceOrQuestChance = Value;
+            });
+            Table.on('change', 'td:nth-child(4)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].groupid = Value;
+            });
+            Table.on('change', 'td:nth-child(5)', function() {
+                debugger;
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].mincountOrRef = Value;
+            });
+            Table.on('change', 'td:nth-child(6)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].maxcount = Value;
+            });
+            Table.on('change', 'td:nth-child(7)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].lootcondition = Value;
+            });
+            Table.on('change', 'td:nth-child(8)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].condition_value1 = Value;
+            });
+            Table.on('change', 'td:nth-child(9)', function() {
+                var ID = $(this).closest('tr').find('td:first-child').text();
+                var Value = $(this).find('input').val();
+                Loot.items[ID].condition_value2 = Value;
+            });
+
+            function removeItem(id) {
+                delete Loot.items[id];
+                $('table > tbody > tr:has(td:first-child:contains(' + id + '))').remove();
+            }
+
+            function generateSQL(Loot) {
+                var SQL = {};
+                var Length = Object.keys(Loot).length;
+
+                {% if loot.type == 0 %}
+                SQL.delete = 'DELETE FROM world.creature_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.creature_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 1 %}
+                SQL.delete = 'DELETE FROM world.disenchant_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.disenchant_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 2 %}
+                SQL.delete = 'DELETE FROM world.fishing_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.fishing_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 3 %}
+                SQL.delete = 'DELETE FROM world.gameobject_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.gameobject_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 4 %}
+                SQL.delete = 'DELETE FROM world.item_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.item_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 5 %}
+                SQL.delete = 'DELETE FROM world.pickpocketing_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.pickpoketing_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 6 %}
+                SQL.delete = 'DELETE FROM world.prospecting_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.prospecting_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 7 %}
+                SQL.delete = 'DELETE FROM world.quest_mail_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.quest_mail_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 8 %}
+                SQL.delete = 'DELETE FROM world.reference_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.reference_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% elseif loot.type == 9 %}
+                SQL.delete = 'DELETE FROM world.skinning_loot_template WHERE entry = ' + {{ loot.id }} + ';';
+                SQL.insert = 'INSERT IGNORE INTO world.skinning_loot_template (entry, item, ChanceOrQuestChance, groupid, mincountOrRef, maxcount, lootcondition, condition_value1, condition_value2) VALUES ';
+                {% endif %}
+                for (var i in Loot.items) {
+                    SQL.insert += '({{ loot.id }}, ' + Loot.items[i].item + ', ' + Loot.items[i].ChanceOrQuestChance + ', ' + Loot.items[i].groupid + ', ' + Loot.items[i].mincountOrRef + ', ' + Loot.items[i].maxcount + ', ' + Loot.items[i].lootcondition + ', ' + Loot.items[i].condition_value1 + ', ' + Loot.items[i].condition_value2 + '),';
+                }
+                var Pos = SQL.insert.lastIndexOf(',');
+                SQL.insert = SQL.insert.substring(0, Pos) + ';' + SQL.insert.substring(Pos + 1);
+                return JSON.stringify(SQL);
+            }
+            $('#apply').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/loot/apply',
+                    data: 'sql=' + generateSQL(Loot),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+            $('#review').click(function () {
+                var Review = { "entryorguid": "{{ loot.id }}", "source_type": "6", "info1": "{{ loot.type }}", "user": "{{ app.user.id }}" };
+                $.ajax({
+                    type: "POST",
+                    url: '/review/new',
+                    data: 'sql=' + generateSQL(Loot) + '&review=' + JSON.stringify(Review),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+            $('#validate').click(function () {
+                var Review = { "entryorguid": "{{ loot.id }}", "source_type": "6", "state": "1", "user": "{{ app.user.id }}" };
+                $.ajax({
+                    type: "POST",
+                    url: '/review/edit',
+                    data: 'sql=' + generateSQL(Loot) + '&review=' + JSON.stringify(Review),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+            $('#add').click(function() {
+                var New = {
+                    "entry": "{{ loot.id }}",
+                    "item": "0",
+                    "ChanceOrQuestChance": "100",
+                    "groupid": "0",
+                    "mincountOrRef": "1",
+                    "maxcount": "1",
+                    "lootcondition": "0",
+                    "condition_value1": "0",
+                    "condition_value2": "0"
+                };
+                Loot.items[0] = New;
+                $('<tr>' +
+                '   <td>0</td>' +
+                '   <td></td>' +
+                '   <td>100</td>' +
+                '   <td>0</td>' +
+                '   <td>1</td>' +
+                '   <td>1</td>' +
+                '   <td>0</td>' +
+                '   <td>0</td>' +
+                '   <td>0</td>' +
+                '   <td><span class="glyphicon glyphicon-remove" onclick="removeItem(0)"></span></td>' +
+                '</tr>').appendTo('table > tbody');
+            });
+        </script>
+        <script type="text/javascript" src="http://static.wowhead.com/widgets/power.js"></script>
+        <script type="text/javascript">
+            var wowhead_tooltips = {
+                "iconizelinks": true,
+                "renamelinks": true,
+                "droppedby": true,
+                "dropchance": true,
+            }
+        </script>
+    {% endblock %}

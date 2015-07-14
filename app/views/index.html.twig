@@ -27,6 +27,7 @@
                 <ul>
                     <li><a href="{{ app.request.basepath }}/smartai">SmartAI</a></li>
                     <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
+                    <li><a href="{{ app.request.basepath }}/loot">SunLoot</a></li>
                 </ul>
             </div>
             {% endif %}
@@ -80,12 +81,34 @@
                                         <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
                                     {% elseif script.source_type == 5 %}
                                         PathID {{ script.entryorguid }} - Point {{ script.path }} - Pause {{ script.info1 }}ms
+                                    {% elseif script.source_type == 6 %}
+                                        {% if script.info1 == 0 %}
+                                            <a href="{{ app.request.basepath }}/loot/creature/{{ script.entryorguid }}">Creature Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 1 %}
+                                            <a href="{{ app.request.basepath }}/loot/disenchant/{{ script.entryorguid }}">Disenchant Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 2 %}
+                                            <a href="{{ app.request.basepath }}/loot/fishing/{{ script.entryorguid }}">Fishing Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 3 %}
+                                            <a href="{{ app.request.basepath }}/loot/gameobject/{{ script.entryorguid }}">GO Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 4 %}
+                                            <a href="{{ app.request.basepath }}/loot/item/{{ script.entryorguid }}">Item Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 5 %}
+                                            <a href="{{ app.request.basepath }}/loot/pickpocket/{{ script.entryorguid }}">Pickpocket Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 6 %}
+                                            <a href="{{ app.request.basepath }}/loot/prospect/{{ script.entryorguid }}">Prospect Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 7 %}
+                                            <a href="{{ app.request.basepath }}/loot/questmail/{{ script.entryorguid }}">Quest Mail Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 8 %}
+                                            <a href="{{ app.request.basepath }}/loot/reference/{{ script.entryorguid }}">Reference Loot {{ script.entryorguid }}</a>
+                                        {% elseif script.info1 == 9 %}
+                                            <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
+                                        {% endif %}
                                     {% elseif script.source_type == 9 %}
                                         <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
                                     {% endif %}
                                 </td>
                                 <td>{{ script.state|getStateName }}</td>
-                                <td>{% if script.validation_date == null %}{% else %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
+                                <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -134,10 +157,31 @@
                                 <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
                             {% elseif script.source_type == 5 %}
                                 PathID {{ script.entryorguid }} - Point {{ script.path }} - Pause {{ script.info1 }}ms
+                            {% elseif script.source_type == 6 %}
+                                {% if script.info1 == 0 %}
+                                    <a href="{{ app.request.basepath }}/loot/creature/{{ script.entryorguid }}">Creature Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 1 %}
+                                    <a href="{{ app.request.basepath }}/loot/disenchant/{{ script.entryorguid }}">Disenchant Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 2 %}
+                                    <a href="{{ app.request.basepath }}/loot/fishing/{{ script.entryorguid }}">Fishing Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 3 %}
+                                    <a href="{{ app.request.basepath }}/loot/gameobject/{{ script.entryorguid }}">GO Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 4 %}
+                                    <a href="{{ app.request.basepath }}/loot/item/{{ script.entryorguid }}">Item Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 5 %}
+                                    <a href="{{ app.request.basepath }}/loot/pickpocket/{{ script.entryorguid }}">Pickpocket Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 6 %}
+                                    <a href="{{ app.request.basepath }}/loot/prospect/{{ script.entryorguid }}">Prospect Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 7 %}
+                                    <a href="{{ app.request.basepath }}/loot/questmail/{{ script.entryorguid }}">Quest Mail Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 8 %}
+                                    <a href="{{ app.request.basepath }}/loot/reference/{{ script.entryorguid }}">Reference Loot {{ script.entryorguid }}</a>
+                                {% elseif script.info1 == 9 %}
+                                    <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
+                                {% endif %}
                             {% elseif script.source_type == 9 %}
                                 <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
                             {% endif %}
-                            </li>
                         </td>
                         <td>{{ script.date|date("m-j-y G:i:s") }}</td>
                         <td>

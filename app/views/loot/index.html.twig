@@ -1,0 +1,82 @@
+{% extends "layout.html.twig" %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>SunLoot</h2>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="creature" placeholder="Creature Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="disenchant" placeholder="Disenchant Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="fishing" placeholder="Fishing Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="go" placeholder="GO Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <br /><br />
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="item" placeholder="Item Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="pickpocket" placeholder="Pickpocket Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="prospect" placeholder="Prospect Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="quest_mail" placeholder="Quest Mail Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <br /><br />
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="reference" placeholder="Reference Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="skinning" placeholder="Skinning Loot">
+                </div>
+                <a href="#"><button class="btn btn-primary">Go!</button></a>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            $('#creature').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/creature/' + $(this).val()); })
+            $('#disenchant').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/disenchant/' + $(this).val()); })
+            $('#fishing').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/fishing/' + $(this).val()); })
+            $('#go').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/gameobject/' + $(this).val()); })
+            $('#item').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/item/' + $(this).val()); })
+            $('#pickpocket').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/pickpocket/' + $(this).val()); })
+            $('#prospect').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/prospect/' + $(this).val()); })
+            $('#quest_mail').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/questmail/' + $(this).val()); })
+            $('#reference').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/reference/' + $(this).val()); })
+            $('#skinning').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/skinning/' + $(this).val()); })
+        </script>
+    {% endblock %}

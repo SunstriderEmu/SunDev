@@ -10,19 +10,19 @@ $app->get('/smartai/available', function () use ($app) {
 $app->get('/spell/{entry}/name', function ($entry) use ($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->getSpellName($entry);
-});
+})->assert('entry', '\d+');
 
 // GET QUEST NAME
 $app->get('/quest/{entry}/name', function ($entry) use ($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->getQuestName($entry);
-});
+})->assert('entry', '\d+');
 
 // GET ITEM NAME
 $app->get('/item/{entry}/name', function ($entry) use ($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->getItemName($entry);
-});
+})->assert('entry', '\d+');
 
 // SELECT SCRIPT
 $app->get('/smartai', function () use ($app) {
@@ -34,25 +34,25 @@ $app->get('/smartai/creature/entry/{entry}/name', function($entry) use($app) {
 	$creature 	= new SUN\Domain\Creature(["entry" => $entry]);
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->findCreatureEntryName($creature)->getName();
-});
+})->assert('entry', '\d+');
 
 $app->get('/smartai/creature/guid/{guid}/name', function($guid) use($app) {
 	$creature 	= new SUN\Domain\Creature(["guid" => $guid]);
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->findCreatureGuidName($creature)->getName();
-});
+})->assert('guid', '\d+');
 
 $app->get('/smartai/gameobject/entry/{entry}/name', function($entry) use($app) {
 	$gameobject	= new SUN\Domain\Gameobject(["entry" => $entry]);
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->findGOEntryName($gameobject)->getName();
-});
+})->assert('entry', '\d+');
 
 $app->get('/smartai/gameobject/guid/{guid}/name', function($guid) use($app) {
 	$gameobject	= new SUN\Domain\Gameobject(["guid" => $guid]);
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return $manager->findGOGuidName($gameobject)->getName();
-});
+})->assert('guid', '\d+');
 
 // GET CREATURE ENTRY SCRIPT
 $app->get('/smartai/creature/entry/{entry}', function($entry) use($app) {
@@ -69,7 +69,7 @@ $app->get('/smartai/creature/entry/{entry}', function($entry) use($app) {
 			"actions" 	=> $manager->getActions(),
 			"targets" 	=> $manager->getTargets(),
 		));
-});
+})->assert('entry', '\d+');
 
 // GET CREATURE GUID SCRIPT
 $app->get('/smartai/creature/guid/{guid}', function($guid) use($app) {
@@ -86,7 +86,7 @@ $app->get('/smartai/creature/guid/{guid}', function($guid) use($app) {
 			"actions" 	=> $manager->getActions(),
 			"targets" 	=> $manager->getTargets(),
 		));
-});
+})->assert('guid', '\d+');
 
 // GET GAMEOBJECT ENTRY SCRIPT
 $app->get('/smartai/object/entry/{entry}', function($entry) use($app) {
@@ -103,7 +103,7 @@ $app->get('/smartai/object/entry/{entry}', function($entry) use($app) {
 			"actions" 	=> $manager->getActions(),
 			"targets" 	=> $manager->getTargets(),
 		));
-});
+})->assert('entry', '\d+');
 
 // GET GAMEOBJECT GUID SCRIPT
 $app->get('/smartai/object/guid/{guid}', function($guid) use($app) {
@@ -120,7 +120,7 @@ $app->get('/smartai/object/guid/{guid}', function($guid) use($app) {
 			"actions" 	=> $manager->getActions(),
 			"targets" 	=> $manager->getTargets(),
 		));
-});
+})->assert('guid', '\d+');
 
 // GET CREATURE ENTRY SCRIPT
 $app->get('/smartai/script/{script}', function($script) use($app) {
@@ -138,7 +138,7 @@ $app->get('/smartai/script/{script}', function($script) use($app) {
 			"actions" 	=> $manager->getActions(),
 			"targets" 	=> $manager->getTargets(),
 		));
-});
+})->assert('script', '\d+');
 
 // GET EVENTS
 $app->get('/smartai/events', function() use($app) {
@@ -149,7 +149,7 @@ $app->get('/smartai/events', function() use($app) {
 $app->get('/smartai/events/{id}', function($id) use($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return json_encode($manager->getEvent($id));
-});
+})->assert('id', '\d+');
 
 // GET ACTIONS
 $app->get('/smartai/actions', function() use($app) {
@@ -160,7 +160,7 @@ $app->get('/smartai/actions', function() use($app) {
 $app->get('/smartai/actions/{id}', function($id) use($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return json_encode($manager->getAction($id));
-});
+})->assert('id', '\d+');
 
 // GET TARGETS
 $app->get('/smartai/targets', function() use($app) {
@@ -171,7 +171,7 @@ $app->get('/smartai/targets', function() use($app) {
 $app->get('/smartai/targets/{id}', function($id) use($app) {
 	$manager	= new \SUN\DAO\SmartAIDAO($app);
 	return json_encode($manager->getTarget($id));
-});
+})->assert('id', '\d+');
 
 // APPLY TEST SCRIPT
 $app->post('/smartai/apply', function() use($app) {
@@ -198,4 +198,4 @@ $app->get('/smartai/creature/entry/{entry}/text', function($entry) use($app) {
 		"texts" 	=> $manager->getCreatureText($entry),
 		"creature"	=> $creature,
 	));
-});
+})->assert('entry', '\d+');

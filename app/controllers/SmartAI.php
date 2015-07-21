@@ -199,3 +199,14 @@ $app->get('/smartai/creature/entry/{entry}/text', function($entry) use($app) {
 		"creature"	=> $creature,
 	));
 })->assert('entry', '\d+');
+
+// IMMUNITIES
+$app->get('/smartai/creature/entry/{entry}/immune', function($entry) use($app) {
+	$creature 	= new SUN\Domain\Creature(["entry" => $entry]);
+	$manager	= new \SUN\DAO\SmartAIDAO($app);
+	return $app['twig']->render('smartai/immunities.html.twig', array(
+		"entry"		=> $entry,
+		"name"		=> $manager->findCreatureEntryName($creature)->getName(),
+		"immunities"=> $manager->getImmunities($entry),
+	));
+})->assert('entry', '\d+');

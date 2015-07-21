@@ -275,6 +275,15 @@ class SmartAIDAO {
 		return $item['name'];
 	}
 
+	public function getItemDisplay($id) {
+		$query = $this->test->prepare('SELECT displayid FROM item_template WHERE entry = :entry');
+		$query->bindValue(':entry', $id, PDO::PARAM_INT);
+		$query->execute();
+		$item = $query->fetch();
+
+		return $item['displayid'];
+	}
+
 	public function getCreatureText($entry) {
 		$query = $this->test->prepare('SELECT * FROM creature_text WHERE entry = :entry');
 		$query->bindValue(':entry', $entry, PDO::PARAM_INT);

@@ -1,0 +1,521 @@
+{% extends "layout.html.twig" %}
+    {% block title %}SunEquip - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            #result > .table > tbody > tr > td {
+                vertical-align: middle;
+                text-align: center;
+            }
+            #result > .table > tbody > tr > td > span.glyphicon {
+                cursor: pointer;
+            }
+            .has-feedback .form-control-feedback {
+                top: 0px!important;
+                z-index: 5;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <h2>{{ equip.name }}'s equipment</h2>
+            </div>
+            <div class="col-md-6 row">
+                <h5>Item infos</h5>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <div class="input-group col-sm-12">
+                                <span class="input-group-addon" id="item">ID</span>
+                                <input type="text" class="form-control" value="" id="itemId">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group col-sm-12">
+                                <span class="input-group-addon">DisplayID</span>
+                                <input type="text" class="form-control" id="display" value="">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12 text-right">
+                {% if is_granted('ROLE_DEV') %}
+                    <button id="new" class="btn btn-info btn-xs">New ID</button>
+                    <button id="apply" class="btn btn-success btn-xs">Apply</button>
+                    <button id="review" class="btn btn-success btn-xs">Review</button>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+                {% endif %}
+            </div>
+        </div>
+        {% if equip.id is defined %}
+        {% for key, equipment in equip.id %}
+        <div class="col-md-12">
+            <div class="col-md-4 {{ key }}_model">
+                <object width="100%" height="300px" type="application/x-shockwave-flash" data="http://wow.zamimg.com/modelviewer/ZAMviewerfp11.swf" id="paperdoll-model-paperdoll-0-equipment-set" style="background: #fff">
+                    <param name="quality" value="high">
+                    <param name="allowsscriptaccess" value="always">
+                    <param name="allowfullscreen" value="true">
+                    <param name="menu" value="false">
+                    <param name="flashvars" value="model=humanfemale&amp;modelType=16&amp;cls=11&amp;equipList=4,13115,7,13117,13,{{ equipment.mainhand.displayid }},17,{{ equipment.offhand.displayid }}&amp;sk=3&amp;ha=8&amp;hc=2&amp;fa=5&amp;fh=1&amp;fc=1&amp;mode=3&amp;contentPath=//wow.zamimg.com/modelviewer/&amp;container=paperdoll-model-paperdoll-0-equipment-set&amp;hd=false&amp;">
+                    <param name="bgcolor" value="fff">
+                    <param name="wmode" value="direct">
+                </object>
+            </div>
+            <div class="col-md-8">
+                <h4>ID : {{ key }}</h4>
+                <div class="col-md-4">
+                    <h5>Main Hand</h5>
+                    <div class="input-group col-md-12 infos">
+                        <span class="input-group-addon">DisplayID</span>
+                        <input type="text" class="form-control" onchange="update({{ key }}, 'mh', 'display', this)" value="{{ equipment.mainhand.displayid }}">
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Skill</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_mh_skill" onchange="update({{ key }}, 'mh', 'skill', this)">
+                            <option value="">Choose</option>
+                            <option value="0" {% if ((equipment.mainhand.skill - 2) / 256) == 0 %}selected="selected"{% endif %}>Axe 1H</option>
+                            <option value="1" {% if ((equipment.mainhand.skill - 2) / 256) == 1 %}selected="selected"{% endif %}>Axe 2H</option>
+                            <option value="4" {% if ((equipment.mainhand.skill - 2) / 256) == 4 %}selected="selected"{% endif %}>Mace 1H</option>
+                            <option value="5" {% if ((equipment.mainhand.skill - 2) / 256) == 5 %}selected="selected"{% endif %}>Mace 2H</option>
+                            <option value="6" {% if ((equipment.mainhand.skill - 2) / 256) == 6 %}selected="selected"{% endif %}>Polearm</option>
+                            <option value="7" {% if ((equipment.mainhand.skill - 2) / 256) == 7 %}selected="selected"{% endif %}>Sword 1H</option>
+                            <option value="8" {% if ((equipment.mainhand.skill - 2) / 256) == 8 %}selected="selected"{% endif %}>Sword 2H</option>
+                            <option value="10" {% if ((equipment.mainhand.skill - 2) / 256) == 10 %}selected="selected"{% endif %}>Staff</option>
+                            <option value="11" {% if ((equipment.mainhand.skill - 2) / 256) == 11 %}selected="selected"{% endif %}>Exotic 1H</option>
+                            <option value="12" {% if ((equipment.mainhand.skill - 2) / 256) == 12 %}selected="selected"{% endif %}>Exotic 2H</option>
+                            <option value="13" {% if ((equipment.mainhand.skill - 2) / 256) == 13 %}selected="selected"{% endif %}>Fist</option>
+                            <option value="14" {% if ((equipment.mainhand.skill - 2) / 256) == 14 %}selected="selected"{% endif %}>Miscellaneous</option>
+                            <option value="15" {% if ((equipment.mainhand.skill - 2) / 256) == 15 %}selected="selected"{% endif %}>Dagger</option>
+                            <option value="17" {% if ((equipment.mainhand.skill - 2) / 256) == 17 %}selected="selected"{% endif %}>Spear</option>
+                            <option value="18" {% if ((equipment.mainhand.skill - 2) / 256) == 18 %}selected="selected"{% endif %}>Crossbow</option>
+                            <option value="20" {% if ((equipment.mainhand.skill - 2) / 256) == 20 %}selected="selected"{% endif %}>Fishing Pole</option>
+                        </select>
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Slot</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_mh_slot" onchange="update({{ key }}, 'mh', 'slot', this)">
+                            <option value="">Choose</option>
+                            <option value="13" {% if equipment.mainhand.slot == 13 %}selected="selected"{% endif %}>1H Weapon</option>
+                            <option value="14" {% if equipment.mainhand.slot == 14 %}selected="selected"{% endif %}>Shield</option>
+                            <option value="17" {% if equipment.mainhand.slot == 17 %}selected="selected"{% endif %}>2H Weapon</option>
+                            <option value="21" {% if equipment.mainhand.slot == 21 %}selected="selected"{% endif %}>Weapon Main Hand</option>
+                            <option value="22" {% if equipment.mainhand.slot == 22 %}selected="selected"{% endif %}>Weapon Off Hand</option>
+                            <option value="23" {% if equipment.mainhand.slot == 23 %}selected="selected"{% endif %}>Holdable</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5>Off Hand</h5>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">DisplayID</span>
+                        <input type="text" class="form-control" onchange="update({{ key }}, 'oh', 'display', this)" value="{{ equipment.offhand.displayid }}">
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Skill</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_oh_skill" onchange="update({{ key }}, 'oh', 'skill', this)">
+                            <option value="">Choose</option>
+                            <option value="0" {% if ((equipment.offhand.skill - 2) / 256) == 0 %}selected="selected"{% endif %}>Axe 1H</option>
+                            <option value="1" {% if ((equipment.offhand.skill - 2) / 256) == 1 %}selected="selected"{% endif %}>Axe 2H</option>
+                            <option value="4" {% if ((equipment.offhand.skill - 2) / 256) == 4 %}selected="selected"{% endif %}>Mace 1H</option>
+                            <option value="5" {% if ((equipment.offhand.skill - 2) / 256) == 5 %}selected="selected"{% endif %}>Mace 2H</option>
+                            <option value="6" {% if ((equipment.offhand.skill - 2) / 256) == 6 %}selected="selected"{% endif %}>Polearm</option>
+                            <option value="7" {% if ((equipment.offhand.skill - 2) / 256) == 7 %}selected="selected"{% endif %}>Sword 1H</option>
+                            <option value="8" {% if ((equipment.offhand.skill - 2) / 256) == 8 %}selected="selected"{% endif %}>Sword 2H</option>
+                            <option value="10" {% if ((equipment.offhand.skill - 2) / 256) == 10 %}selected="selected"{% endif %}>Staff</option>
+                            <option value="11" {% if ((equipment.offhand.skill - 2) / 256) == 11 %}selected="selected"{% endif %}>Exotic 1H</option>
+                            <option value="12" {% if ((equipment.offhand.skill - 2) / 256) == 12 %}selected="selected"{% endif %}>Exotic 2H</option>
+                            <option value="13" {% if ((equipment.offhand.skill - 2) / 256) == 13 %}selected="selected"{% endif %}>Fist</option>
+                            <option value="14" {% if ((equipment.offhand.skill - 2) / 256) == 14 %}selected="selected"{% endif %}>Miscellaneous</option>
+                            <option value="15" {% if ((equipment.offhand.skill - 2) / 256) == 15 %}selected="selected"{% endif %}>Dagger</option>
+                            <option value="17" {% if ((equipment.offhand.skill - 2) / 256) == 17 %}selected="selected"{% endif %}>Spear</option>
+                            <option value="18" {% if ((equipment.offhand.skill - 2) / 256) == 18 %}selected="selected"{% endif %}>Crossbow</option>
+                            <option value="20" {% if ((equipment.offhand.skill - 2) / 256) == 20 %}selected="selected"{% endif %}>Fishing Pole</option>
+                        </select>
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Slot</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_oh_slot" onchange="update({{ key }}, 'oh', 'slot', this)">
+                            <option value="0" {% if equipment.offhand.slot == 0 %}selected="selected"{% endif %}>Choose</option>
+                            <option value="13" {% if equipment.offhand.slot == 13 %}selected="selected"{% endif %}>1H Weapon</option>
+                            <option value="14" {% if equipment.offhand.slot == 14 %}selected="selected"{% endif %}>Shield</option>
+                            <option value="17" {% if equipment.offhand.slot == 17 %}selected="selected"{% endif %}>2H Weapon</option>
+                            <option value="21" {% if equipment.offhand.slot == 21 %}selected="selected"{% endif %}>Weapon Main Hand</option>
+                            <option value="22" {% if equipment.offhand.slot == 22 %}selected="selected"{% endif %}>Weapon Off Hand</option>
+                            <option value="23" {% if equipment.offhand.slot == 23 %}selected="selected"{% endif %}>Holdable</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5>Ranged</h5>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">DisplayID</span>
+                        <input type="text" class="form-control" onchange="update({{ key }}, 'ranged', 'display', this)" value="{{ equipment.ranged.displayid }}">
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Skill</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_ranged_skill" onchange="update({{ key }}, 'ranged', 'skill', this)">
+                            <option value="">Choose</option>
+                            <option value="2" {% if ((equipment.ranged.skill - 2) / 256) == 2 %}selected="selected"{% endif %}>Bow</option>
+                            <option value="3" {% if ((equipment.ranged.skill - 2) / 256) == 3 %}selected="selected"{% endif %}>Gun</option>
+                            <option value="14" {% if ((equipment.ranged.skill - 2) / 256) == 14 %}selected="selected"{% endif %}>Miscellaneous</option>
+                            <option value="16" {% if ((equipment.ranged.skill - 2) / 256) == 16 %}selected="selected"{% endif %}>Thrown</option>
+                            <option value="19" {% if ((equipment.ranged.skill - 2) / 256) == 19 %}selected="selected"{% endif %}>Wand</option>
+                        </select>
+                    </div>
+                    <div class="input-group col-md-12">
+                        <span class="input-group-addon">Slot</span>
+                        <select class="form-control" id="{{ equip.equipmentID }}_0_ranged_slot" onchange="update({{ key }}, 'ranged', 'slot', this)">
+                            <option value="0" {% if equipment.ranged.slot == 0 %}selected="selected"{% endif %}>Choose</option>
+                            <option value="15" {% if equipment.ranged.slot == 15 %}selected="selected"{% endif %}>Ranged</option>
+                            <option value="25" {% if equipment.ranged.slot == 25 %}selected="selected"{% endif %}>Thrown</option>
+                            <option value="26" {% if equipment.ranged.slot == 26 %}selected="selected"{% endif %}>Ranged Right</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            var Equip = {{ equip|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+            console.log(Equip);
+            if(Equip.id == undefined) {
+                var MaxID = -1;
+                Equip.id = {};
+            } else {
+                var MaxID = Object.keys(Equip.id).length - 1;
+            }
+            var i;
+
+            $('#new').click(function() {
+                MaxID++;
+                var New = {
+                    "mainhand":{
+                        "displayid": "0",
+                        "skill": "0",
+                        "slot": "0"
+                    },
+                    "offhand":{
+                        "displayid": "0",
+                        "skill": "0",
+                        "slot": "0"
+                    },
+                    "ranged":{
+                        "displayid": "0",
+                        "skill": "0",
+                        "slot": "0"
+                    }
+                };
+                Equip.id[MaxID] = New;
+
+                $('<div class="col-md-12"></div>').appendTo('body');
+                ModelView(MaxID, 0, 0);
+                DisplayRow(MaxID, Equip.id[MaxID])
+            });
+
+            function refresh(id) {
+                $('.' + id + '_model').html('' +
+                '<object width="100%" height="300px" type="application/x-shockwave-flash" data="http://wow.zamimg.com/modelviewer/ZAMviewerfp11.swf" id="paperdoll-model-paperdoll-0-equipment-set" style="background: #fff">' +
+                '   <param name="quality" value="high">' +
+                '   <param name="allowsscriptaccess" value="always">' +
+                '   <param name="allowfullscreen" value="true">' +
+                '   <param name="menu" value="false">' +
+                '   <param name="flashvars" value="model=humanfemale&amp;modelType=16&amp;cls=11&amp;equipList=4,13115,7,13117,13,' + Equip.id[id].mainhand.displayid + ',17,' + Equip.id[id].offhand.displayid + '&amp;sk=3&amp;ha=8&amp;hc=2&amp;fa=5&amp;fh=1&amp;fc=1&amp;mode=3&amp;contentPath=//wow.zamimg.com/modelviewer/&amp;container=paperdoll-model-paperdoll-0-equipment-set&amp;hd=false&amp;">' +
+                '   <param name="bgcolor" value="fff">' +
+                '   <param name="wmode" value="direct">' +
+                '</object>');
+            }
+
+
+            // Help infos
+            $('#itemId').keyup(function() {
+                var Item = $(this).val();
+                var ItemName = $('#item');
+                var ItemDisplay = $('#display');
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ app.request.basepath }}/item/' + Item + '/displayid',
+                    success: function(data) {
+                            ItemDisplay.val(data);
+                        },
+                    error: function(data) {
+                            console.log(data);
+                        }
+                    });
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ app.request.basepath }}/item/' + Item + '/name',
+                    success: function(data) {
+                            ItemName.html(data);
+                        },
+                    error: function(data) {
+                            console.log(data);
+                        }
+                    });
+
+                if (Item === '') {
+                    ItemName.html("ID");
+                }
+            });
+
+            function update(id, weapon, info, select) {
+                if (!(weapon == 'mh' || weapon == 'oh' || weapon == 'ranged') || !(info == 'display' || info == 'skill' || info == 'slot')) {
+                    return false;
+                }
+                switch(weapon) {
+                    case "mh":
+                        switch(info) {
+                            case "display": Equip.id[id].mainhand.displayid = select.value; refresh(id); break;
+                            case "skill": Equip.id[id].mainhand.skill = 2 + 256 * select.value; break;
+                            case "slot": Equip.id[id].mainhand.slot = select.value; break;
+                            default: return;
+                        } break;
+                    case "oh":
+                        switch(info) {
+                            case "display": Equip.id[id].offhand.displayid = select.value; refresh(id); break;
+                            case "skill": Equip.id[id].offhand.skill = 2 + 256 * select.value; break;
+                            case "slot": Equip.id[id].offhand.slot = select.value; break;
+                            default: return;
+                        } break;
+                    case "ranged":
+                        switch(info) {
+                            case "display": Equip.id[id].ranged.displayid = select.value; break;
+                            case "skill": Equip.id[id].ranged.skill = select.value; break;
+                            case "slot": Equip.id[id].ranged.slot = select.value; break;
+                            default: return;
+                        } break;
+                    default: return;
+                }
+            }
+
+            function generateSQL(Equip) {
+                var SQL = {};
+                var Length = Object.keys(Equip.id).length;
+
+                SQL.update = 'UPDATE creature_template SET equipment_id = ' + Equip.equipmentID + ' WHERE entry = {{ entry }};';
+                SQL.delete = 'DELETE FROM creature_equip_template WHERE entry = ' + Equip.equipmentID + ';';
+                SQL.insert = 'INSERT IGNORE INTO creature_equip_template (entry, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES ';
+                for (i = 0; i < Length; i++) {
+                    SQL.insert += '(' + Equip.equipmentID + ', ' + i + ', ' + Equip.id[i].mainhand.displayid + ', ' + Equip.id[i].offhand.displayid + ', ' + Equip.id[i].ranged.displayid + ', ' + Equip.id[i].mainhand.skill + ', ' + Equip.id[i].offhand.skill + ', ' + Equip.id[i].ranged.skill + ', ' + Equip.id[i].mainhand.slot + ', ' + Equip.id[i].offhand.slot + ', ' + Equip.id[i].ranged.slot + '),';
+                }
+                var Pos = SQL.insert.lastIndexOf(',');
+                SQL.insert = SQL.insert.substring(0, Pos) + ';' + SQL.insert.substring(Pos + 1);
+                return JSON.stringify(SQL);
+            }
+            $('#apply').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: '/equip/apply',
+                    data: 'sql=' + generateSQL(Equip),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+            $('#validate').click(function () {
+                var Review = { "entryorguid": "{{ entry }}", "source_type": "6", "user": "{{ app.user.id }}", "state": "1" };
+                $.ajax({
+                    type: "POST",
+                    url: '/review/edit',
+                    data: 'sql=' + generateSQL(Equip) + '&review=' + JSON.stringify(Review),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+            $('#review').click(function () {
+                var Review = { "entryorguid": "{{ entry }}", "source_type": "8", "user": "{{ app.user.id }}" };
+                $.ajax({
+                    type: "POST",
+                    url: '/review/new',
+                    data: 'sql=' + generateSQL(Equip) + '&review=' + JSON.stringify(Review),
+                    success: function (data) {
+                        console.log(Date() + " - " + data);
+                    },
+                    error: function (xhr, err) {
+                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+            function ModelView(id, mainhand, offhand) {
+                $('body > div:last-child').append(
+                        '<div class="col-md-4 ' + id + '_model">' +
+                        '   <object width="100%" height="300px" type="application/x-shockwave-flash" data="http://wow.zamimg.com/modelviewer/ZAMviewerfp11.swf" id="paperdoll-model-paperdoll-0-equipment-set" style="background: #fff">' +
+                        '       <param name="quality" value="high">' +
+                        '       <param name="allowsscriptaccess" value="always">' +
+                        '       <param name="allowfullscreen" value="true">' +
+                        '       <param name="menu" value="false">' +
+                        '       <param name="flashvars" value="model=humanfemale&amp;modelType=16&amp;cls=11&amp;equipList=4,13115,7,13117,13,' + mainhand + ',17,' + offhand + '&amp;sk=3&amp;ha=8&amp;hc=2&amp;fa=5&amp;fh=1&amp;fc=1&amp;mode=3&amp;contentPath=//wow.zamimg.com/modelviewer/&amp;container=paperdoll-model-paperdoll-0-equipment-set&amp;hd=false&amp;">' +
+                        '       <param name="bgcolor" value="fff"> ' +
+                        '       <param name="wmode" value="direct">' +
+                        '   </object>' +
+                        '</div>');
+            }
+            function DisplayRow(ID, data) {
+                $('body > div:last-child').append(
+                        '<div class="col-md-8">' +
+                        '   <h4>ID : ' + ID + '</h4>' +
+                        '   <div class="col-md-4">' +
+                        '       <h5>Main Hand</h5>' +
+                        '       <div class="input-group col-md-12 infos">' +
+                        '           <span class="input-group-addon">DisplayID</span>' +
+                        '           <input type="text" class="form-control" onchange="update(' + ID + ', \'mh\', \'display\', this)" value="' + data.mainhand.displayid + '">' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Skill</span>' +
+                        '           <select class="form-control" id="' + ID + '_mh_skill" onchange="update(' + ID + ', \'mh\', \'skill\', this)">' +
+                        '               <option value="">Choose</option>' +
+                        '               <option value="0">Axe 1H</option>' +
+                        '               <option value="1">Axe 2H</option>' +
+                        '               <option value="2">Bow</option>' +
+                        '               <option value="3">Gun</option>' +
+                        '               <option value="4">Mace 1H</option>' +
+                        '               <option value="5">Mace 2H</option>' +
+                        '               <option value="6">Polearm</option>' +
+                        '               <option value="7">Sword 1H</option>' +
+                        '               <option value="8">Sword 2H</option>' +
+                        '               <option value="10">Staff</option>' +
+                        '               <option value="11">Exotic 1H</option>' +
+                        '               <option value="12">Exotic 2H</option>' +
+                        '               <option value="13">Fist</option>' +
+                        '               <option value="14">Miscellaneous</option>' +
+                        '               <option value="15">Dagger</option>' +
+                        '               <option value="16">Thrown</option>' +
+                        '               <option value="17">Spear</option>' +
+                        '               <option value="18">Crossbow</option>' +
+                        '               <option value="19">Wand</option>' +
+                        '               <option value="20">Fishing Pole</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Slot</span>' +
+                        '           <select class="form-control" id="' + ID + '_mh_slot" onchange="update(' + ID + ', \'mh\', \'slot\', this)">' +
+                        '               <option value="0">Choose</option>' +
+                        '               <option value="13">1H Weapon</option>' +
+                        '               <option value="14">Shield</option>' +
+                        '               <option value="15">Ranged</option>' +
+                        '               <option value="17">2H Weapon</option>' +
+                        '               <option value="21">Weapon Main Hand</option>' +
+                        '               <option value="22">Weapon Off Hand</option>' +
+                        '               <option value="23">Holdable</option>' +
+                        '               <option value="25">Thrown</option>' +
+                        '               <option value="26">Ranged Right</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <div class="col-md-4">' +
+                        '       <h5>Off Hand</h5>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">DisplayID</span>' +
+                        '           <input type="text" class="form-control" onchange="update(' + ID + ', \'oh\', \'display\', this)" value="' + data.offhand.displayid + '">' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Skill</span>' +
+                        '           <select class="form-control" id="' + ID + '_oh_skill" onchange="update(' + ID + ', \'oh\', \'skill\', this)">' +
+                        '               <option value="">Choose</option>' +
+                        '               <option value="0">Axe 1H</option>' +
+                        '               <option value="1">Axe 2H</option>' +
+                        '               <option value="2">Bow</option>' +
+                        '               <option value="3">Gun</option>' +
+                        '               <option value="4">Mace 1H</option>' +
+                        '               <option value="5">Mace 2H</option>' +
+                        '               <option value="6">Polearm</option>' +
+                        '               <option value="7">Sword 1H</option>' +
+                        '               <option value="8">Sword 2H</option>' +
+                        '               <option value="10">Staff</option>' +
+                        '               <option value="11">Exotic 1H</option>' +
+                        '               <option value="12">Exotic 2H</option>' +
+                        '               <option value="13">Fist</option>' +
+                        '               <option value="14">Miscellaneous</option>' +
+                        '               <option value="15">Dagger</option>' +
+                        '               <option value="16">Thrown</option>' +
+                        '               <option value="17">Spear</option>' +
+                        '               <option value="18">Crossbow</option>' +
+                        '               <option value="19">Wand</option>' +
+                        '               <option value="20">Fishing Pole</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Slot</span>' +
+                        '           <select class="form-control" id="' + ID + '_oh_slot" onchange="update(' + ID + ', \'oh\', \'slot\', this)">' +
+                        '               <option value="0">Choose</option>' +
+                        '               <option value="13">1H Weapon</option>' +
+                        '               <option value="14">Shield</option>' +
+                        '               <option value="15">Ranged</option>' +
+                        '               <option value="17">2H Weapon</option>' +
+                        '               <option value="21">Weapon Main Hand</option>' +
+                        '               <option value="22">Weapon Off Hand</option>' +
+                        '               <option value="23">Holdable</option>' +
+                        '               <option value="25">Thrown</option>' +
+                        '               <option value="26">Ranged Right</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <div class="col-md-4">' +
+                        '       <h5>Ranged</h5>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">DisplayID</span>' +
+                        '           <input type="text" class="form-control" onchange="update(' + ID + ', \'ranged\', \'display\', this)" value="' + data.ranged.displayid + '">' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Skill</span>' +
+                        '           <select class="form-control" id="' + ID + '_ranged_skill" onchange="update(' + ID + ', \'ranged\', \'skill\', this)">' +
+                        '               <option value="">Choose</option>' +
+                        '               <option value="0">Axe 1H</option>' +
+                        '               <option value="1">Axe 2H</option>' +
+                        '               <option value="2">Bow</option>' +
+                        '               <option value="3">Gun</option>' +
+                        '               <option value="4">Mace 1H</option>' +
+                        '               <option value="5">Mace 2H</option>' +
+                        '               <option value="6">Polearm</option>' +
+                        '               <option value="7">Sword 1H</option>' +
+                        '               <option value="8">Sword 2H</option>' +
+                        '               <option value="10">Staff</option>' +
+                        '               <option value="11">Exotic 1H</option>' +
+                        '               <option value="12">Exotic 2H</option>' +
+                        '               <option value="13">Fist</option>' +
+                        '               <option value="14">Miscellaneous</option>' +
+                        '               <option value="15">Dagger</option>' +
+                        '               <option value="16">Thrown</option>' +
+                        '               <option value="17">Spear</option>' +
+                        '               <option value="18">Crossbow</option>' +
+                        '               <option value="19">Wand</option>' +
+                        '               <option value="20">Fishing Pole</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '       <div class="input-group col-md-12">' +
+                        '           <span class="input-group-addon">Slot</span>' +
+                        '           <select class="form-control" id="' + ID + '_ranged_slot" onchange="update(' + ID + ', \'ranged\', \'slot\', this)">' +
+                        '               <option value="0">Choose</option>' +
+                        '               <option value="13">1H Weapon</option>' +
+                        '               <option value="14">Shield</option>' +
+                        '               <option value="15">Ranged</option>' +
+                        '               <option value="17">2H Weapon</option>' +
+                        '               <option value="21">Weapon Main Hand</option>' +
+                        '               <option value="22">Weapon Off Hand</option>' +
+                        '               <option value="23">Holdable</option>' +
+                        '               <option value="25">Thrown</option>' +
+                        '               <option value="26">Ranged Right</option>' +
+                        '           </select>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '</div>');
+            }
+
+        </script>
+    {% endblock %}

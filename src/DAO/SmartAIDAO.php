@@ -288,4 +288,13 @@ class SmartAIDAO {
 		return $texts;
 	}
 
+	public function getImmunities($entry) {
+		$query = $this->test->prepare('SELECT mechanic_immune_mask as mask FROM creature_template WHERE entry = :entry');
+		$query->bindValue(':entry', $entry, PDO::PARAM_INT);
+		$query->execute();
+		$immunities = $query->fetch();
+
+		return $immunities['mask'];
+	}
+
 } 

@@ -103,6 +103,8 @@
                                         {% elseif script.info1 == 9 %}
                                             <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
                                         {% endif %}
+                                    {% elseif script.source_type == 7 %}
+                                        <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/immune">{{ script.entryorguid|getCreatureName }} - Immunities</a>
                                     {% elseif script.source_type == 9 %}
                                         <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
                                     {% endif %}
@@ -179,6 +181,8 @@
                                 {% elseif script.info1 == 9 %}
                                     <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
                                 {% endif %}
+                            {% elseif script.source_type == 7 %}
+                                <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ script.entryorguid }}/immune">{{ script.entryorguid|getCreatureName }} - Immunities</a>
                             {% elseif script.source_type == 9 %}
                                 <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
                             {% endif %}

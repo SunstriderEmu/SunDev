@@ -205,7 +205,6 @@
                 }
             });
         });
-
         $('#validate').click(function () {
             generateComments(Lines);
             var Review = { "entryorguid": Entry, "source_type": Type, "user": User, "state": "1" };

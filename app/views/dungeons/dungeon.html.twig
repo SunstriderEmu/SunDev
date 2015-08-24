@@ -123,24 +123,30 @@
                 </thead>
                 <tbody>
                 {% for creature in creatures %}
+                    {% if creature.heroic != 0 %}
                     <tr>
-                        <td><a href="http://wowhead.com/npc={{ creature.entry }}">{{ creature.name }}</a></td>
-                        <td class="border testing">
-                            <div class="testeur" id="{{ creature.entry }}_test1" status="{% if creature.tester == 1 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 1)' title="Mikelus">M</div>
-                            <div class="testeur" id="{{ creature.entry }}_test2" status="{% if creature.tester == 2 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 2)' title="Potestas">P</div>
-                            <div class="testeur" id="{{ creature.entry }}_test4" status="{% if creature.tester == 4 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 4)' title="Vanquish">V</div>
-                            <div class="testeur" id="{{ creature.entry }}_test3" status="{% if creature.tester == 3 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 3)' title="Yukka">Y</div>
+                        <td rowspan="2"><a href="http://wowhead.com/npc={{ creature.entry }}">{{ creature.name }}</a></td>
+                        <td rowspan="2" class="border testing">
+                            <div class="testeur" id="{{ creature.entry }}_test1" status="{% if creature.tester == 1 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 1)' title="Leekie">L</div>
+                            <div class="testeur" id="{{ creature.entry }}_test2" status="{% if creature.tester == 2 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 2)' title="Mikelus">M</div>
                         </td>
                         <td status="{% if creature.stats != null %}{{ creature.stats }}{% else %}0{% endif %}" id="{{ creature.entry }}_1" onclick='testCreature({{ creature.entry }}, 1)' oncontextmenu="getService({{ creature.entry }}, 1)" class="test"></td>
                         <td status="{% if creature.resistances != null %}{{ creature.resistances }}{% else %}0{% endif %}" id="{{ creature.entry }}_2" onclick='testCreature({{ creature.entry }}, 2)' oncontextmenu="getService({{ creature.entry }}, 2)" class="test"></td>
                         <td status="{% if creature.immunities != null %}{{ creature.immunities }}{% else %}0{% endif %}" id="{{ creature.entry }}_3" onclick='testCreature({{ creature.entry }}, 3)' oncontextmenu="getService({{ creature.entry }}, 3)" class="test"></td>
                         <td status="{% if creature.respawn != null %}{{ creature.respawn }}{% else %}0{% endif %}" id="{{ creature.entry }}_4" onclick='testCreature({{ creature.entry }}, 4)' oncontextmenu="getService({{ creature.entry }}, 4)" class="test"></td>
-                        <td status="{% if creature.equipment != null %}{{ creature.equipment }}{% else %}0{% endif %}" id="{{ creature.entry }}_5" onclick='testCreature({{ creature.entry }}, 5)' oncontextmenu="getService({{ creature.entry }}, 5)" class="test"></td>
-                        <td status="{% if creature.gossip != null %}{{ creature.gossip }}{% else %}0{% endif %}" id="{{ creature.entry }}_6" onclick='testCreature({{ creature.entry }}, 6)' oncontextmenu="getService({{ creature.entry }}, 6)" class="test"></td>
-                        <td status="{% if creature.emote != null %}{{ creature.emote }}{% else %}0{% endif %}" id="{{ creature.entry }}_7" onclick='testCreature({{ creature.entry }}, 7)' oncontextmenu="getService({{ creature.entry }}, 7)" class="test"></td>
-                        <td status="{% if creature.smartai != null %}{{ creature.smartai }}{% else %}0{% endif %}" id="{{ creature.entry }}_8" onclick='testCreature({{ creature.entry }}, 8)' oncontextmenu="getService({{ creature.entry }}, 8)" class="test"></td>
-                        <td width="20%" id="{{ creature.entry }}_9" ><textarea id="{{ creature.entry }}">{{ creature.comment }}</textarea></td>
+                        <td rowspan="2" status="{% if creature.equipment != null %}{{ creature.equipment }}{% else %}0{% endif %}" id="{{ creature.entry }}_5" onclick='testCreature({{ creature.entry }}, 5)' oncontextmenu="getService({{ creature.entry }}, 5)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.gossip != null %}{{ creature.gossip }}{% else %}0{% endif %}" id="{{ creature.entry }}_6" onclick='testCreature({{ creature.entry }}, 6)' oncontextmenu="getService({{ creature.entry }}, 6)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.emote != null %}{{ creature.emote }}{% else %}0{% endif %}" id="{{ creature.entry }}_7" onclick='testCreature({{ creature.entry }}, 7)' oncontextmenu="getService({{ creature.entry }}, 7)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.smartai != null %}{{ creature.smartai }}{% else %}0{% endif %}" id="{{ creature.entry }}_8" onclick='testCreature({{ creature.entry }}, 8)' oncontextmenu="getService({{ creature.entry }}, 8)" class="test"></td>
+                        <td rowspan="2" width="20%" id="{{ creature.entry }}_9" ><textarea id="{{ creature.entry }}">{{ creature.comment }}</textarea></td>
                     </tr>
+                    <tr>
+                        <td status="{% if creatures[creature.heroic].stats != null %}{{ creatures[creature.heroic].stats }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_1" onclick='testCreature({{ creatures[creature.heroic].entry }}, 1)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 1)" class="test"></td>
+                        <td status="{% if creatures[creature.heroic].resistances != null %}{{ creatures[creature.heroic].resistances }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_2" onclick='testCreature({{ creatures[creature.heroic].entry }}, 2)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 2)" class="test"></td>
+                        <td status="{% if creatures[creature.heroic].immunities != null %}{{ creatures[creature.heroic].immunities }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_3" onclick='testCreature({{ creatures[creature.heroic].entry }}, 3)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 3)" class="test"></td>
+                        <td status="{% if creatures[creature.heroic].respawn != null %}{{ creatures[creature.heroic].respawn }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_4" onclick='testCreature({{ creatures[creature.heroic].entry }}, 4)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 4)" class="test"></td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
@@ -206,25 +212,25 @@
             function getService(entry, column) {
                 switch(column) {
                     case 1:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/modifiers', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/modifiers', '_blank');
                         break;
                     case 2:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/resistances', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/resistances', '_blank');
                         break;
                     case 3:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/immunities', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/immune', '_blank');
                         break;
                     case 4:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/respawn', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/respawn', '_blank');
                         break;
                     case 5:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/equip', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/equip', '_blank');
                         break;
                     case 6:
-                        window.open('{{ app.request.basepath }}/creature/' + entry + '/gossip', '_blank');
+                        window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/gossip', '_blank');
                         break;
                     case 7:
-                       window.open('{{ app.request.basepath }}/creature/' + entry + '/emote', '_blank');
+                       window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry + '/emote', '_blank');
                        break;
                     case 8:
                         window.open('{{ app.request.basepath }}/smartai/creature/entry/' + entry, '_blank');

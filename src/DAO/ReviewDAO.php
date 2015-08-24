@@ -6,7 +6,7 @@ use PDO;
 
 class ReviewDAO extends DAO {
 	/*
-	 * SET REVIEW
+	 * CREATE REVIEW
 	 */
 	public function createReview($review) {
 		if(!isset($review->path))
@@ -32,7 +32,7 @@ class ReviewDAO extends DAO {
 	}
 
 	/*
-	 * DELETE REVIEW
+	 * EDIT REVIEW
 	 */
 	public function setReview($review) {
 		$query = $this->tools->prepare('UPDATE smart_review SET validation_date = :date, validation_user = :user, state = :state WHERE entryorguid = :entry AND source_type = :source_type');

@@ -8,7 +8,7 @@ use PDO;
 
 class SunDungeonDAO extends DAO {
 	public function getCreatures($dungeon) {
-		$query = $this->tools->prepare('SELECT ct.entry, name, c.map,
+		$query = $this->tools->prepare('SELECT ct.entry, ct.difficulty_entry_1 as heroic, name, c.map,
 											   tester, stats, resistances, immunities, respawn, equipment, gossip, emote, smartai, comment
 										FROM world.creature c
 										JOIN world.creature_template ct ON ct.entry = c.id
@@ -21,6 +21,18 @@ class SunDungeonDAO extends DAO {
 		$creatures = [];
 		foreach($fetch as $creature) {
 			$creatures[$creature['entry']] = new Creature($creature);
+
+			if($creature['heroic'] != 0) {
+				$query2 = $this->tools->prepare('SELECT ct.entry, name, tester, stats, resistances, immunities, respawn, equipment, gossip, emote, smartai, comment
+												 FROM world.creature_template ct
+												 LEFT JOIN dungeons_test dt ON ct.entry = dt.entry
+												 WHERE ct.entry = :entry');
+				$query2->bindValue(':entry', $creature['heroic'], PDO::PARAM_INT);
+				$query2->execute();
+				$heroic = $query2->fetch();
+
+				$creatures[$heroic['entry']] = new Creature($heroic);
+			}
 		}
 		return $creatures;
 	}

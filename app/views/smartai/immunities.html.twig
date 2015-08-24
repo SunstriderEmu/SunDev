@@ -112,7 +112,6 @@
             $('ul#immunities > li').click(function() {
                 var Immunity = parseInt($(this).attr('id'));
                 var Immunities = parseInt(Mask.val());
-                debugger;
                 if( $(this).hasClass('active')) {
                     if(Immunity == 2147483647) {
                         $('ul#immunities > li').removeClass('active');
@@ -201,7 +200,7 @@
                 $.ajax({
                     type: "POST",
                     url: '/review/edit',
-                    data: 'sql=' + generateSQL(Lines) + '&review=' + JSON.stringify(Review),
+                    data: 'sql=' + generateSQL(Mask.val()) + '&review=' + JSON.stringify(Review),
                     success: function (data) {
                         console.log(Date() + " - " + data);
                     },
@@ -212,7 +211,7 @@
                 });
             });
             $('#review').click(function () {
-                var Review = { "entryorguid": {{ entry }}, "source_type": "7", "user": "{{ app.user.id }}" };
+                var Review = { "entryorguid": "{{ entry }}", "source_type": "7", "user": "{{ app.user.id }}" };
                 $.ajax({
                     type: "POST",
                     url: '/review/new',

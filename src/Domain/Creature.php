@@ -8,6 +8,7 @@ class Creature {
 	protected $name;
 
 	protected $map;
+	protected $heroic;
 	protected $tester;
 	protected $stats;
 	protected $resistances;
@@ -93,6 +94,22 @@ class Creature {
 	public function setGossip($gossip)
 	{
 		$this->gossip = $gossip;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHeroic()
+	{
+		return $this->heroic;
+	}
+
+	/**
+	 * @param mixed $heroic
+	 */
+	public function setHeroic($heroic)
+	{
+		$this->heroic = $heroic;
 	}
 
 	/**

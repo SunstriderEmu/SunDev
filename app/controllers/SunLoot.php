@@ -43,9 +43,12 @@ $app->get('/loot/gameobject/{id}', function($id) use($app) {
 $app->get('/loot/item/{id}', function($id) use($app) {
 	$manager= new \SUN\DAO\LootDAO($app);
 	$loot	= $manager->getItemLoot($id);
+	$manager 	= new SUN\DAO\SmartAIDAO($app);
+	$item = $manager->getItemName($id);
 
 	return $app['twig']->render('loot/loot.html.twig', array(
 		"loot" => $loot,
+		"item" => $item,
 	));
 })->assert('id', '\d+');
 

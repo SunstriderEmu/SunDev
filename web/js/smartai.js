@@ -3765,7 +3765,6 @@
                 return int;
             }
         }
-
         function getSpellName(id) {
             var Data;
             $.ajax({

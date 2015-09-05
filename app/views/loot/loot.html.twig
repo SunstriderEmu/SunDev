@@ -1,4 +1,10 @@
 {% extends "layout.html.twig" %}
+    {% block title %}
+        {% if item is defined %}
+            {{ item }} Loot -
+        {% endif %}
+        {{ parent() }}
+    {% endblock %}
     {% block content %}
         <div class="col-md-12">
             <h2>Loot ID: {{ loot.id }}</h2>
@@ -25,6 +31,13 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
+            {% if item is defined %}
+            <div class="col-md-4">
+                <p>
+                    Used by <a href="http://wowhead.com/item={{ loot.id }}">{{ item }}</a>.
+                </p>
+                </div>
             {% endif %}
             <div class="text-right">
                 <button id="add" class="btn btn-info btn-xs">Add</button>

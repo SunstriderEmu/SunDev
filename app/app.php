@@ -57,6 +57,10 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 $app['dao.user'] = $app->share(function ($app) {
 	return new SUN\DAO\UserDAO($app);
 });
+
+
+require_once __DIR__.'/config.php';
+
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
 	'monolog.logfile' => __DIR__.'/../logs/sunstrider.log',
 	'monolog.name' => 'SUN',
@@ -80,9 +84,6 @@ if($app['debug'] == false) {
 		return $app['twig']->render('error.html.twig', array('message' => $message));
 	});
 }
-
-
-require_once __DIR__.'/config.php';
 
 require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/Review.php';

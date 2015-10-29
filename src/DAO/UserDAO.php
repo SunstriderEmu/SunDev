@@ -70,7 +70,7 @@ class UserDAO extends DAO implements UserProviderInterface
 		$user->setUsername($row['name']);
 		$user->setPassword($row['password']);
 		$user->setSalt($row['salt']);
-		$user->setRole($row['role']);
+		$user->setRoles($row['role']);
 		return $user;
 	}
 	/**
@@ -83,7 +83,7 @@ class UserDAO extends DAO implements UserProviderInterface
 			'name' => $user->getUsername(),
 			'salt' => $user->getSalt(),
 			'password' => $user->getPassword(),
-			'role' => $user->getRole()
+			'role' => $user->getRoles()
 		);
 
 		if ($user->getId()) {

@@ -40,7 +40,7 @@ class User implements UserInterface
 	 *
 	 * @var string
 	 */
-	private $role;
+	private $roles;
 
 	public function getId() {
 		return $this->id;
@@ -85,19 +85,8 @@ class User implements UserInterface
 		$this->salt = $salt;
 	}
 
-	public function getRole()
-	{
-		return $this->role;
-	}
-
-	public function setRole($role) {
-		switch($role) {
-			case "0": $this->role = "ROLE_TESTER"; break;
-			case "1": $this->role = "ROLE_DEV"; break;
-			case "2": $this->role = "ROLE_FULL"; break;
-			case "3": $this->role = "ROLE_ADMIN"; break;
-			default:  return;
-		}
+	public function setRoles($roles) {
+		$this->roles[] = $roles;
 	}
 
 	/**
@@ -105,7 +94,7 @@ class User implements UserInterface
 	 */
 	public function getRoles()
 	{
-		return array($this->getRole());
+		return $this->roles;
 	}
 
 	/**

@@ -1,6 +1,5 @@
 /.idea/*
-/app/connection.php
-/app/env.php
+/app/config.php
 /logs/*
 /cache/*
 /vendor/*

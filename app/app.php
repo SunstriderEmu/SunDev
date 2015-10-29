@@ -82,7 +82,7 @@ if($app['debug'] == false) {
 }
 
 
-require_once __DIR__.'/connection.php';
+require_once __DIR__.'/config.php';
 
 require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/Review.php';

@@ -1,0 +1,176 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Flag Extra - {{ name }} - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            #imm ul > li {
+                display: block;
+                padding: 10px 15px;
+                margin-bottom: -1px;
+                border: 1px solid #dddddd;
+            }
+            #imm ul#flag > li:hover {
+                background: #f5f5f5;
+            }
+            .active {
+                color: #fff;
+                background: #337ab7!important;
+                border-color: #337ab7!important;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-9">
+            <h2>{{ name }} - Flag Extra</h2>
+        </div>
+        <div class="col-md-3 text-right" style="margin-top: 30px">
+            <button id="apply" class="btn btn-warning btn-xs">Apply</button>
+            <button id="review" class="btn btn-success btn-xs">Review</button>
+            {% if is_granted('ROLE_ADMIN') %}
+                <button id="validate" class="btn btn-success btn-xs">Validate</button>
+                <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
+            {% endif %}
+        </div>
+        <div class="col-md-12" id="imm">
+            <div class="col-md-3">
+                Mask:
+                <input id="mask" type="number" class="form-control" value="{{ flag }}" /><br />
+            </div>
+            <ul id="flag" class="col-md-4">
+                <li id="0">CREATURE_FLAG_EXTRA_NONE</li>
+                <li id="1">CREATURE_FLAG_EXTRA_INSTANCE_BIND</li>
+                <li id="2">CREATURE_FLAG_EXTRA_CIVILIAN</li>
+                <li id="4">CREATURE_FLAG_EXTRA_NO_PARRY</li>
+                <li id="8">CREATURE_FLAG_EXTRA_NO_PARRY_HASTEN</li>
+                <li id="16">CREATURE_FLAG_EXTRA_NO_BLOCK</li>
+                <li id="32">CREATURE_FLAG_EXTRA_NO_CRUSH</li>
+                <li id="64">CREATURE_FLAG_EXTRA_NO_XP_AT_KILL</li>
+                <li id="128">CREATURE_FLAG_EXTRA_TRIGGER</li>
+                <li id="256">CREATURE_FLAG_EXTRA_NO_TAUNT</li>
+                <li id="16384">CREATURE_FLAG_EXTRA_WORLDEVENT</li>
+                <li id="32768">CREATURE_FLAG_EXTRA_GUARD</li>
+                <li id="131072">CREATURE_FLAG_EXTRA_NO_CRIT</li>
+                <li id="262144">CREATURE_FLAG_EXTRA_NO_SKILLGAIN</li>
+                <li id="524288">CREATURE_FLAG_EXTRA_TAUNT_DIMINISH</li>
+                <li id="1048576">CREATURE_FLAG_EXTRA_ALL_DIMINISH</li>
+                <li id="2097152">CREATURE_FLAG_EXTRA_DUNGEON_BOSS</li>
+                <li id="536870912">CREATURE_FLAG_EXTRA_IGNORE_PATHFINDING</li>
+            </ul>
+            <ul class="col-md-5">
+                <li>None</li>
+                <li>Creature kill binds instance to killer and killer's group</li>
+                <li>Creature does not aggro (ignore faction/reputation hostility)</li>
+                <li>Creature does not parry</li>
+                <li>Creature does not counter-attack at parry</li>
+                <li>Creature does not block</li>
+                <li>Creature does not do crush-attacks</li>
+                <li>Creature kill does not give XP</li>
+                <li>Creature is trigger-NPC (invisible to players only)</li>
+                <li>Creature is immune to taunt-auras and "attack me"-effects</li>
+                <li>Custom flag for world events (left room for merging)</li>
+                <li>Creature is a guard (Will ignore feign death and vanish)</li>
+                <li>Creature does not do critical strikes</li>
+                <li>Creature won't increase weapon skills</li>
+                <li>Creature taunt is subject to diminishing returns</li>
+                <li>Creature is subject to all diminishing returns</li>
+                <li>Creature is a dungeon boss. This flag is generically set by core during runtime.
+                    Setting this in database will give you startup error.</li>
+                <li>Creature will ignore pathfinding. This is like disabling Mmaps, only for one creature.</li>
+            </ul>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript">
+            var Info = { "entryorguid": {{ entry }}, "source_type": 22 };
+
+            var Mask = $('#mask');
+            check(Mask.val());
+
+            $('ul#flag > li').click(function() {
+                var Immunity = parseInt($(this).attr('id'));
+                var Immunities = parseInt(Mask.val());
+                if( $(this).hasClass('active')) {
+                    if(Immunity == 2147483647) {
+                        $('ul#flag > li').removeClass('active');
+                        Mask.val(0);
+                    } else {
+                        $(this).removeClass('active');
+                        $('ul#flag > li[id="2147483647"]').removeClass('active');
+                        Mask.val(Immunities - Immunity);
+                    }
+                } else {
+                    if(Immunity == 2147483647) {
+                        $('ul#flag > li').addClass('active');
+                        Mask.val(Immunity);
+                    } else {
+                        $(this).addClass('active');
+                        Mask.val(Immunities + Immunity);
+                    }
+                }
+                if(Mask.val() == 0) {
+                    $('ul#flag > li').removeClass('active');
+                } else {
+                    $('ul#flag > li[id="0"]').removeClass('active');
+                }
+
+                if(Mask.val() == 2147483647) {
+                    $('ul#flag > li').addClass('active');
+                }
+            });
+            Mask.bind("keyup change", function() {
+                var Binary = Hex(Mask.val());
+                check(Binary);
+            });
+
+            $('ul#flag > li[id="0"]').click(function(){
+                Mask.val(0);
+                check(Mask.val());
+            });
+
+            function check(Binary) {
+                if(Binary == 0) { $('ul#flag > li[id="0"]').addClass('active'); } else { $('ul#flag > li[id="0"]').removeClass('active'); }
+                if(Binary & 0x1) { $('ul#flag > li[id="1"]').addClass('active'); } else { $('ul#flag > li[id="1"]').removeClass('active'); }
+                if(Binary & 0x2) { $('ul#flag > li[id="2"]').addClass('active'); } else { $('ul#flag > li[id="2"]').removeClass('active'); }
+                if(Binary & 0x4) { $('ul#flag > li[id="4"]').addClass('active'); } else { $('ul#flag > li[id="4"]').removeClass('active'); }
+                if(Binary & 0x8) { $('ul#flag > li[id="8"]').addClass('active'); } else { $('ul#flag > li[id="8"]').removeClass('active'); }
+                if(Binary & 0x10) { $('ul#flag > li[id="16"]').addClass('active'); } else { $('ul#flag > li[id="16"]').removeClass('active'); }
+                if(Binary & 0x20) { $('ul#flag > li[id="32"]').addClass('active'); } else { $('ul#flag > li[id="32"]').removeClass('active'); }
+                if(Binary & 0x40) { $('ul#flag > li[id="64"]').addClass('active'); } else { $('ul#flag > li[id="64"]').removeClass('active'); }
+                if(Binary & 0x80) { $('ul#flag > li[id="128"]').addClass('active'); } else { $('ul#flag > li[id="128"]').removeClass('active'); }
+                if(Binary & 0x100) { $('ul#flag > li[id="256"]').addClass('active'); } else { $('ul#flag > li[id="256"]').removeClass('active'); }
+                if(Binary & 0x200) { $('ul#flag > li[id="512"]').addClass('active'); } else { $('ul#flag > li[id="512"]').removeClass('active'); }
+                if(Binary & 0x400) { $('ul#flag > li[id="1024"]').addClass('active'); } else { $('ul#flag > li[id="1024"]').removeClass('active'); }
+                if(Binary & 0x800) { $('ul#flag > li[id="2048"]').addClass('active'); } else { $('ul#flag > li[id="2048"]').removeClass('active'); }
+                if(Binary & 0x1000) { $('ul#flag > li[id="4096"]').addClass('active'); } else { $('ul#flag > li[id="4096"]').removeClass('active'); }
+                if(Binary & 0x2000) { $('ul#flag > li[id="8192"]').addClass('active'); } else { $('ul#flag > li[id="8192"]').removeClass('active'); }
+                if(Binary & 0x4000) { $('ul#flag > li[id="16384"]').addClass('active'); } else { $('ul#flag > li[id="16384"]').removeClass('active'); }
+                if(Binary & 0x8000) { $('ul#flag > li[id="32768"]').addClass('active'); } else { $('ul#flag > li[id="32768"]').removeClass('active'); }
+                if(Binary & 0x10000) { $('ul#flag > li[id="65536"]').addClass('active'); } else { $('ul#flag > li[id="65536"]').removeClass('active'); }
+                if(Binary & 0x20000) { $('ul#flag > li[id="131072"]').addClass('active'); } else { $('ul#flag > li[id="131072"]').removeClass('active'); }
+                if(Binary & 0x40000) { $('ul#flag > li[id="262144"]').addClass('active'); } else { $('ul#flag > li[id="262144"]').removeClass('active'); }
+                if(Binary & 0x80000) { $('ul#flag > li[id="524288"]').addClass('active'); } else { $('ul#flag > li[id="524288"]').removeClass('active'); }
+                if(Binary & 0x100000) { $('ul#flag > li[id="1048576"]').addClass('active'); } else { $('ul#flag > li[id="1048576"]').removeClass('active'); }
+                if(Binary & 0x200000) { $('ul#flag > li[id="2097152"]').addClass('active'); } else { $('ul#flag > li[id="2097152"]').removeClass('active'); }
+                if(Binary & 0x400000) { $('ul#flag > li[id="4194304"]').addClass('active'); } else { $('ul#flag > li[id="4194304"]').removeClass('active'); }
+                if(Binary & 0x800000) { $('ul#flag > li[id="8388608"]').addClass('active'); } else { $('ul#flag > li[id="8388608"]').removeClass('active'); }
+                if(Binary & 0x80000000) { $('ul#flag > li[id="134217728"]').addClass('active'); } else { $('ul#flag > li[id="134217728"]').removeClass('active'); }
+            }
+
+            function Hex(d) {
+                return "0x" + (+d).toString(16).toUpperCase();
+            }
+
+            $('#apply').click(function () {
+                apply(Mask.val(), Info);
+            });
+            $('#review').click(function () {
+                review(Mask.val(), Info);
+            });
+            $('#validate').click(function () {
+                validate(Mask.val(), Info);
+            });
+            $('#refuse').click(function () {
+                refuse(Mask.val(), Info);
+            });
+        </script>
+    {% endblock %}

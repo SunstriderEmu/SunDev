@@ -7,10 +7,7 @@ use PDO;
 class PathDAO extends DAO {
 
 	public function getPath($path) {
-		$query = $this->test->prepare('SELECT COUNT(point) as count FROM waypoint_data WHERE id = :pathID');
-		$query->bindValue(':pathID', $path, PDO::PARAM_INT);
-		$query->execute();
-		$point = $query->fetch();
+		$point = $this->test->fetchAssoc('SELECT COUNT(point) as count FROM waypoint_data WHERE id = ?', array(intval($path)));
 
 		return $path = [
 			"path" => $path,
@@ -23,83 +20,53 @@ class PathDAO extends DAO {
 		$query->bindValue(':entry', $entry, PDO::PARAM_INT);
 		$query->execute();
 
-		return $free = $query->rowCount() > 0 ? false : true;
+		return $query->rowCount() > 0 ? false : true;
 	}
 
 	public function setTransfer($info, $db) {
-		$query  = $this->$db->prepare('SELECT name FROM creature_template WHERE entry = :entry');
-		$query->bindValue(':entry', $info->entry, PDO::PARAM_INT);
-		$query->execute();
-		$getName = $query->fetch();
+		$name  = $this->$db->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array(intval($info->entry)));
 
 		// Delete previous waypoints
-		$query  = $this->$db->prepare('DELETE FROM waypoints WHERE entry = :entry');
-		$query->bindValue(':entry', $info->entry, PDO::PARAM_INT);
-		$query->execute();
+		$this->$db->executeQuery('DELETE FROM waypoints WHERE entry = ?', array(intval($info->entry)));
 
 		// Points to transfer
-		$query  = $this->$db->prepare('SELECT point, position_x, position_y, position_z FROM waypoint_data WHERE id = :pathID');
-		$query->bindValue(':pathID', $info->path, PDO::PARAM_INT);
-		$query->execute();
+		$points = $this->$db->fetchAll('SELECT point, position_x, position_y, position_z FROM waypoint_data WHERE id = ?', array(intval($info->path)));
 
 		// Transfer
-		while($getPoints = $query->fetch()) {
-			$transferQuery = $this->$db->prepare('INSERT IGNORE INTO waypoints (entry, pointid, position_x, position_y, position_z, point_comment)
-												  VALUES (:entry, :pointid, :position_x, :position_y, :position_z, :comment)');
-			$transferQuery->bindValue(':entry',      $info->entry, PDO::PARAM_INT);
-			$transferQuery->bindValue(':pointid',    $getPoints["point"], PDO::PARAM_INT);
-			$transferQuery->bindValue(':position_x', $getPoints["position_x"], PDO::PARAM_INT);
-			$transferQuery->bindValue(':position_y', $getPoints["position_y"], PDO::PARAM_INT);
-			$transferQuery->bindValue(':position_z', $getPoints["position_z"], PDO::PARAM_INT);
-			$transferQuery->bindValue(':comment',    $getName["name"], PDO::PARAM_STR);
-			$transferQuery->execute();
+		$insert = 'INSERT IGNORE INTO waypoints (entry, pointid, position_x, position_y, position_z, point_comment';
+		foreach($points as $point) {
+			$insert .= "({$info->entry}, {$point['point']}, {$point['position_x']}, {$point['position_y']}, {$point['position_z']}, {$name['name']}),'";
 		}
+		$insert = rtrim($insert, ',');
+
+		$this->$db->executeQuery($insert);
 	}
 
 	public function setPause($info, $db) {
-		$update = $this->$db->prepare('UPDATE waypoint_data SET delay = :delay WHERE id = :pathID AND point = :point;');
-		$update->bindValue(':delay', $info->delay, PDO::PARAM_INT);
-		$update->bindValue(':pathID', $info->path, PDO::PARAM_INT);
-		$update->bindValue(':point', $info->point, PDO::PARAM_INT);
-		$update->execute();
+		$this->$db->executeQuery('UPDATE waypoint_data SET delay = ? WHERE id = ? AND point = ?;', array(intval($info->delay), intval($info->path), intval($info->point)));
 	}
 
 	public function sendTransfer($info) {
-		$query = $this->test->prepare('SELECT COUNT(*) as count FROM waypoints WHERE entry = :entry');
-		$query->bindValue(':entry', $info->entry, PDO::PARAM_INT);
-		$query->execute();
-		$get = $query->fetch();
-
-		if($get['count'] != 0) {
-			$query = $this->tools->prepare('INSERT INTO smart_review (entryorguid, source_type, path, user, date) VALUES (:entry, :source_type, -:path, :user, :date)
-											ON DUPLICATE KEY UPDATE path = -:path, date = :date, user = :user');
-			$query->bindValue(':entry', $info->entry, PDO::PARAM_STR);
-			$query->bindValue(':source_type', $info->source, PDO::PARAM_STR);
-			$query->bindValue(':path', $info->path, PDO::PARAM_STR);
-			$query->bindValue(':user', $info->user, PDO::PARAM_STR);
-			$query->bindValue(':date', time(), PDO::PARAM_STR);
-			return $query->execute();
-		} else {
-			$query = $this->tools->prepare('INSERT INTO smart_review (entryorguid, source_type, path, user, date) VALUES (:entry, :source_type, :path, :user, :date)
-											ON DUPLICATE KEY UPDATE path= :path,date = :date, user = :user');
-			$query->bindValue(':entry', $info->entry, PDO::PARAM_STR);
-			$query->bindValue(':source_type', $info->source, PDO::PARAM_STR);
-			$query->bindValue(':path', $info->path, PDO::PARAM_STR);
-			$query->bindValue(':user', $info->user, PDO::PARAM_STR);
-			$query->bindValue(':date', time(), PDO::PARAM_STR);
-			return $query->execute();
-		}
+		$get = $this->test->fetchAssoc('SELECT COUNT(*) as count FROM waypoints WHERE entry = ?', array(intval($info->entry)));
+		$review = [
+			"entry" 	=> $info->entry,
+			"source"	=> $info->source,
+			"user"		=> $info->user,
+			'info1' 	=> $info->path
+		];
+		if($get['count'] != 0)
+			$review['info1'] = -1 * intval($review['info1']);
+		$manager = new ReviewDAO($this->app);
+		$manager->createReview($review);
 	}
 
 	public function sendPause($info) {
-		$query = $this->tools->prepare('INSERT INTO smart_review (entryorguid, source_type, path, info1, user, date) VALUES (:entry, :source_type, :path, :info1, :user, :date)
-										ON DUPLICATE KEY UPDATE path = :path, info1 = :info1, date = :date, user = :user');
-		$query->bindValue(':entry', $info->path, PDO::PARAM_STR);
-		$query->bindValue(':source_type', $info->source, PDO::PARAM_STR);
-		$query->bindValue(':path', $info->point, PDO::PARAM_STR);
-		$query->bindValue(':info1', $info->delay, PDO::PARAM_STR);
-		$query->bindValue(':user', $info->user, PDO::PARAM_STR);
-		$query->bindValue(':date', time(), PDO::PARAM_STR);
-		return $query->execute();
+		return $this->tools->executeQuery('INSERT INTO smart_review (entryorguid, source_type, path, info1, user, date) VALUES (?, ?, ?, ?, ?, ?)
+											 ON DUPLICATE KEY UPDATE path = ?, info1 = ?, date = ?, user = ?', array(
+				"entry"	=> intval($info->path),
+				"source"	=> intval($info->source),
+			"point"	=> intval($info->point),
+			"delay"	=> intval($info->delay),
+			"user" => intval($info->user), time()));
 	}
 } 

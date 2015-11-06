@@ -23,6 +23,7 @@
             <a class="navbar-brand" href="{{ app.request.basepath }}/">SunDev</a>
         </div>
 
+        {% if app.security.token is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -32,7 +33,9 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ app.request.basepath }}/smartai">SmartAI</a></li>
                         <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
+                        <li><a href="{{ app.request.basepath }}/equip">SunEquip</a></li>
                         <li><a href="{{ app.request.basepath }}/loot">SunLoot</a></li>
+                        <li><a href="{{ app.request.basepath }}/waypoints">SunWaypoints</a></li>
                     </ul>
                 </li>
                 {% endif %}
@@ -67,6 +70,7 @@
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
+        {% endif %}
     </div><!-- /.container-fluid -->
 </nav>
     <div class="collapse navbar-collapse" id="navbar-collapse-target">

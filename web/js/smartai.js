@@ -2,6 +2,7 @@
 {
     $.fn.smartai=function(informations) {
 
+
         var User = informations.User;
         var Entry = informations.Entry;
         var Type = informations.Type;
@@ -10,6 +11,8 @@
         var Events = informations.Events;
         var Actions = informations.Actions;
         var Targets = informations.Targets;
+
+        var Info = { "entryorguid": Entry, "source_type": Type };
 
         if (jQuery.isEmptyObject(Lines)) {
             var MaxID = -1;
@@ -186,75 +189,33 @@
                 var ID = $('td:first-child').filter(function() { return $.text([this]) == i; }).closest('tr').find('> td:first-child').text();
                 var Comment = Name + ' - ' + generateEventComment(ID) + ' - ' + generateActionComment(ID) + " " + generateFlagsComment(ID) + generatePhaseComment(ID);
                 TR.find('td:nth-child(6)').html(Comment);
-                Lines[ID].comment = $(this).text();
+                Lines[ID].comment = Comment;
             }
         }
-
+        $('#review').click(function () {
+            generateComments(Lines);
+            review(generateData(Lines), Info);
+        });
         $('#apply').click(function () {
             generateComments(Lines);
-            $.ajax({
-                type: "POST",
-                url: '/smartai/apply',
-                data: 'sql=' + generateSQL(Lines),
-                success: function (data) {
-                    console.log(Date() + " - " + data);
-                },
-                error: function (xhr, err) {
-                    console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                    console.log(xhr.responseText);
-                }
-            });
+            apply(generateData(Lines), Info);
         });
         $('#validate').click(function () {
             generateComments(Lines);
-            var Review = { "entryorguid": Entry, "source_type": Type, "user": User, "state": "1" };
-            $.ajax({
-                type: "POST",
-                url: '/review/edit',
-                data: 'sql=' + generateSQL(Lines) + '&review=' + JSON.stringify(Review),
-                success: function (data) {
-                    console.log(Date() + " - " + data);
-                },
-                error: function (xhr, err) {
-                    console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                    console.log(xhr.responseText);
-                }
-            });
+            validate(generateData(Lines), Info);
         });
-        $('#review').click(function () {
+        $('#refuse').click(function () {
             generateComments(Lines);
-            var Review = { "entryorguid": Entry, "source_type": Type, "user": User };
-            $.ajax({
-                type: "POST",
-                url: '/review/new',
-                data: 'sql=' + generateSQL(Lines) + '&review=' + JSON.stringify(Review),
-                success: function (data) {
-                    console.log(Date() + " - " + data);
-                },
-                error: function (xhr, err) {
-                    console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                    console.log(xhr.responseText);
-                }
-            });
+            refuse(generateData(Lines), Info);
         });
-        $('#generate_sql').click(function () {
-            generateComments(Lines);
-            var SQL = jQuery.parseJSON(generateSQL(Lines));
-            console.log('-- ' + Name + ' SAI\n' + SQL.update + '\n' + SQL.delete + '\n' + formattingSQL(SQL.insert));
-        });
-        function generateSQL(Lines) {
-            var SQL = {};
+        function generateData(Lines) {
+            var Data = [];
             var Length = Object.keys(Lines).length;
 
-            SQL.update = 'UPDATE world.creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ' + Entry + ';';
-            SQL.delete = 'DELETE FROM world.smart_scripts WHERE entryorguid = ' + Entry + ' AND source_type = ' + Type + ';';
-            SQL.insert = 'INSERT IGNORE INTO world.smart_scripts (entryorguid, source_type, id, link, event_type, event_phase_mask, event_chance, event_flags, event_param1, event_param2, event_param3, event_param4, action_type, action_param1, action_param2, action_param3, action_param4, action_param5, action_param6, target_type, target_flags, target_param1, target_param2, target_param3, target_x, target_y, target_z, target_o, comment) VALUES';
             for (i = 0; i < Length; i++) {
-                SQL.insert += '(' + Entry + ',' + Type + ',' + Lines[i].id + ',' + Lines[i].link + ',' + Lines[i].event_type + ',' + Lines[i].event_phase_mask + ',' + Lines[i].event_chance + ',' + Lines[i].event_flags + ',' + Lines[i].event_param1 + ',' + Lines[i].event_param2 + ',' + Lines[i].event_param3 + ',' + Lines[i].event_param4 + ',' + Lines[i].action_type + ',' + Lines[i].action_param1 + ',' + Lines[i].action_param2 + ',' + Lines[i].action_param3 + ',' + Lines[i].action_param4 + ',' + Lines[i].action_param5 + ',' + Lines[i].action_param6 + ',' + Lines[i].target_type + ',' + Lines[i].target_flags + ',' + Lines[i].target_param1 + ',' + Lines[i].target_param2 + ',' + Lines[i].target_param3 + ',' + Lines[i].target_x + ',' + Lines[i].target_y + ',' + Lines[i].target_z + ',' + Lines[i].target_o + ',\"' + Lines[i].comment + '\"),';
+                Data.push([Lines[i].id, Lines[i].link, Lines[i].event_type, Lines[i].event_phase_mask, Lines[i].event_chance, Lines[i].event_flags, Lines[i].event_param1, Lines[i].event_param2, Lines[i].event_param3, Lines[i].event_param4, Lines[i].action_type, Lines[i].action_param1, Lines[i].action_param2, Lines[i].action_param3, Lines[i].action_param4, Lines[i].action_param5, Lines[i].action_param6, Lines[i].target_type, Lines[i].target_flags, Lines[i].target_param1, Lines[i].target_param2, Lines[i].target_param3, Lines[i].target_x, Lines[i].target_y, Lines[i].target_z, Lines[i].target_o, Lines[i].comment.toString()]);
             }
-            var Pos = SQL.insert.lastIndexOf(',');
-            SQL.insert = SQL.insert.substring(0, Pos) + ';' + SQL.insert.substring(Pos + 1);
-            return JSON.stringify(SQL);
+            return Data;
         }
 
         // Replace the last comma with " and "

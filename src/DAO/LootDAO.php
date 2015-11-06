@@ -2,29 +2,21 @@
 
 namespace SUN\DAO;
 
-use PDO;
+use Doctrine\DBAL\Connection;
 
 class LootDAO extends DAO {
 
 	public function getCreatureLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM creature_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
-
+		$loots = $this->test->fetchAll('SELECT * FROM creature_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
+		$creatures = $this->test->fetchAll('SELECT COUNT(*) as count, entry, name FROM creature_template WHERE lootid = ?', array(intval($id)));
 
-		$query2 = $this->test->prepare('SELECT entry, name FROM creature_template WHERE lootid = :id');
-		$query2->bindValue(':id', $id, PDO::PARAM_INT);
-		$query2->execute();
-		$creatures = $query2->fetchAll();
-
-		return $loot = [
+		return [
 			"id"		=> $id,
-			"used"		=> $query2->rowCount(),
+			"used"		=> $creatures[0]['count'],
 			"items"		=> $items,
 			"creatures"	=> $creatures,
 			"type"		=> 0,
@@ -32,17 +24,12 @@ class LootDAO extends DAO {
 	}
 
 	public function getDisenchantLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM disenchant_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
-
+		$loots = $this->test->fetchAll('SELECT * FROM disenchant_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
-
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 1,
@@ -50,17 +37,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getFishingLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM fishing_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM fishing_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 2,
@@ -68,17 +52,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getGOLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM gameobject_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM gameobject_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 3,
@@ -86,17 +67,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getItemLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM item_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM item_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 4,
@@ -104,17 +82,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getPickpocketLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM pickpocketing_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM pickpocketing_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 5,
@@ -122,17 +97,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getProspectLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM prospecting_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM prospecting_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 6,
@@ -140,17 +112,14 @@ class LootDAO extends DAO {
 	}
 
 	public function getQuestMailLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM quest_mail_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM quest_mail_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 7,
@@ -158,53 +127,45 @@ class LootDAO extends DAO {
 	}
 
 	public function getReferenceLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM reference_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM reference_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		$query2 = $this->test->prepare('SELECT entry FROM creature_loot_template WHERE item = :id AND mincountOrRef < 0 and ChanceOrQuestChance > 0');
-		$query2->bindValue(':id', $id, PDO::PARAM_INT);
-		$query2->execute();
-		$lootid = $query2->fetchAll();
-
+		$lootId = $this->test->fetchAll('SELECT entry, COUNT(*) as count FROM creature_loot_template WHERE item = ? AND mincountOrRef < 0 and ChanceOrQuestChance > 0', array(intval($id)));
+		$entries = [];
+		foreach($lootId as $creature) {
+			$entries[] = $creature['entry'];
+		}
+		$entries = array_unique($entries);
+		$get = $this->test->fetchAll('SELECT entry, name FROM creature_template WHERE lootid IN (?)', array((array) $entries), array(Connection::PARAM_INT_ARRAY));
 		$creatures = [];
-		foreach($lootid as $creature) {
-			$query3 = $this->test->prepare('SELECT entry, name FROM creature_template WHERE lootid = :id');
-			$query3->bindValue(':id', $creature['entry'], PDO::PARAM_INT);
-			$query3->execute();
-			$creature = $query3->fetch();
+		foreach($get as $creature) {
 			$creatures[$creature['entry']]['entry'] = $creature['entry'];
 			$creatures[$creature['entry']]['name'] = $creature['name'];
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
-			"used"		=> $query2->rowCount(),
+			"used"		=> $lootId[0]['count'],
 			"items"		=> $items,
 			"creatures"	=> $creatures,
-			"references"=> $lootid,
+			"references"=> $lootId,
 			"type"		=> 8,
 		];
 	}
 
 	public function getSkinningLoot($id) {
-		$query = $this->test->prepare('SELECT * FROM skinning_loot_template WHERE entry = :id');
-		$query->bindValue(':id', $id, PDO::PARAM_INT);
-		$query->execute();
-		$loots = $query->fetchAll();
+		$loots = $this->test->fetchAll('SELECT * FROM skinning_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		return $loot = [
+		return [
 			"id"		=> $id,
 			"items"		=> $items,
 			"type"		=> 9,

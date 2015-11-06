@@ -4,7 +4,7 @@ $app->get('/loot', function() use($app) {
 	return $app['twig']->render('loot/index.html.twig');
 });
 
-$app->get('/loot/creature/{id}', function($id) use($app) {
+$app->get('/creature/entry/{id}/loot', function($id) use($app) {
 	$manager= new \SUN\DAO\LootDAO($app);
 	$loot	= $manager->getCreatureLoot($id);
 

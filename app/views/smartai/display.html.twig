@@ -315,12 +315,12 @@
             {% if is_granted('ROLE_DEV') %}
             <button id="new_line" class="btn btn-info btn-xs">New Line</button>
             <button id="generate_comments" class="btn btn-info btn-xs">Generate comments</button>
-            <button id="generate_sql" class="btn btn-warning btn-xs">Generate SQL</button>
-            <button id="apply" class="btn btn-success btn-xs">Apply</button>
+            <button id="apply" class="btn btn-warning btn-xs">Apply</button>
             <button id="review" class="btn btn-success btn-xs">Review</button>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-                <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+                <button id="validate" class="btn btn-success btn-xs">Validate</button>
+                <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
             {% endif %}
         </div>
         <div id="lines" class="col-md-12">
@@ -356,6 +356,7 @@
         </div>
     {% endblock %}
     {% block script %}
+        <script src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 var Events = {{ events|json_encode|raw }};

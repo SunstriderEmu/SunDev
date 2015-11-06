@@ -5,7 +5,7 @@
         <style type="text/css">
             #header-fixed {
                 position: fixed;
-                top: 0px; display:none;
+                top: 0; display:none;
                 background-color:white;
                 border-bottom: 1px solid #dbdbdb;
             }
@@ -17,13 +17,13 @@
             }
             .dataTables_info {
                 position: absolute;
-                top: 0;
+                top: 55px;
             }
             #table_filter {
                 text-align: right;
             }
             .dataTables_scrollBody tr.top td {
-                padding: 0px!important;
+                padding: 0!important;
             }
 
             td.testing {
@@ -123,30 +123,28 @@
                 </thead>
                 <tbody>
                 {% for creature in creatures %}
-                    {% if creature.heroic != 0 %}
                     <tr>
                         <td rowspan="2"><a href="http://wowhead.com/npc={{ creature.entry }}">{{ creature.name }}</a></td>
                         <td rowspan="2" class="border testing">
                             <div class="testeur" id="{{ creature.entry }}_test1" status="{% if creature.tester == 1 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 1)' title="Leekie">L</div>
                             <div class="testeur" id="{{ creature.entry }}_test2" status="{% if creature.tester == 2 %}1{% else %}0{% endif %}" onclick='setTester({{ creature.entry }}, 2)' title="Mikelus">M</div>
                         </td>
-                        <td status="{% if creature.stats != null %}{{ creature.stats }}{% else %}0{% endif %}" id="{{ creature.entry }}_1" onclick='testCreature({{ creature.entry }}, 1)' oncontextmenu="getService({{ creature.entry }}, 1)" class="test"></td>
-                        <td status="{% if creature.resistances != null %}{{ creature.resistances }}{% else %}0{% endif %}" id="{{ creature.entry }}_2" onclick='testCreature({{ creature.entry }}, 2)' oncontextmenu="getService({{ creature.entry }}, 2)" class="test"></td>
-                        <td status="{% if creature.immunities != null %}{{ creature.immunities }}{% else %}0{% endif %}" id="{{ creature.entry }}_3" onclick='testCreature({{ creature.entry }}, 3)' oncontextmenu="getService({{ creature.entry }}, 3)" class="test"></td>
-                        <td status="{% if creature.respawn != null %}{{ creature.respawn }}{% else %}0{% endif %}" id="{{ creature.entry }}_4" onclick='testCreature({{ creature.entry }}, 4)' oncontextmenu="getService({{ creature.entry }}, 4)" class="test"></td>
-                        <td rowspan="2" status="{% if creature.equipment != null %}{{ creature.equipment }}{% else %}0{% endif %}" id="{{ creature.entry }}_5" onclick='testCreature({{ creature.entry }}, 5)' oncontextmenu="getService({{ creature.entry }}, 5)" class="test"></td>
-                        <td rowspan="2" status="{% if creature.gossip != null %}{{ creature.gossip }}{% else %}0{% endif %}" id="{{ creature.entry }}_6" onclick='testCreature({{ creature.entry }}, 6)' oncontextmenu="getService({{ creature.entry }}, 6)" class="test"></td>
-                        <td rowspan="2" status="{% if creature.emote != null %}{{ creature.emote }}{% else %}0{% endif %}" id="{{ creature.entry }}_7" onclick='testCreature({{ creature.entry }}, 7)' oncontextmenu="getService({{ creature.entry }}, 7)" class="test"></td>
-                        <td rowspan="2" status="{% if creature.smartai != null %}{{ creature.smartai }}{% else %}0{% endif %}" id="{{ creature.entry }}_8" onclick='testCreature({{ creature.entry }}, 8)' oncontextmenu="getService({{ creature.entry }}, 8)" class="test"></td>
+                        <td {% if creature.heroic == 0 %}rowspan="2"{% endif %} status="{% if creature.nstats != null %}{{ creature.nstats }}{% else %}0{% endif %}" id="{{ creature.entry }}_1" onclick='testCreature({{ creature.entry }}, "normal", 1)' oncontextmenu="getService({{ creature.entry }}, 1)" class="test"></td>
+                        <td {% if creature.heroic == 0 %}rowspan="2"{% endif %} status="{% if creature.nresistances != null %}{{ creature.nresistances }}{% else %}0{% endif %}" id="{{ creature.entry }}_2" onclick='testCreature({{ creature.entry }}, "normal", 2)' oncontextmenu="getService({{ creature.entry }}, 2)" class="test"></td>
+                        <td {% if creature.heroic == 0 %}rowspan="2"{% endif %} status="{% if creature.nimmunities != null %}{{ creature.nimmunities }}{% else %}0{% endif %}" id="{{ creature.entry }}_3" onclick='testCreature({{ creature.entry }}, "normal", 3)' oncontextmenu="getService({{ creature.entry }}, 3)" class="test"></td>
+                        <td {% if creature.heroic == 0 %}rowspan="2"{% endif %} status="{% if creature.nrespawn != null %}{{ creature.nrespawn }}{% else %}0{% endif %}" id="{{ creature.entry }}_4" onclick='testCreature({{ creature.entry }}, "normal", 4)' oncontextmenu="getService({{ creature.entry }}, 4)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.equipment != null %}{{ creature.equipment }}{% else %}0{% endif %}" id="{{ creature.entry }}_5" onclick='testCreature({{ creature.entry }}, "all", 5)' oncontextmenu="getService({{ creature.entry }}, 5)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.gossip != null %}{{ creature.gossip }}{% else %}0{% endif %}" id="{{ creature.entry }}_6" onclick='testCreature({{ creature.entry }}, "all", 6)' oncontextmenu="getService({{ creature.entry }}, 6)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.emote != null %}{{ creature.emote }}{% else %}0{% endif %}" id="{{ creature.entry }}_7" onclick='testCreature({{ creature.entry }}, "all", 7)' oncontextmenu="getService({{ creature.entry }}, 7)" class="test"></td>
+                        <td rowspan="2" status="{% if creature.smartai != null %}{{ creature.smartai }}{% else %}0{% endif %}" id="{{ creature.entry }}_8" onclick='testCreature({{ creature.entry }}, "all", 8)' oncontextmenu="getService({{ creature.entry }}, 8)" class="test"></td>
                         <td rowspan="2" width="20%" id="{{ creature.entry }}_9" ><textarea id="{{ creature.entry }}">{{ creature.comment }}</textarea></td>
                     </tr>
                     <tr>
-                        <td status="{% if creatures[creature.heroic].stats != null %}{{ creatures[creature.heroic].stats }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_1" onclick='testCreature({{ creatures[creature.heroic].entry }}, 1)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 1)" class="test"></td>
-                        <td status="{% if creatures[creature.heroic].resistances != null %}{{ creatures[creature.heroic].resistances }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_2" onclick='testCreature({{ creatures[creature.heroic].entry }}, 2)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 2)" class="test"></td>
-                        <td status="{% if creatures[creature.heroic].immunities != null %}{{ creatures[creature.heroic].immunities }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_3" onclick='testCreature({{ creatures[creature.heroic].entry }}, 3)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 3)" class="test"></td>
-                        <td status="{% if creatures[creature.heroic].respawn != null %}{{ creatures[creature.heroic].respawn }}{% else %}0{% endif %}" id="{{ creatures[creature.heroic].entry }}_4" onclick='testCreature({{ creatures[creature.heroic].entry }}, 4)' oncontextmenu="getService({{ creatures[creature.heroic].entry }}, 4)" class="test"></td>
+                        <td status="{% if creature.hstats != null %}{{ creature.hstats }}{% else %}0{% endif %}" id="{{ creature.heroic }}_1" onclick='testCreature({{ creature.heroic }}, "heroic", 1)' oncontextmenu="getService({{ creature.heroic }}, 1)" class="test"></td>
+                        <td status="{% if creature.hresistances != null %}{{ creature.hresistances }}{% else %}0{% endif %}" id="{{ creature.heroic }}_2" onclick='testCreature({{ creature.heroic }}, "heroic", 2)' oncontextmenu="getService({{ creature.heroic }}, 2)" class="test"></td>
+                        <td status="{% if creature.himmunities != null %}{{ creature.himmunities }}{% else %}0{% endif %}" id="{{ creature.heroic }}_3" onclick='testCreature({{ creature.heroic }}, "heroic", 3)' oncontextmenu="getService({{ creature.heroic }}, 3)" class="test"></td>
+                        <td status="{% if creature.hrespawn != null %}{{ creature.hrespawn }}{% else %}0{% endif %}" id="{{ creature.heroic }}_4" onclick='testCreature({{ creature.heroic }}, "heroic", 4)' oncontextmenu="getService({{ creature.heroic }}, 4)" class="test"></td>
                     </tr>
-                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
@@ -156,7 +154,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#table').dataTable( {
-                    "scrollY":        "calc(100vh - 104px)",
+                    "scrollY":        "calc(100vh - 119px)",
                     "scrollCollapse": false,
                     "paging":         false,
                     "order": [[ 2, "asc" ]]
@@ -240,7 +238,7 @@
 
             }
 
-            function testCreature(creature, column) {
+            function testCreature(creature, type, column) {
                 var element = $('#'+creature+"_"+column);
 
                 var status = element.attr('status');
@@ -249,7 +247,7 @@
 
                 setElementColorByStatus(element, status);
 
-                var info = { "entry": creature.toString(), "column": column.toString(), "status": status.toString(), "map": "{{ map }}" };
+                var info = { "entry": creature.toString(), type: type.toString(), "column": column.toString(), "status": status.toString(), "map": "{{ map }}" };
                 $.ajax({
                     type: "POST",
                     url: '/dungeon/apply/status',

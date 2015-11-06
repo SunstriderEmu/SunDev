@@ -283,7 +283,6 @@ class Line implements \JsonSerializable {
 		$this->target_o = $target_o;
 	}
 
-
 	public function hydrate(array $data) {
 		foreach ($data as $key => $value) {
 			$method = "set" . ucfirst($key);

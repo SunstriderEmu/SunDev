@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/smartai/creature/entry/{entry}/equip', function ($entry) use ($app) {
+$app->get('/creature/entry/{entry}/equip', function ($entry) use ($app) {
 	$manager = new \SUN\DAO\EquipDAO($app);
 	return $app['twig']->render('equip/index.html.twig', [
 		"entry"	=> $entry,

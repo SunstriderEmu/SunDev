@@ -12,12 +12,11 @@ class UserDAO extends DAO implements UserProviderInterface
 {
 	/**
 	 * @param $id
+	 * @return User
 	 * @throws \Exception
 	 */
 	public function find($id) {
-		$sql = "select * from user where id = ?";
-		$row = $this->tools->fetchAssoc($sql, array($id));
-
+		$row = $this->tools->fetchAssoc('SELECT * FROM user WHERE id = ?', array($id));
 		if ($row)
 			return $this->buildDomainObject($row);
 		else
@@ -29,9 +28,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 */
 	public function loadUserByUsername($username)
 	{
-		$sql = "select * from user where name = ?";
-		$row = $this->tools->fetchAssoc($sql, array($username));
-
+		$row = $this->tools->fetchAssoc('SELECT * FROM user WHERE name = ?', array($username));
 		if ($row)
 			return $this->buildDomainObject($row);
 		else
@@ -114,8 +111,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 * @return array A list of all users.
 	 */
 	public function findAll() {
-		$sql = "select * from user order by id";
-		$result = $this->tools->fetchAll($sql);
+		$result = $this->tools->fetchAll('SELECT * FROM user ORDER BY id');
 
 		// Convert query result to an array of domain objects
 		$entities = array();

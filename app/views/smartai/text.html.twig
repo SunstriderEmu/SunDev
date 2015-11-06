@@ -10,7 +10,7 @@
                 cursor: pointer;
             }
             .has-feedback .form-control-feedback {
-                top: 0px!important;
+                top: 0!important;
                 z-index: 5;
             }
         </style>
@@ -43,10 +43,11 @@
         <div class="col-md-2">
             <h2>Help</h2>
             <p>See <a href="{{ app.request.basepath }}/smartai/creature/entry/{{ creature.entry }}/text/help">documentation</a>.</p>
-            <button id="apply" class="btn btn-success btn-xs">Apply</button>
+            <button id="apply" class="btn btn-warning btn-xs">Apply</button>
             <button id="review" class="btn btn-success btn-xs">Review</button>
             {% if is_granted('ROLE_ADMIN') %}
-                <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+                <button id="validate" class="btn btn-success btn-xs">Validate</button>
+                <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
             {% endif %}
         </div>
         <div id="result" class="col-md-12">
@@ -152,67 +153,30 @@
         </div>
     {% endblock %}
     {% block script %}
+        <script src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
+            var Info = { "entryorguid": {{ creature.entry }}, "source_type": 4 };
             var Texts = {{ texts|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
-            console.log(Texts);
 
-            function generateSQL(Texts) {
-                var SQL = {};
-                var Length = Object.keys(Texts).length;
-
-                SQL.delete = 'DELETE FROM world.creature_text WHERE entry = ' + {{ creature.entry }} + ';';
-                SQL.insert = 'INSERT IGNORE INTO world.creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES';
-                for (var i in Texts) {
-                    SQL.insert += '({{ creature.entry }}, ' + Texts[i].groupid + ', ' + Texts[i].id + ', "' + Texts[i].text + '", ' + Texts[i].type + ', ' + Texts[i].language + ', ' + Texts[i].probability + ', ' + Texts[i].emote + ', ' + Texts[i].sound + ', "' + Texts[i].comment + '"),';
-                }
-                var Pos = SQL.insert.lastIndexOf(',');
-                SQL.insert = SQL.insert.substring(0, Pos) + ';' + SQL.insert.substring(Pos + 1);
-                return JSON.stringify(SQL);
+            function generateData(Texts) {
+                var Data = [];
+                $.each(Texts, function(){
+                    Data.push([this.groupid, this.id, this.text, this.type, this.language, this.probability, this.emote, this.sound, this.comment]);
+                });
+                return Data;
             }
 
             $('#apply').click(function () {
-                $.ajax({
-                    type: "POST",
-                    url: '/smartai/apply',
-                    data: 'sql=' + generateSQL(Texts),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
+                apply(generateData(Texts), Info);
             });
             $('#review').click(function () {
-                var Review = { "entryorguid": "{{ creature.entry }}", "source_type": "4", "user": "{{ app.user.id }}" };
-                $.ajax({
-                    type: "POST",
-                    url: '/review/new',
-                    data: 'sql=' + generateSQL(Texts) + '&review=' + JSON.stringify(Review),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
+                review(generateData(Texts), Info);
             });
             $('#validate').click(function () {
-                var Review = { "entryorguid": "{{ creature.entry }}", "source_type": "4", "state": "1", "user": "{{ app.user.id }}" };
-                $.ajax({
-                    type: "POST",
-                    url: '/review/edit',
-                    data: 'sql=' + generateSQL(Texts) + '&review=' + JSON.stringify(Review),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
+                validate(generateData(Texts), Info);
+            });
+            $('#refuse').click(function () {
+                refuse(generateData(Texts), Info);
             });
 
             $('#add').click(function() {
@@ -235,15 +199,15 @@
                     "sound": "0",
                     "comment": "{{ creature.name }} - "
                 };
-                var MaxID = Object.keys(Texts).length - 1;
+                var MaxID = Object.keys(Texts).length;
                 Texts[MaxID] = New;
                 $('<tr>' +
                 '   <td>' + GID + '</td>' +
                 '    <td>' + ID + '</td>' +
-                '    <td><input type="text" class="form-control" value="100" onchange="update("7", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')"></td>' +
-                '    <td><input type="text" class="form-control" value="0" onchange="update("10", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')"> </td>' +
+                '    <td><input type="text" class="form-control" value="100" onchange="update(' + GID + ', ' + ID + ', \'probability\', this.value)"></td>' +
+                '    <td><input type="text" class="form-control" value="0" onchange="update(' + GID + ', ' + ID + ', \'sound\', this.value)"> </td>' +
                 '    <td>' +
-                '        <select class="form-control" onchange="update("5", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')">' +
+                '        <select class="form-control" onchange="update(' + GID + ', ' + ID + ', \'type\', this.value)">' +
                 '            <option value="0" "selected=selected">Say</option>' +
                 '            <option value="1">Yell</option>' +
                 '            <option value="2">Emote</option>' +
@@ -253,7 +217,7 @@
                 '        </select>' +
                 '    </td>' +
                 '    <td>' +
-                '        <select class="form-control" onchange="update("6", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')">' +
+                '        <select class="form-control" onchange="update(' + GID + ', ' + ID + ', \'language\', this.value)">' +
                 '            <option value="0" "selected=selected">All understand</option>' +
                 '            <option value="1">Orcish</option>' +
                 '            <option value="2">Darnassian</option>' +
@@ -275,7 +239,7 @@
                 '        </select>' +
                 '    </td>' +
                 '    <td>' +
-                '        <select class="form-control" onchange="update("8", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')">' +
+                '        <select class="form-control" onchange="update(' + GID + ', ' + ID + ', \'emote\', this.value)">' +
                 '            <option value="0" "selected=selected">None</option>' +
                 '            <option value="1">Talk</option>' +
                 '            <option value="2">Bow</option>' +
@@ -304,9 +268,9 @@
                 '            <option value="275">Train</option>' +
                 '        </select>' +
                 '    </td>' +
-                '    <td><textarea class="form-control" rows="2" onchange="update("4", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')"></textarea></td>' +
-                '    <td><textarea class="form-control" rows="2" onchange="update("11", this.value, {{ creature.entry }}, ' + GID + ', ' + ID + ')">{{ creature.name }} - </textarea></td>' +
-                '    <td><span class="glyphicon glyphicon-remove" onclick="removeLine({{ creature.entry }}, ' + GID + ', ' + ID + ')"></span></td>' +
+                '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'text\', this.value)"></textarea></td>' +
+                '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'comment\', this.value)">{{ creature.name }} - </textarea></td>' +
+                '    <td><span class="glyphicon glyphicon-remove" onclick="removeText(' + GID + ', ' + ID + ')"></span></td>' +
                 '</tr>').appendTo('table > tbody');
             });
 
@@ -362,7 +326,6 @@
                 var TR = $('table > tbody > tr:has(td:first-child:contains("' + groupid + '")):has(td:nth-child(2):contains("' + id + '"))');
                 delete Texts[Check];
                 TR.remove();
-                console.log(Texts);
             }
 
             function update(groupid, id, prop, value) {

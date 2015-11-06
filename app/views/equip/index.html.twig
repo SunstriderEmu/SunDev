@@ -10,7 +10,7 @@
                 cursor: pointer;
             }
             .has-feedback .form-control-feedback {
-                top: 0px!important;
+                top: 0!important;
                 z-index: 5;
             }
         </style>
@@ -42,11 +42,12 @@
             <div class="col-md-12 text-right">
                 {% if is_granted('ROLE_DEV') %}
                     <button id="new" class="btn btn-info btn-xs">New ID</button>
-                    <button id="apply" class="btn btn-success btn-xs">Apply</button>
+                    <button id="apply" class="btn btn-warning btn-xs">Apply</button>
                     <button id="review" class="btn btn-success btn-xs">Review</button>
                 {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
-                    <button id="validate" class="btn btn-danger btn-xs">Validate</button>
+                    <button id="validate" class="btn btn-success btn-xs">Validate</button>
+                    <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
                 {% endif %}
             </div>
         </div>
@@ -181,7 +182,9 @@
         {% endif %}
     {% endblock %}
     {% block script %}
+        <script src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
+            var Info = { "entryorguid": {{ entry }}, "source_type": 3, "info1": {{ equip.equipmentID }} };
             var Equip = {{ equip|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
             console.log(Equip);
             if(Equip.id == undefined) {
@@ -192,6 +195,9 @@
             }
             var i;
 
+            /**
+             * New Equip ID
+             */
             $('#new').click(function() {
                 MaxID++;
                 var New = {
@@ -218,6 +224,10 @@
                 DisplayRow(MaxID, Equip.id[MaxID])
             });
 
+            /**
+             * Refresh the 3D Model
+             * @param id
+             */
             function refresh(id) {
                 $('.' + id + '_model').html('' +
                 '<object width="100%" height="300px" type="application/x-shockwave-flash" data="http://wow.zamimg.com/modelviewer/ZAMviewerfp11.swf" id="paperdoll-model-paperdoll-0-equipment-set" style="background: #fff">' +
@@ -230,7 +240,6 @@
                 '   <param name="wmode" value="direct">' +
                 '</object>');
             }
-
 
             // Help infos
             $('#itemId').keyup(function() {
@@ -293,63 +302,26 @@
                 }
             }
 
-            function generateSQL(Equip) {
-                var SQL = {};
-                var Length = Object.keys(Equip.id).length;
-
-                SQL.update = 'UPDATE creature_template SET equipment_id = ' + Equip.equipmentID + ' WHERE entry = {{ entry }};';
-                SQL.delete = 'DELETE FROM creature_equip_template WHERE entry = ' + Equip.equipmentID + ';';
-                SQL.insert = 'INSERT IGNORE INTO creature_equip_template (entry, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES ';
-                for (i = 0; i < Length; i++) {
-                    SQL.insert += '(' + Equip.equipmentID + ', ' + i + ', ' + Equip.id[i].mainhand.displayid + ', ' + Equip.id[i].offhand.displayid + ', ' + Equip.id[i].ranged.displayid + ', ' + Equip.id[i].mainhand.skill + ', ' + Equip.id[i].offhand.skill + ', ' + Equip.id[i].ranged.skill + ', ' + Equip.id[i].mainhand.slot + ', ' + Equip.id[i].offhand.slot + ', ' + Equip.id[i].ranged.slot + '),';
-                }
-                var Pos = SQL.insert.lastIndexOf(',');
-                SQL.insert = SQL.insert.substring(0, Pos) + ';' + SQL.insert.substring(Pos + 1);
-                return JSON.stringify(SQL);
+            function generateData(Equip) {
+                var Data = [];
+                $.each(Equip.id, function(key, value){
+                    Data.push([key, this.mainhand.displayid, this.offhand.displayid, this.ranged.displayid, this.mainhand.skill, this.offhand.skill, this.ranged.skill, this.mainhand.slot, this.offhand.slot, this.ranged.slot ]);
+                });
+                console.log(Data);
+                return Data;
             }
+
             $('#apply').click(function () {
-                $.ajax({
-                    type: "POST",
-                    url: '/equip/apply',
-                    data: 'sql=' + generateSQL(Equip),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-            $('#validate').click(function () {
-                var Review = { "entryorguid": "{{ entry }}", "source_type": "6", "user": "{{ app.user.id }}", "state": "1" };
-                $.ajax({
-                    type: "POST",
-                    url: '/review/edit',
-                    data: 'sql=' + generateSQL(Equip) + '&review=' + JSON.stringify(Review),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
+                apply(generateData(Equip), Info);
             });
             $('#review').click(function () {
-                var Review = { "entryorguid": "{{ entry }}", "source_type": "8", "user": "{{ app.user.id }}" };
-                $.ajax({
-                    type: "POST",
-                    url: '/review/new',
-                    data: 'sql=' + generateSQL(Equip) + '&review=' + JSON.stringify(Review),
-                    success: function (data) {
-                        console.log(Date() + " - " + data);
-                    },
-                    error: function (xhr, err) {
-                        console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
-                        console.log(xhr.responseText);
-                    }
-                });
+                review(generateData(Equip), Info);
+            });
+            $('#validate').click(function () {
+                validate(generateData(Equip), Info);
+            });
+            $('#refuse').click(function () {
+                refuse(generateData(Equip), Info);
             });
 
             function ModelView(id, mainhand, offhand) {

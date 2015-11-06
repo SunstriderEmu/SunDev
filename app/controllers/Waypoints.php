@@ -31,8 +31,9 @@ $app->post('/waypoints/transfer', function () use ($app) {
 
 $app->post('/waypoints/pause', function () use ($app) {
 	$info		= json_decode($_POST['info']);
+	$manager	= new SUN\DAO\ReviewDAO($app);
+	$manager->createReview($info);
 	$manager	= new SUN\DAO\PathDAO($app);
-	$manager->sendPause($info);
 	$manager->setPause($info, 'test');
 	return "Success";
 });

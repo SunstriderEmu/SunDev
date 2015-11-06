@@ -69,15 +69,15 @@
     {% endblock %}
     {% block script %}
         <script type="text/javascript">
-            $('#creature').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/creature/' + $(this).val()); })
-            $('#disenchant').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/disenchant/' + $(this).val()); })
-            $('#fishing').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/fishing/' + $(this).val()); })
-            $('#go').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/gameobject/' + $(this).val()); })
-            $('#item').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/item/' + $(this).val()); })
-            $('#pickpocket').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/pickpocket/' + $(this).val()); })
-            $('#prospect').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/prospect/' + $(this).val()); })
-            $('#quest_mail').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/questmail/' + $(this).val()); })
-            $('#reference').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/reference/' + $(this).val()); })
-            $('#skinning').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/skinning/' + $(this).val()); })
+            $('#creature').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/creature/entry' + $(this).val() + '/loot'); });
+            $('#disenchant').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/disenchant/' + $(this).val()); });
+            $('#fishing').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/fishing/' + $(this).val()); });
+            $('#go').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/gameobject/' + $(this).val()); });
+            $('#item').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/item/' + $(this).val()); });
+            $('#pickpocket').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/pickpocket/' + $(this).val()); });
+            $('#prospect').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/prospect/' + $(this).val()); });
+            $('#quest_mail').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/questmail/' + $(this).val()); });
+            $('#reference').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/reference/' + $(this).val()); });
+            $('#skinning').keyup(function() { $(this).closest('div').next().attr('href', '{{ app.request.basepath }}/loot/skinning/' + $(this).val()); });
         </script>
     {% endblock %}

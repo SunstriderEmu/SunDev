@@ -2,68 +2,35 @@
 
 namespace SUN\DAO;
 
-use PDO;
 use SUN\Domain\Classes;
 
 class ClassesDAO extends DAO {
 	public function getTotal() {
-		$query = $this->tools->query('SELECT COUNT(*) as count FROM class_test_spells');
-		$query->execute();
-		$spells = $query->fetch();
-
-		$query = $this->tools->query('SELECT COUNT(*) as count FROM class_test_talents');
-		$query->execute();
-		$talents = $query->fetch();
-
+		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells');
+		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents');
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTested() {
-		$query = $this->tools->query('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0');
-		$query->execute();
-		$spells = $query->fetch();
-
-		$query = $this->tools->query('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0');
-		$query->execute();
-		$talents = $query->fetch();
-
+		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0');
+		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0');
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTotalClass(Classes $classes) {
-		$query = $this->tools->prepare('SELECT COUNT(*) as count FROM class_test_spells WHERE class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$spells = $query->fetch();
-
-		$query = $this->tools->prepare('SELECT COUNT(*) as count FROM class_test_talents WHERE class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$talents = $query->fetch();
-
+		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
+		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTestedClass(Classes $classes) {
-		$query = $this->tools->prepare('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0 AND class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$spells = $query->fetch();
-
-		$query = $this->tools->prepare('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0 AND class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$talents = $query->fetch();
-
+		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0 AND class = ?', array($classes->getIndex()));
+		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0 AND class = ?', array($classes->getIndex()));
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getClassSpells(Classes $classes) {
-		$query = $this->tools->prepare('SELECT * FROM class_test_spells WHERE class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$spells = $query->fetchAll();
-
+		$spells = $this->tools->fetchAll('SELECT * FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
 		foreach($spells as $spell) {
 			if($spell['tested'] == "2") {
 				$classes->setSuccess($classes->getSuccess() + 1);
@@ -74,14 +41,11 @@ class ClassesDAO extends DAO {
 				$classes->setSpellsTested($classes->getSpellsTested() + 1);
 			}
 		}
-		$classes->setSpells($query->rowCount());
+		$classes->setSpells(count($spells));
 	}
 
 	public function getClassTalents(Classes $classes) {
-		$query = $this->tools->prepare('SELECT * FROM class_test_talents WHERE class = :class');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->execute();
-		$talents = $query->fetchAll();
+		$talents = $this->tools->fetchAll('SELECT * FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
 
 		foreach($talents as $talent) {
 			if($talent['tested'] == "2") {
@@ -94,19 +58,14 @@ class ClassesDAO extends DAO {
 				$classes->setTalentsTested($classes->getTalentsTested() + 1);
 			}
 		}
-		$classes->setTalents($query->rowCount());
+		$classes->setTalents(count($talents));
 	}
 
 	public function getGlobal() {
-		$query = $this->tools->query('SELECT * FROM class_test_spells');
-		$query->execute();
-		$spells = $query->fetchAll();
+		$spells = $this->tools->fetchAll('SELECT * FROM class_test_spells');
+		$talents = $this->tools->fetchALl('SELECT * FROM class_test_talents');
 
-		$query2 = $this->tools->query('SELECT * FROM class_test_talents');
-		$query2->execute();
-		$talents = $query2->fetchAll();
-
-		$classes = new Classes(["spells" => $query->rowCount(), "talents" => $query2->rowCount(),]);
+		$classes = new Classes(["spells" => count($spells), "talents" => count($talents)]);
 		foreach($spells as $spell) {
 			if($spell['tested'] == "2") {
 				$classes->setSuccess($classes->getSuccess() + 1);
@@ -128,7 +87,7 @@ class ClassesDAO extends DAO {
 				$classes->setTalentsTested($classes->getTalentsTested() + 1);
 			}
 		}
-		$classes->setTotal($query->rowCount() + $query2->rowCount());
+		$classes->setTotal(count($spells) + count($talents));
 		$classes->setTested($classes->getSuccess() + $classes->getBugged());
 
 		return $classes;
@@ -205,31 +164,23 @@ class ClassesDAO extends DAO {
 		switch($class) {
 			case "warrior": return 1; break;
 			case "paladin": return 2; break;
-			case "hunter": return 3; break;
-			case "rogue": return 4; break;
-			case "priest": return 5; break;
-			case "shaman": return 7; break;
-			case "mage": return 8; break;
+			case "hunter": 	return 3; break;
+			case "rogue": 	return 4; break;
+			case "priest": 	return 5; break;
+			case "shaman": 	return 7; break;
+			case "mage": 	return 8; break;
 			case "warlock": return 9; break;
-			case "druid": return 11;break;
+			case "druid": 	return 11;break;
 			default: return;
 		}
 	}
 
 	public function getSpecSpells(Classes $classes, $spe) {
-		$query = $this->tools->prepare('SELECT * FROM class_test_spells WHERE class = :class AND spe = :spe');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->bindValue(':spe', $spe, PDO::PARAM_INT);
-		$query->execute();
-		return $query->fetchAll();
+		return $this->tools->fetchAll('SELECT * FROM class_test_spells WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
 	}
 
 	public function getSpecTalents(Classes $classes, $spe) {
-		$query = $this->tools->prepare('SELECT * FROM class_test_talents WHERE class = :class AND spe = :spe');
-		$query->bindValue(':class', $classes->getIndex(), PDO::PARAM_INT);
-		$query->bindValue(':spe', $spe, PDO::PARAM_INT);
-		$query->execute();
-		return $query->fetchAll();
+		return $this->tools->fetchAll('SELECT * FROM class_test_talents WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
 	}
 
 	public function getSpec(Classes $classes) {
@@ -243,28 +194,15 @@ class ClassesDAO extends DAO {
 	}
 
 	public function setTested($info, $category) {
-		$query = $this->tools->prepare('UPDATE class_test_' . $category . ' SET tested = :tested WHERE name = :name AND class = :class');
-		$query->bindValue(':tested', $info->value, PDO::PARAM_INT);
-		$query->bindValue(':name', $info->name, PDO::PARAM_STR);
-		$query->bindValue(':class', $info->class, PDO::PARAM_INT);
-		$query->execute();
+		$this->tools->executeQuery("UPDATE class_test_{$category} SET tested = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setTester($info, $category) {
-		$query = $this->tools->prepare('UPDATE class_test_' . $category . ' SET tester = :tester WHERE name = :name AND class = :class');
-		$query->bindValue(':tester', $info->value, PDO::PARAM_INT);
-		$query->bindValue(':name', $info->name, PDO::PARAM_STR);
-		$query->bindValue(':class', $info->class, PDO::PARAM_INT);
-		$query->execute();
+		$this->tools->executeQuery("UPDATE class_test_{$category} SET tester = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setIssue($info, $category) {
-		$query = $this->tools->prepare('UPDATE class_test_' . $category . ' SET issue = :issue WHERE name = :name AND class = :class');
-		$query->bindValue(':issue', $info->value, PDO::PARAM_INT);
-		$query->bindValue(':name', $info->name, PDO::PARAM_STR);
-		$query->bindValue(':class', $info->class, PDO::PARAM_INT);
-		$query->execute();
-		return "ok";
+		$this->tools->executeQuery("UPDATE class_test_{$category} SET issue = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setInfo($info) {
@@ -287,6 +225,5 @@ class ClassesDAO extends DAO {
 				break;
 			default: return;
 		}
-		return "ok";
 	}
 } 

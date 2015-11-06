@@ -10,10 +10,14 @@ class Creature {
 	protected $map;
 	protected $heroic;
 	protected $tester;
-	protected $stats;
-	protected $resistances;
-	protected $immunities;
-	protected $respawn;
+	protected $n_stats;
+	protected $n_resistances;
+	protected $n_immunities;
+	protected $n_respawn;
+	protected $h_stats;
+	protected $h_resistances;
+	protected $h_immunities;
+	protected $h_respawn;
 	protected $equipment;
 	protected $gossip;
 	protected $emote;
@@ -24,44 +28,240 @@ class Creature {
 		$this->hydrate($data);
 	}
 
-	public function getEntry() {
+	public function hydrate(array $data) {
+		foreach ($data as $key => $value) {
+			$method = "set" . ucfirst($key);
+			$method = implode('_', array_map('ucfirst', explode('_', $method)));
+			$method = str_replace("_", "", $method);
+
+			if(method_exists($this, $method)) {
+				$this->$method($value);
+			}
+		}
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getEntry()
+	{
 		return $this->entry;
 	}
 
-	public function setEntry($entry) {
+	/**
+	 * @param mixed $entry
+	 */
+	public function setEntry($entry)
+	{
 		$this->entry = $entry;
 	}
 
-	public function getGuid() {
+	/**
+	 * @return mixed
+	 */
+	public function getGuid()
+	{
 		return $this->guid;
 	}
 
-	public function setGuid($guid) {
+	/**
+	 * @param mixed $guid
+	 */
+	public function setGuid($guid)
+	{
 		$this->guid = $guid;
 	}
 
-	public function getName() {
+	/**
+	 * @return mixed
+	 */
+	public function getName()
+	{
 		return $this->name;
 	}
 
-	public function setName($name) {
+	/**
+	 * @param mixed $name
+	 */
+	public function setName($name)
+	{
 		$this->name = $name;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getEmote()
+	public function getMap()
 	{
-		return $this->emote;
+		return $this->map;
 	}
 
 	/**
-	 * @param mixed $emote
+	 * @param mixed $map
 	 */
-	public function setEmote($emote)
+	public function setMap($map)
 	{
-		$this->emote = $emote;
+		$this->map = $map;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHeroic()
+	{
+		return $this->heroic;
+	}
+
+	/**
+	 * @param mixed $heroic
+	 */
+	public function setHeroic($heroic)
+	{
+		$this->heroic = $heroic;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTester()
+	{
+		return $this->tester;
+	}
+
+	/**
+	 * @param mixed $tester
+	 */
+	public function setTester($tester)
+	{
+		$this->tester = $tester;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNStats()
+	{
+		return $this->n_stats;
+	}
+
+	/**
+	 * @param mixed $n_stats
+	 */
+	public function setNStats($n_stats)
+	{
+		$this->n_stats = $n_stats;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNResistances()
+	{
+		return $this->n_resistances;
+	}
+
+	/**
+	 * @param mixed $n_resistances
+	 */
+	public function setNResistances($n_resistances)
+	{
+		$this->n_resistances = $n_resistances;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNImmunities()
+	{
+		return $this->n_immunities;
+	}
+
+	/**
+	 * @param mixed $n_immunities
+	 */
+	public function setNImmunities($n_immunities)
+	{
+		$this->n_immunities = $n_immunities;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getNRespawn()
+	{
+		return $this->n_respawn;
+	}
+
+	/**
+	 * @param mixed $n_respawn
+	 */
+	public function setNRespawn($n_respawn)
+	{
+		$this->n_respawn = $n_respawn;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHStats()
+	{
+		return $this->h_stats;
+	}
+
+	/**
+	 * @param mixed $h_stats
+	 */
+	public function setHStats($h_stats)
+	{
+		$this->h_stats = $h_stats;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHResistances()
+	{
+		return $this->h_resistances;
+	}
+
+	/**
+	 * @param mixed $h_resistances
+	 */
+	public function setHResistances($h_resistances)
+	{
+		$this->h_resistances = $h_resistances;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHImmunities()
+	{
+		return $this->h_immunities;
+	}
+
+	/**
+	 * @param mixed $h_immunities
+	 */
+	public function setHImmunities($h_immunities)
+	{
+		$this->h_immunities = $h_immunities;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getHRespawn()
+	{
+		return $this->h_respawn;
+	}
+
+	/**
+	 * @param mixed $h_respawn
+	 */
+	public function setHRespawn($h_respawn)
+	{
+		$this->h_respawn = $h_respawn;
 	}
 
 	/**
@@ -99,81 +299,17 @@ class Creature {
 	/**
 	 * @return mixed
 	 */
-	public function getHeroic()
+	public function getEmote()
 	{
-		return $this->heroic;
+		return $this->emote;
 	}
 
 	/**
-	 * @param mixed $heroic
+	 * @param mixed $emote
 	 */
-	public function setHeroic($heroic)
+	public function setEmote($emote)
 	{
-		$this->heroic = $heroic;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getImmunities()
-	{
-		return $this->immunities;
-	}
-
-	/**
-	 * @param mixed $immunities
-	 */
-	public function setImmunities($immunities)
-	{
-		$this->immunities = $immunities;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getMap()
-	{
-		return $this->map;
-	}
-
-	/**
-	 * @param mixed $map
-	 */
-	public function setMap($map)
-	{
-		$this->map = $map;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getResistances()
-	{
-		return $this->resistances;
-	}
-
-	/**
-	 * @param mixed $resistances
-	 */
-	public function setResistances($resistances)
-	{
-		$this->resistances = $resistances;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getRespawn()
-	{
-		return $this->respawn;
-	}
-
-	/**
-	 * @param mixed $respawn
-	 */
-	public function setRespawn($respawn)
-	{
-		$this->respawn = $respawn;
+		$this->emote = $emote;
 	}
 
 	/**
@@ -195,38 +331,6 @@ class Creature {
 	/**
 	 * @return mixed
 	 */
-	public function getStats()
-	{
-		return $this->stats;
-	}
-
-	/**
-	 * @param mixed $stats
-	 */
-	public function setStats($stats)
-	{
-		$this->stats = $stats;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getTester()
-	{
-		return $this->tester;
-	}
-
-	/**
-	 * @param mixed $tester
-	 */
-	public function setTester($tester)
-	{
-		$this->tester = $tester;
-	}
-
-	/**
-	 * @return mixed
-	 */
 	public function getComment()
 	{
 		return $this->comment;
@@ -240,13 +344,5 @@ class Creature {
 		$this->comment = $comment;
 	}
 
-	public function hydrate(array $data) {
-		foreach($data as $key => $value) {
-			$method = 'set' . ucfirst($key);
 
-			if(method_exists($this, $method)) {
-				$this->$method($value);
-			}
-		}
-	}
 } 

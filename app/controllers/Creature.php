@@ -133,8 +133,7 @@ $app->get('/creature/guid/{guid}/smartai', function($guid) use($app) {
     $creature 	= new SUN\Domain\Creature(["guid" => $guid]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
     $manager2   = new \SUN\DAO\CreatureDAO($app);
-    $creature->setName($manager2->findCreatureGuidName($creature)->getName());
-    $lines		= $manager->getCreatureGuidScript($creature);
+    $lines		= $manager->getCreatureGuidScript($manager2->findCreatureGuidName($creature));
 
     return $app['twig']->render('smartai/creature/guid.html.twig',
         array(

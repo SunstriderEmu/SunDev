@@ -73,7 +73,7 @@ class CreatureDAO extends DAO {
     }
 
     public function findCreatureGuidName(Creature $creature) {
-        $name = $this->test->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE guid = ?', array($creature->getEntry()));
+        $name = $this->test->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE guid = ?', array($creature->getGuid()));
         $creature->setName($name['name']);
         return $creature;
     }

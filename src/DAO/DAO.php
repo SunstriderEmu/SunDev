@@ -39,8 +39,8 @@ class DAO {
 			case 1: // GO
 		  //case 2:    AreaTrigger NIY
 			case 9: // Script
-				if($data['review']->source_type == 1)
-					$this->$db->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($data['review']->entryorguid));
+				if($data['review']->source_type == 0)
+					$this->$db->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
 
 				$this->$db->executeQuery('DELETE FROM smart_scripts WHERE entryorguid = ? AND source_type = ?;', array($data['review']->entryorguid, $data['review']->source_type));
 				if($data['script'] != null) {

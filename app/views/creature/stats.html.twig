@@ -1,0 +1,643 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ creature.name }}({{ creature.entry }}) Statistics - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .well > .table {
+                margin-bottom: 0;
+            }
+            .form-group {
+                margin-bottom: 5px;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-9">
+            <h2>{{ creature.name }}{% if creature.subname != null %}, <small>{{ creature.subname }}</small>{% endif %}</h2>
+        </div>
+        <div class="col-md-3 text-right" style="margin-top: 30px">
+            <button id="apply" class="btn btn-warning btn-xs">Apply</button>
+            <button id="review" class="btn btn-success btn-xs">Review</button>
+            {% if is_granted('ROLE_ADMIN') %}
+                <button id="validate" class="btn btn-success btn-xs">Validate</button>
+                <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
+            {% endif %}
+        </div>
+        <div class="col-md-12">
+            <div class="well col-md-2" style="margin-right: 15px">
+                <strong class="text-info">INFORMATION</strong>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="entry" class="col-sm-4 control-label">Entry</label>
+                        <div id="entry" class="col-sm-8" style="padding-top: 7px"><a href="https://wowhead.com/npc={{ creature.entry }}">{{ creature.entry }}</a></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-script" class="col-sm-4 control-label">Script</label>
+                        <div id="script" class="col-sm-8">
+                            <select id="select-script" class="form-control">
+                                <option value="NullAI">NullAI</option>
+                                <option value="AggressorAI">AggressorAI</option>
+                                <option value="ReactorAI">ReactorAI</option>
+                                <option value="GuardAI">GuardAI</option>
+                                <option value="PetAI">PetAI</option>
+                                <option value="TotemAI">TotemAI</option>
+                                <option value="EventAI">EventAI</option>
+                                <option value="SmartAI">SmartAI</option>
+                                <option value="">C++</option>
+                            </select>
+                            {% if creature.AIName == '' %}
+                            <input type="text" class="form-control" id="script-name" placeholder="ScriptName" value="{{ creature.ScriptName }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-rank" class="col-sm-4 control-label">Rank</label>
+                        <div class="col-sm-8">
+                            <select id="select-rank" class="form-control">
+                                <option value="0">Normal</option>
+                                <option value="1">Elite</option>
+                                <option value="2">Rare Elite</option>
+                                <option value="3">Boss</option>
+                                <option value="4">Rare</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-type" class="col-sm-4 control-label">Type</label>
+                        <div class="col-sm-8">
+                            <select id="select-type" class="form-control">
+                                <option value="0">None</option>
+                                <option value="1">Beast</option>
+                                <option value="2">Dragonkin</option>
+                                <option value="3">Demon</option>
+                                <option value="4">Elemental</option>
+                                <option value="5">Giant</option>
+                                <option value="6">Undead</option>
+                                <option value="7">Humanoid</option>
+                                <option value="8">Critter</option>
+                                <option value="9">Mechanical</option>
+                                <option value="10">Not specified</option>
+                                <option value="11">Totem</option>
+                                <option value="12">Non-Combat Pet</option>
+                                <option value="13">Gas Cloud</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-family" class="col-sm-4 control-label">Family</label>
+                        <div class="col-sm-8">
+                            <select id="select-family" class="form-control">
+                                <option value="0">None</option>
+                                <option value="1">Wolf</option>
+                                <option value="2">Cat</option>
+                                <option value="3">Spider</option>
+                                <option value="4">Bear</option>
+                                <option value="5">Boar</option>
+                                <option value="6">Crocolisk</option>
+                                <option value="7">Carrion Bird</option>
+                                <option value="8">Crab</option>
+                                <option value="9">Gorilla</option>
+                                <option value="11">Raptor</option>
+                                <option value="12">Tallstrider</option>
+                                <option value="15">Felhunter</option>
+                                <option value="16">Voidwalker</option>
+                                <option value="17">Succubus</option>
+                                <option value="19">Doomguard</option>
+                                <option value="20">Scorpid</option>
+                                <option value="21">Turtle</option>
+                                <option value="23">Imp</option>
+                                <option value="24">Bat</option>
+                                <option value="25">Hyena</option>
+                                <option value="26">Owl</option>
+                                <option value="27">Wind Serpent</option>
+                                <option value="28">Remote Control</option>
+                                <option value="29">Felguard</option>
+                                <option value="30">Dragonhawk</option>
+                                <option value="31">Ravager</option>
+                                <option value="32">Warp Stalker</option>
+                                <option value="33">Sporebat</option>
+                                <option value="34">Nether Ray</option>
+                                <option value="35">Serpent</option>
+                                <option value="37">Moth</option>
+                                <option value="38">Chimaera</option>
+                                <option value="39">Devilsaur</option>
+                                <option value="40">Ghoul</option>
+                                <option value="41">Silithid</option>
+                                <option value="42">Worm</option>
+                                <option value="43">Rhino</option>
+                                <option value="44">Wasp</option>
+                                <option value="45">Core Hound</option>
+                                <option value="46">Spirit Beast</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-inhabit" class="col-sm-4 control-label">Inhabit</label>
+                        <div class="col-sm-8">
+                            <select multiple id="select-inhabit" class="form-control" style="height: 64px;">
+                                <option value="1"{% if creature.InhabitType b-and 1 %} selected{% endif %}>Ground</option>
+                                <option value="2"{% if creature.InhabitType b-and 2 %} selected{% endif %}>Water</option>
+                                <option value="4"{% if creature.InhabitType b-and 4 %} selected{% endif %}>Flying</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <tbody>
+                    {% if creature.mingold == creature.maxgold %}
+                        <tr>
+                            <td><strong>Gold</strong></td>
+                            <td>{{ creature.mingold|getGold }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td><strong>Gold</strong></td>
+                            <td>{{ creature.mingold|getGold }}</td>
+                            <td>{{ creature.maxgold|getGold }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="well col-md-2" style="margin-right: 15px">
+                <strong class="text-warning">SMODIFIER</strong>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="select-exp" class="col-sm-4 control-label">Expansion</label>
+                        <div class="col-sm-8">
+                            <select id="select-exp" class="form-control">
+                                <option value="0">Vanilla</option>
+                                <option value="1">TBC</option>
+                                <option value="2">WOTLK</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-class" class="col-sm-4 control-label">Class</label>
+                        <div class="col-sm-8">
+                            <select id="select-class" class="form-control">
+                                <option value="1">Warrior</option>
+                                <option value="2">Paladin</option>
+                                <option value="4">Rogue</option>
+                                <option value="8">Mage</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="min-level" class="col-sm-4 control-label">MinLevel</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="min-level" max="{{ creature.maxlevel }}" value="{{ creature.minlevel }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="max-level" class="col-sm-4 control-label">MaxLevel</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="max-level" min="{{ creature.maxlevel }}" value="{{ creature.maxlevel }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-health" class="col-sm-4 control-label">Health</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-health" value="{{ creature.HealthModifier }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-mana" class="col-sm-4 control-label">Mana</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-mana" value="{{ creature.ManaModifier }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-armor" class="col-sm-4 control-label">Armor</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-armor" value="{{ creature.ArmorModifier }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-damage" class="col-sm-4 control-label">Damage</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-damage" value="{{ creature.DamageModifier }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-as" class="col-sm-4 control-label"><abbr title="Melee Attack Speed">AS</abbr></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-as" value="{{ creature.BaseAttackTime }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-ras" class="col-sm-4 control-label"><abbr title="Ranged Attack Speed">RAS</abbr></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-ras" value="{{ creature.RangeAttackTime }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-mvariance" class="col-sm-4 control-label"><abbr title="Melee Variance">MVariance</abbr></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-mvariance" value="{{ creature.BaseVariance }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-rvariance" class="col-sm-4 control-label"><abbr title="Ranged Variance">RVariance</abbr></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="modifier-rvariance" value="{{ creature.RangeVariance }}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="well col-md-5" style="margin-right: 15px">
+                <div class="col-md-6">
+                    <strong class="text-primary">RESULTS</strong>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Health</th>
+                            <th class="mana">Mana</th>
+                            <th>Armor</th>
+                            <th><abbr title="Attack Speed">AS</abbr></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="result-min-level"><strong>Lvl {{ creature.minlevel }}</strong></td>
+                            <td id="result-min-health">{{ creature.minhp|number_format(0, '.', ',') }}</td>
+                            <td id="result-min-mana" class="mana">{{ creature.minmp|number_format(0, '.', ',') }}</td>
+                            <td id="result-min-armor">{{ creature.minarmor|number_format(0, '.', ',') }}</td>
+                            <td id="attackspeed" rowspan="2" style="vertical-align: middle;">{{ (creature.BaseAttackTime / 1000)|number_format(2, '.', ',') }}</td>
+                        </tr>
+                        <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
+                            <td id="result-max-level">{% if creature.minlevel != creature.maxlevel %}<strong>Lvl {{ creature.maxlevel }}</strong>{% endif %}</td>
+                            <td id="result-max-health">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxhp|number_format(0, '.', ',') }}{% endif %}</td>
+                            <td id="result-max-mana" class="mana">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxmp|number_format(0, '.', ',') }}{% endif %}</td>
+                            <td id="result-max-armor">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxarmor|number_format(0, '.', ',') }}{% endif %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <strong class="text-primary">BASE STATISTICS</strong>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Health</th>
+                            <th class="mana">Mana</th>
+                            <th>Armor</th>
+                            <th><abbr title="Attack Speed">AS</abbr></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td id="base-min-level"><strong>Lvl {{ creature.minlevel }}</strong></td>
+                            <td id="base-min-health">{{ creature.minhp|number_format(0, '.', ',') }}</td>
+                            <td id="base-min-mana" class="mana">{{ creature.minmp|number_format(0, '.', ',') }}</td>
+                            <td id="base-min-armor">{{ creature.minarmor|number_format(0, '.', ',') }}</td>
+                            <td id="attackspeed"{% if creature.minlevel != creature.maxlevel %} rowspan="2" style="vertical-align: middle;"{% endif %}>{{ (creature.BaseAttackTime / 1000)|number_format(2, '.', ',') }}</td>
+                        </tr>
+                        <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
+                            <td id="base-max-level"><strong>Lvl {{ creature.maxlevel }}</strong></td>
+                            <td id="base-max-health">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxhp|number_format(0, '.', ',') }}{% endif %}</td>
+                            <td id="base-max-mana" class="mana">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxmp|number_format(0, '.', ',') }}{% endif %}</td>
+                            <td id="base-max-armor">{% if creature.minlevel != creature.maxlevel %}{{ creature.maxarmor|number_format(0, '.', ',') }}{% endif %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <strong class="text-primary">DAMAGES</strong>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Base Damage</th>
+                            <th>Attack Power</th>
+                            <th>Min Damage</th>
+                            <th>Max Damage</th>
+                            <th>AVG DPS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="damage-min-level" rowspan="2" style="vertical-align: middle;"><strong>Lvl {{ creature.minlevel }}</strong></td>
+                                <td>Melee</td>
+                                <td id="damage-min-melee-base" rowspan="2" style="vertical-align: middle;">{{ creature.melee.minlevel.base|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-melee-ap">{{ creature.melee.minlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-melee-min">{{ creature.melee.minlevel.min|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-melee-max">{{ creature.melee.minlevel.max|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-melee-avg">{{ creature.melee.minlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Ranged</td>
+                                <td id="damage-min-ranged-ap">{{ creature.ranged.minlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-ranged-min">{{ creature.ranged.minlevel.min|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-ranged-max">{{ creature.ranged.minlevel.max|number_format(1, '.', ',') }}</td>
+                                <td id="damage-min-ranged-avg">{{ creature.ranged.minlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
+                                <td id="damage-max-level" rowspan="2" style="vertical-align: middle;"><strong>Lvl {{ creature.maxlevel }}</strong></td>
+                                <td>Melee</td>
+                                <td id="damage-max-melee-base" rowspan="2" style="vertical-align: middle;">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.base|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-melee-ap">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.ap|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-melee-min">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.min|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-melee-max">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.max|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-melee-avg">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.avg|number_format(1, '.', ',') }}{% endif %}</td>
+                            </tr>
+                            <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
+                                <td>Ranged</td>
+                                <td id="damage-max-ranged-ap">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.ap|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-ranged-min">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.min|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-ranged-max">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.max|number_format(1, '.', ',') }}{% endif %}</td>
+                                <td id="damage-max-ranged-avg">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.avg|number_format(1, '.', ',') }}{% endif %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="well col-md-2">
+                <strong class="text-danger">RESISTANCE</strong>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="resistance-holy" class="col-sm-4 control-label">Holy</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-holy" min="0" value="{{ creature.resistance1 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resistance-fire" class="col-sm-4 control-label">Fire</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-fire" min="0" value="{{ creature.resistance2 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resistance-nature" class="col-sm-4 control-label">Nature</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-nature" min="0" value="{{ creature.resistance3 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resistance-frost" class="col-sm-4 control-label">Frost</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-frost" min="0" value="{{ creature.resistance4 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resistance-shadow" class="col-sm-4 control-label">Shadow</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-shadow" min="0" value="{{ creature.resistance5 }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="resistance-arcane" class="col-sm-4 control-label">Arcane</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="resistance-arcane" min="0" value="{{ creature.resistance6 }}">
+                        </div>
+                    </div>
+                </form>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript">
+            var i;
+            var Stats = { min: {}, max: {} };
+            var Base;
+            var Original = {{ creature|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+            var Creature = {{ creature|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+            var Info = { "entryorguid": {{ creature.entry }}, "source_type": 10 };
+            console.log(Creature);
+
+            var SelectScript = $('#select-script');
+            var SelectRank = $('#select-rank');
+            var SelectType = $('#select-type');
+            var SelectFamily = $('#select-family');
+            var SelectInhabit = $('#select-inhabit');
+            var SelectExp = $('#select-exp');
+            var SelectClass = $('#select-class');
+
+            var ResistHoly = $('#resistance-holy');
+            var ResistFire = $('#resistance-fire');
+            var ResistNature = $('#resistance-nature');
+            var ResistFrost = $('#resistance-frost');
+            var ResistShadow = $('#resistance-shadow');
+            var ResistArcane = $('#resistance-arcane');
+
+            var ArmorModifier = $('#modifier-armor');
+            var HealthModifier = $('#modifier-health');
+            var ManaModifier = $('#modifier-mana');
+            var DamageModifier = $('#modifier-damage');
+            var BaseTimeAttack = $('#modifier-as');
+            var RangeTimeAttack = $('#modifier-ras');
+            var BaseVariance = $('#modifier-mvariance');
+            var RangeVariance = $('#modifier-rvariance');
+
+            var MinLevel = $('#min-level');
+            var MaxLevel = $('#max-level');
+
+            SelectScript.val(Creature.AIName);
+            SelectRank.val(Creature.rank);
+            SelectType.val(Creature.type);
+            SelectFamily.val(Creature.family);
+            SelectClass.val(Creature.unit_class);
+            SelectExp.val(Creature.exp);
+
+            getStats(Stats, Creature.unit_class, Creature.minlevel, 'min');
+            getStats(Stats, Creature.unit_class, Creature.maxlevel, 'max');
+            checkLevels();
+            hideMana();
+
+            SelectExp.change(function(){
+                getStats(Stats, SelectClass.val(), MinLevel.val(), 'min');
+                    if(MinLevel.val() != MaxLevel.val())
+                    getStats(Stats, SelectClass.val(), MaxLevel.val(), 'max');
+            });
+
+            SelectClass.change(function(){
+                getStats(Stats, SelectClass.val(), MinLevel.val(), 'min');
+                    if(MinLevel.val() != MaxLevel.val())
+                    getStats(Stats, SelectClass.val(), MaxLevel.val(), 'max');
+                hideMana();
+            });
+
+            MinLevel.change(function(){
+                if($(this).val() > MaxLevel.val()) {
+                    $(this).val(MaxLevel.val());
+                    return alert('The minimum level cannot be superior than the maximum level.');
+                }
+                getStats(Stats, SelectClass.val(), $(this).val(), 'min');
+                $('#max-level').attr('min', $(this).val());
+                checkLevels();
+            });
+
+            MaxLevel.change(function(){
+                getStats(Stats, SelectClass.val(), $(this).val(), 'max');
+                $('#min-level').attr('max', $(this).val());
+                checkLevels();
+            });
+
+            changeStats(HealthModifier, 'HealthModifier');
+            changeStats(ManaModifier, 'ManaModifier');
+            changeStats(ArmorModifier, 'ArmorModifier');
+            changeStats(DamageModifier, 'DamageModifier');
+            changeStats(BaseTimeAttack, 'BaseTimeAttack');
+            changeStats(RangeTimeAttack, 'RangeTimeAttack');
+            changeStats(BaseVariance, 'BaseVariance');
+            changeStats(RangeVariance, 'RangeVariance');
+
+            SelectScript.change(function(){
+                Creature.AIName = $(this).val();
+                if($(this).val() == '')
+                    $('<input type="text" class="form-control" id="script-name" placeholder="ScriptName" value="'+Creature.ScriptName+'">').appendTo('#script');
+                else
+                    $('#script-name').remove();
+            });
+
+            $('#script-name').change(function(){
+                Creature.ScriptName = $(this).val();
+            });
+
+            SelectInhabit.change(function(){
+                var value = $(this).val();
+                var total;
+                for (i = 0; i < value.length; i++)
+                    total += value[i] << 0;
+                Creature.InhabitType = total;
+            });
+
+            function getStats(Stats, unitclass, level, type) {
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ app.request.basepath }}/creature/stats/' + unitclass + '/' + level,
+                    dataType: 'json',
+                    'success': function (data) {
+                        if(type == 'min') {
+                            Stats.min = {
+                                level: parseFloat(data.level),
+                                armor: parseFloat(data.basearmor),
+                                mana: parseFloat(data.basemana),
+                                damage: 0,
+                                health: parseFloat(data['basehp'+SelectExp.val()]),
+                                ap: parseFloat(data.attackpower),
+                                rap: parseFloat(data.rangedattackpower)
+                            };
+
+                            if(SelectExp.val() == 0)
+                                Stats.min.damage = parseFloat(data.damage_base);
+                            else
+                                Stats.min.damage = parseFloat(data['damage_exp'+SelectExp.val()]);
+                        }
+                        else {
+                            Stats.max = {
+                                level: parseFloat(data.level),
+                                armor: parseFloat(data.basearmor),
+                                mana: parseFloat(data.basemana),
+                                damage: 0,
+                                health: parseFloat(data['basehp'+SelectExp.val()]),
+                                ap: parseFloat(data.attackpower),
+                                rap: parseFloat(data.rangedattackpower)
+                            };
+
+                            if(SelectExp.val() == 0)
+                                Stats.max.damage = parseFloat(data.damage_base);
+                            else
+                                Stats.max.damage = parseFloat(data['damage_exp'+SelectExp.val()]);
+                        }
+                        setStats(type);
+                    }
+                });
+            }
+
+            function checkLevels(){
+                if(MinLevel.val() == MaxLevel.val())
+                    $('.max').hide();
+                else
+                    $('.max').show();
+            }
+
+            function hideMana(){
+                if(SelectClass.val() == 1 || SelectClass.val() == 4)
+                    $('.mana').hide();
+                else
+                    $('.mana').show();
+            }
+
+            ResistHoly.change(function(){   changeResist(1, $(this).val()) });
+            ResistFire.change(function(){   changeResist(2, $(this).val()) });
+            ResistNature.change(function(){ changeResist(3, $(this).val()) });
+            ResistFrost.change(function(){  changeResist(4, $(this).val()) });
+            ResistShadow.change(function(){ changeResist(5, $(this).val()) });
+            ResistArcane.change(function(){ changeResist(6, $(this).val()) });
+
+            function changeResist(resist, value){
+                Creature['resistance'+resist] = value;
+            }
+
+            function changeStats(identifier, type) {
+                $(identifier).on('keyup change', function(){
+                    Creature[type] = $(this).val();
+                    setStats('min');
+                    if(MinLevel.val() != MaxLevel.val())
+                        setStats('max');
+                    if(identifier == SelectClass)
+                        hideMana();
+                });
+            }
+
+            function setStats(type) {
+                $('#base-'+type+'-level').html('<strong>Lvl '+Stats[type].level+'</strong>');
+                $('#base-'+type+'-health').html(Stats[type].health);
+                $('#base-'+type+'-mana').html(Stats[type].mana);
+                $('#base-'+type+'-armor').html(Stats[type].armor);
+
+                $('#result-'+type+'-level').html('<strong>Lvl '+Stats[type].level+'</strong>');
+                $('#result-'+type+'-health').text(Math.round(Stats[type].health * HealthModifier.val()));
+                $('#result-'+type+'-mana').text(Math.round(Stats[type].mana * ManaModifier.val()));
+                $('#result-'+type+'-armor').text(Math.round(Stats[type].armor * ArmorModifier.val() * 100) / 100);
+
+                var AP  = Stats[type].ap;
+                var RAP = Stats[type].rap;
+                var APDamage        = (AP / 14.0) * (BaseTimeAttack.val() / 1000);
+                var RAPDamage       = (RAP / 14.0) * (RangeTimeAttack.val() / 1000);
+                var MinMeleeDamage  = (Stats[type].damage + APDamage) * DamageModifier.val();
+                var MaxMeleeDamage  = MinMeleeDamage * (1 + parseFloat(BaseVariance.val()));
+                var MinRangedDamage = (Stats[type].damage + RAPDamage) * DamageModifier.val();
+                var MaxRangedDamage = MinRangedDamage * (1 + parseFloat(RangeVariance.val()));
+
+                $('#damage-'+type+'-level').html('<strong>Lvl '+Stats[type].level+'</strong>');
+                $('#damage-'+type+'-melee-base').text(Math.round(Stats[type].damage * DamageModifier.val() * 10) / 10);
+                $('#damage-'+type+'-melee-ap').text(Math.round(DamageModifier.val() * APDamage * 10) / 10);
+                $('#damage-'+type+'-melee-min').text(Math.round(MinMeleeDamage * 10) / 10);
+                $('#damage-'+type+'-melee-max').text(Math.round(MaxMeleeDamage * 10) / 10);
+                $('#damage-'+type+'-melee-avg').text(Math.round((MinMeleeDamage + MaxMeleeDamage) / 2 / (BaseTimeAttack.val() / 1000) * 10) / 10);
+
+                $('#damage-'+type+'-ranged-base').text(Math.round(Stats[type].damage * DamageModifier.val() * 10) / 10);
+                $('#damage-'+type+'-ranged-ap').text(Math.round(DamageModifier.val() * RAPDamage * 10) / 10);
+                $('#damage-'+type+'-ranged-min').text(Math.round(MinRangedDamage * 10) / 10);
+                $('#damage-'+type+'-ranged-max').text(Math.round(MaxRangedDamage * 10) / 10);
+                $('#damage-'+type+'-ranged-avg').text(Math.round((MinRangedDamage + MaxRangedDamage) / 2 / (RangeTimeAttack.val() / 1000) * 10) / 10);
+            }
+
+            function generateData(Creature) {
+                var Data = {
+                    info: [ Creature.AIName.toString(), Creature.ScriptName.toString(), Creature.rank, Creature.type, Creature.family, Creature.InhabitType, Creature.mingold, Creature.maxgold ],
+                    modifiers: [ Creature.exp, Creature.unit_class, Creature.minlevel, Creature.maxlevel, Creature.HealthModifier, Creature.ManaModifier, Creature.ArmorModifier, Creature.DamageModifier, Creature.BaseAttackTime, Creature.RangeAttackTime, Creature.BaseVariance, Creature.RangeVariance ],
+                    resistance: [ Creature.resistance1, Creature.resistance2, Creature.resistance3, Creature.resistance4, Creature.resistance5, Creature.resistance6 ]
+                    };
+                console.log(Data);
+                return Data;
+            }
+
+            $('#apply').click(function () {
+               apply(generateData(Creature), Info);
+            });
+            $('#review').click(function () {
+                review(generateData(Creature), Info);
+            });
+            $('#validate').click(function () {
+                validate(generateData(Creature), Info);
+            });
+            $('#refuse').click(function () {
+                refuse(generateData(Creature), Info);
+            });
+        </script>
+    {% endblock %}

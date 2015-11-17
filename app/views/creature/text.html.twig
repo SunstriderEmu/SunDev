@@ -155,7 +155,7 @@
     {% block script %}
         <script src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
-            var Info = { "entryorguid": {{ creature.entry }}, "source_type": 4 };
+            var Info = { "entryorguid": {{ creature.entry }}, "source_type": 12 };
             var Texts = {{ texts|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
 
             function generateData(Texts) {

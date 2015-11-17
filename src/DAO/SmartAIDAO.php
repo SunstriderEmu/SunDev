@@ -12,18 +12,6 @@ class SmartAIDAO extends DAO {
 		return $this->test->fetchAssoc('SELECT entryorguid FROM smart_scripts WHERE entryorguid BETWEEN 50000 AND 50099 ORDER BY entryorguid DESC LIMIT 1');
 	}
 
-	public function findGOEntryName(Gameobject $gameobject) {
-		$name = $this->test->fetchAssoc('SELECT name FROM gameobject_template WHERE entry = ?', array($gameobject->getEntry()));
-		$gameobject->setName($name['name']);
-		return $gameobject;
-	}
-
-	public function findGOGuidName(Gameobject $gameobject) {
-		$name = $this->test->fetchAssoc('SELECT ct.name FROM gameobject c JOIN gameobject_template ct ON ct.entry = c.id WHERE guid = ?', array($gameobject->getEntry()));
-		$gameobject->setName($name['name']);
-		return $gameobject;
-	}
-
 	/*
 	 * GET CREATURE ENTRY SCRIPT
 	 */

@@ -1,9 +1,6 @@
 (function($)
 {
     $.fn.smartai=function(informations) {
-
-
-        var User = informations.User;
         var Entry = informations.Entry;
         var Type = informations.Type;
         var Name = informations.Name;
@@ -14,11 +11,10 @@
 
         var Info = { "entryorguid": Entry, "source_type": Type };
 
-        if (jQuery.isEmptyObject(Lines)) {
+        if (jQuery.isEmptyObject(Lines))
             var MaxID = -1;
-        } else {
+        else
             MaxID = Object.keys(Lines).length - 1;
-        }
 
         var EventType = $('#event_type');
         var ActionType = $('#action_type');
@@ -56,42 +52,38 @@
         var SelectTargetFlags = '#target_flags_value';
         var i;
 
-        var PHASE_1 = "#8CDAFE";
-        var PHASE_2 = "#FA91AC";
-        var PHASE_3 = "#96E5B8";
-        var PHASE_4 = "#F89289";
-        var PHASE_5 = "#DFAAF5";
-        var PHASE_6 = "#FBE48B";
-        var PHASE_7 = "#F8BC9A";
-        var PHASE_8 = "#DEE1E3";
-        var PHASE_9 = "#89ADF8";
 
-        RefreshTable();
+        PHASE = {
+            1: "#8CDAFE",
+            2: "#FA91AC",
+            3: "#96E5B8",
+            4: "#F89289",
+            5: "#DFAAF5",
+            6: "#FBE48B",
+            7: "#F8BC9A",
+            8: "#DEE1E3",
+            9: "#89ADF8"
+        };
+
+        function RefreshTableTr(tr) {
+            var td;
+            if(tr == 1)
+                td = 'first-child';
+            else
+                td = 'nth-child('+tr+')';
+
+            $('table > tbody > tr > td:'+td).click(function () {
+                var id = $(this).closest('tr').find('td:first-child').text();
+                displayLine(id, this);
+            });
+        }
         function RefreshTable() {
-            $('table > tbody > tr > td:first-child').click(function () {
-                var id = $(this).text();
-                displayLine(id, this);
-            });
-            $('table > tbody > tr > td:nth-child(2)').click(function () {
-                var id = $(this).closest('tr').find('td:first-child').text();
-                displayLine(id, this);
-            });
-            $('table > tbody > tr > td:nth-child(3)').click(function () {
-                var id = $(this).closest('tr').find('td:first-child').text();
-                displayLine(id, this);
-            });
-            $('table > tbody > tr > td:nth-child(4)').click(function () {
-                var id = $(this).closest('tr').find('td:first-child').text();
-                displayLine(id, this);
-            });
-            $('table > tbody > tr > td:nth-child(5)').click(function () {
-                var id = $(this).closest('tr').find('td:first-child').text();
-                displayLine(id, this);
-            });
-            $('table > tbody > tr > td:nth-child(6)').click(function () {
-                var id = $(this).closest('tr').find('td:first-child').text();
-                displayLine(id, this);
-            });
+            RefreshTableTr(1);
+            RefreshTableTr(2);
+            RefreshTableTr(3);
+            RefreshTableTr(4);
+            RefreshTableTr(5);
+            RefreshTableTr(6);
             $('table > tbody > tr > td:nth-child(7)').off().on('click', 'span.glyphicon-plus', function () {
                 var id = $(this).closest('tr').find('td:first-child').text();
                 duplicateLine(id);
@@ -101,88 +93,45 @@
                 deleteLine(id);
             });
         }
+        RefreshTable();
 
         // Set Phase Color at browsing
         $('table > tbody > tr').each(function () {
             var id = $(this).find('td:first-child').text();
-
             var Color = [];
             if (Lines[id].event_phase_mask != "0") {
                 var Binary = "0x" + Hex(Lines[id].event_phase_mask);
-                if (0x1 & Binary) {
-                    Color.push(PHASE_1);
-                }
-                if (0x2 & Binary) {
-                    Color.push(PHASE_2);
-                }
-                if (0x4 & Binary) {
-                    Color.push(PHASE_3);
-                }
-                if (0x8 & Binary) {
-                    Color.push(PHASE_4);
-                }
-                if (0x10 & Binary) {
-                    Color.push(PHASE_5);
-                }
-                if (0x20 & Binary) {
-                    Color.push(PHASE_6);
-                }
-                if (0x40 & Binary) {
-                    Color.push(PHASE_7);
-                }
-                if (0x80 & Binary) {
-                    Color.push(PHASE_8);
-                }
-                if (0x100 & Binary) {
-                    Color.push(PHASE_9);
-                }
+                setPhaseColor(Color, 0x1, Binary, 1);
+                setPhaseColor(Color, 0x2, Binary, 2);
+                setPhaseColor(Color, 0x4, Binary, 3);
+                setPhaseColor(Color, 0x8, Binary, 4);
+                setPhaseColor(Color, 0x10, Binary, 5);
+                setPhaseColor(Color, 0x20, Binary, 6);
+                setPhaseColor(Color, 0x40, Binary, 7);
+                setPhaseColor(Color, 0x80, Binary, 8);
+                setPhaseColor(Color, 0x100, Binary, 9);
             }
             $(this).css('background-color', generatePhaseColor(Color));
         });
 
-        $('#event_phase_mask_value').chosen().change(function () {
-            var Value = $(this).val() || [];
-            var ID = $('table > tbody > tr.active > td:first-child').text();
-            if (ID == "") {
-                alert('Please choose a line.');
-            }
-            var total = 0;
-            for (var i = 0; i < Value.length; i++) {
-                total += Value[i] << 0;
-            }
-            Lines[ID].event_phase_mask = total;
-            $(this).trigger('chosen:updated');
-        });
-        $('#event_flags_value').chosen().change(function () {
-            var Value = $(this).val() || [];
-            var ID = $('table > tbody > tr.active > td:first-child').text();
-            if (ID == "") {
-                alert('Please choose a line.');
-            }
-            var total = 0;
-            for (var i = 0; i < Value.length; i++) {
-                total += Value[i] << 0;
-            }
-            Lines[ID].event_flags = total;
-            $(this).trigger('chosen:updated');
-        });
-        $('#target_flags_value').chosen().change(function () {
-            var Value = $(this).val() || [];
-            var ID = $('table > tbody > tr.active > td:first-child').text();
-            if (ID == "") {
-                alert('Please choose a line.');
-            }
-            var total = 0;
-            for (var i = 0; i < Value.length; i++) {
-                total += Value[i] << 0;
-            }
-            Lines[ID].target_flags = total;
-            $(this).trigger('chosen:updated');
-        });
-
-        $('#generate_comments').click(function () {
-            generateComments(Lines);
-        });
+        function updateChosen(Element, attribute) {
+            $(Element).chosen().change(function () {
+                var Value = $(this).val() || [];
+                var ID = $('table > tbody > tr.active > td:first-child').text();
+                if (ID == "") {
+                    alert('Please choose a line.');
+                }
+                var total = 0;
+                for (var i = 0; i < Value.length; i++) {
+                    total += Value[i] << 0;
+                }
+                Lines[ID][attribute] = total;
+                $(this).trigger('chosen:updated');
+            });
+        }
+        updateChosen('#event_phase_mask_value', 'event_phase_mask');
+        updateChosen('#event_flags_value', 'event_flags');
+        updateChosen('#target_flags_value', 'target_flags');
         function generateComments(Lines) {
             for (var i in Lines) {
                 var TR = $('td:first-child').filter(function() { return $.text([this]) == i; }).closest('tr');
@@ -192,6 +141,10 @@
                 Lines[ID].comment = Comment;
             }
         }
+
+        $('#generate_comments').click(function () {
+            generateComments(Lines);
+        });
         $('#review').click(function () {
             generateComments(Lines);
             review(generateData(Lines), Info);
@@ -211,81 +164,47 @@
         function generateData(Lines) {
             var Data = [];
             var Length = Object.keys(Lines).length;
-
-            for (i = 0; i < Length; i++) {
-                Data.push([Lines[i].id, Lines[i].link, Lines[i].event_type, Lines[i].event_phase_mask, Lines[i].event_chance, Lines[i].event_flags, Lines[i].event_param1, Lines[i].event_param2, Lines[i].event_param3, Lines[i].event_param4, Lines[i].action_type, Lines[i].action_param1, Lines[i].action_param2, Lines[i].action_param3, Lines[i].action_param4, Lines[i].action_param5, Lines[i].action_param6, Lines[i].target_type, Lines[i].target_flags, Lines[i].target_param1, Lines[i].target_param2, Lines[i].target_param3, Lines[i].target_x, Lines[i].target_y, Lines[i].target_z, Lines[i].target_o, Lines[i].comment.toString()]);
-            }
+            for (i = 0; i < Length; i++)
+                Data.push([Lines[i].id, Lines[i].link, Lines[i].event_type, Lines[i].event_phase_mask, Lines[i].event_chance, Lines[i].event_flags, Lines[i].event_param1, Lines[i].event_param2, Lines[i].event_param3, Lines[i].event_param4, Lines[i].action_type, Lines[i].action_param1, Lines[i].action_param2, Lines[i].action_param3, Lines[i].action_param4, Lines[i].action_param5, Lines[i].action_param6, Lines[i].target_type, Lines[i].target_flags, Lines[i].target_param1, Lines[i].target_param2, Lines[i].target_param3, Lines[i].target_x, Lines[i].target_y, Lines[i].target_z, Lines[i].target_o, Lines[i].comment.replace(/'/g, '"').toString()]);
             return Data;
         }
 
         // Replace the last comma with " and "
         function replaceComma(string) {
-            if (string.indexOf(",") === -1) {
+            if (string.indexOf(",") === -1)
                 return string;
-            }
             var pos = string.lastIndexOf(',');
             return string.substring(0, pos) + ' and ' + string.substring(pos + 1);
         }
-        // Replace the last comma with " and "
-        function formattingSQL(string) {
-            if (string.indexOf("),") === -1 || string.indexOf("VALUES") === -1) {
-                return string;
-            }
-            var pos = string.lastIndexOf('),(');
-            string = string.substring(0, pos + 2) + '\n' + string.substring(pos + 2);
-            pos = string.lastIndexOf('S(');
-            return string.substring(0, pos + 1) + '\n' + string.substring(pos + 1);
-        }
 
         function generateFlagsComment(id) {
-            if (Lines[id].event_flags == "0") {
+            if (Lines[id].event_flags == "0")
                 return "";
-            }
             var Binary = "0x" + Hex(Lines[id].event_flags);
             var Return = "(";
-            if (0x1 & Binary) {
-                Return += "No Repeat";
-            }
-            if (0x2 & Binary) {
-                if (Return != "(") {
-                    Return += ", Normal Dungeon";
-                } else {
-                    Return += "Normal Dungeon";
-                }
-            }
-            if (0x4 & Binary) {
-                if (Return != "(") {
-                    Return += ", Heroic Dungeon";
-                } else {
-                    Return += "Heroic Dungeon";
-                }
-            }
-            if (0x8 & Binary) {
-                if (Return != "(") {
-                    Return += ", Normal Raid";
-                } else {
-                    Return += "Normal Raid";
-                }
-            }
-            if (0x10 & Binary) {
-                if (Return != "(") {
-                    Return += ", Heroic Raid";
-                } else {
-                    Return += "Heroic Raid";
-                }
-            }
-            if (0x20 & Binary) {
-                if (Return != "(") {
-                    Return += ", Debug";
-                } else {
-                    Return += "Debug";
-                }
-            }
+            Return = generateBitComment('(', Return, Binary, 0x1, 'No Repeat');
+            Return = generateBitComment('(', Return, Binary, 0x2, 'Normal Dungeon');
+            Return = generateBitComment('(', Return, Binary, 0x4, 'Heroic Dungeon');
+            Return = generateBitComment('(', Return, Binary, 0x8, 'Normal Raid');
+            Return = generateBitComment('(', Return, Binary, 0x10, 'Heroic Raid');
+            Return = generateBitComment('(', Return, Binary, 0x20, 'Debug');
             Return += ")";
-            if (Return == "()") {
+            if (Return == "()")
                 return "";
-            }
             return replaceComma(Return);
+        }
+        function getPhaseColorComment(Color, String, Mask, Binary, Phase) {
+            var Return = { "string": String };
+            if (Mask & Binary) {
+                Color.push(parseInt(Object.keys(PHASE)[Phase]));
+                if (Return.string != "(")
+                    Return.string += ", Phase " + Phase;
+                else
+                    Return.string += "Phase " + Phase;
+            }
+            Return.color = [];
+            Return.color = Color;
+            return Return;
         }
         function generatePhaseComment(id) {
             var TR = $('table > tbody > tr:has(td:first-child:contains("' + id + '"))');
@@ -296,90 +215,36 @@
             var Binary = "0x" + Hex(Lines[id].event_phase_mask);
             var Return = "(";
             var Color = [];
-            if (0x1 & Binary) {
-                Color.push(PHASE_1);
-                Return += "Phase 1";
-            }
-            if (0x2 & Binary) {
-                Color.push(PHASE_2);
-                if (Return != "(") {
-                    Return += ", Phase 2";
-                } else {
-                    Return += "Phase 2";
-                }
-            }
-            if (0x4 & Binary) {
-                Color.push(PHASE_3);
-                if (Return != "(") {
-                    Return += ", Phase 3";
-                } else {
-                    Return += "Phase 3";
-                }
-            }
-            if (0x8 & Binary) {
-                Color.push(PHASE_4);
-                if (Return != "(") {
-                    Return += ", Phase 4";
-                } else {
-                    Return += "Phase 4";
-                }
-            }
-            if (0x10 & Binary) {
-                Color.push(PHASE_5);
-                if (Return != "(") {
-                    Return += ", Phase 5";
-                } else {
-                    Return += "Phase 5";
-                }
-            }
-            if (0x20 & Binary) {
-                Color.push(PHASE_6);
-                if (Return != "(") {
-                    Return += ", Phase 6";
-                } else {
-                    Return += "Phase 6";
-                }
-            }
-            if (0x40 & Binary) {
-                Color.push(PHASE_7);
-                if (Return != "(") {
-                    Return += ", Phase 7";
-                } else {
-                    Return += "Phase 7";
-                }
-            }
-            if (0x80 & Binary) {
-                Color.push(PHASE_8);
-                if (Return != "(") {
-                    Return += ", Phase 8";
-                } else {
-                    Return += "Phase 8";
-                }
-            }
-            if (0x100 & Binary) {
-                Color.push(PHASE_9);
-                if (Return != "(") {
-                    Return += ", Phase 9";
-                } else {
-                    Return += "Phase 9";
-                }
-            }
+            var Result;
+            Result = getPhaseColorComment(Color, Return, 0x1, Binary, 1);
+            Result = getPhaseColorComment(Color, Result.string, 0x2, Binary, 2);
+            Result = getPhaseColorComment(Color, Result.string, 0x4, Binary, 3);
+            Result = getPhaseColorComment(Color, Result.string, 0x8, Binary, 4);
+            Result = getPhaseColorComment(Color, Result.string, 0x10, Binary, 5);
+            Result = getPhaseColorComment(Color, Result.string, 0x20, Binary, 6);
+            Result = getPhaseColorComment(Color, Result.string, 0x40, Binary, 7);
+            Result = getPhaseColorComment(Color, Result.string, 0x80, Binary, 8);
+            Result = getPhaseColorComment(Color, Result.string, 0x100, Binary, 9);
+            Return = Result.string;
             Return += ")";
             TR.css('background-color', generatePhaseColor(Color));
             return replaceComma(Return);
         }
         function generatePhaseColor(Color) {
             if (Color.length > 1) {
-                var PhaseColor = Color[0];
-                for (i = 1; i < Color.length; i++) {
-                    PhaseColor = $.xcolor.average(PhaseColor, Color[i]).getHex();
-                }
+                var PhaseColor = PHASE[Color[0]];
+                for (i = 1; i < Color.length - 1; i++)
+                    PhaseColor = $.xcolor.average(PhaseColor, PHASE[Color[i]]).getHex();
                 return PhaseColor;
             } else {
-                return Color[0];
+                return PHASE[Color[0]];
             }
         }
         function generateEventComment(id) {
+            var EventParam1 = Lines[id].event_param1;
+            var EventParam2 = Lines[id].event_param2;
+            var EventParam3 = Lines[id].event_param3;
+            var EventParam4 = Lines[id].event_param4;
             switch (Lines[id].event_type) {
                 case "0":
                     return "In Combat";
@@ -388,18 +253,18 @@
                     return "Out of Combat";
                     break;
                 case "2":
-                    return "Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + "% HP";
+                    return "Between " + EventParam1 + "-" + EventParam2 + "% HP";
                     break;
                 case "3":
-                    return "Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + "% MP";
+                    return "Between " + EventParam1 + "-" + EventParam2 + "% MP";
                     break;
                 case "4":
                     return "On Aggro";
                     break;
                 case "5":
-                    if (Lines[id].event_param3 == "0" && Lines[id].event_param4 > "0") {
-                        return "On '<a href='http://wowhead.com/npc=" + Lines[id].event_param1 + "'>" + getCreatureName(Lines[id].event_param4) + "</a>' Killed";
-                    } else if (Lines[id].event_param3 == "1") {
+                    if (EventParam3 == "0" && EventParam4 > "0") {
+                        return "On '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam4) + "</a>' Killed";
+                    } else if (EventParam3 == "1") {
                         return "On Player Killed";
                     } else {
                         return "On Killed Unit";
@@ -412,65 +277,65 @@
                     return "On Evade";
                     break;
                 case "8":
-                    return "On Spellhit '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    return "On Spellhit '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     break;
                 case "9":
-                    return "Within " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + " Range";
+                    return "Within " + EventParam1 + "-" + EventParam2 + " Range";
                     break;
                 case "10":
-                    return "Within " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + " Range OOC LoS";
+                    return "Within " + EventParam1 + "-" + EventParam2 + " Range OOC LoS";
                     break;
                 case "11":
                     return "On Respawn";
                     break;
                 case "12":
-                    return "Target Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + "% HP";
+                    return "Target Between " + EventParam1 + "-" + EventParam2 + "% HP";
                     break;
                 case "13":
-                    return "On Victim Casting '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    return "On Victim Casting '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     break;
                 case "14":
-                    return "On Friendly at '" + Lines[id].event_param1 + "' HP";
+                    return "On Friendly at '" + EventParam1 + "' HP";
                     break;
                 case "15":
                     return "On Friendly CCed";
                     break;
                 case "16":
-                    return "On Friendly Missing Buff '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    return "On Friendly Missing Buff '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     break;
                 case "17":
-                    return "On Summon '<a href='http://wowhead.com/npc=" + Lines[id].event_param1 + "'>" + getCreatureName(Lines[id].event_param1) + "</a>'";
+                    return "On Summon '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>'";
                     break;
                 case "18":
-                    return "Target Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + "% MP";
+                    return "Target Between " + EventParam1 + "-" + EventParam2 + "% MP";
                     break;
                 case "19":
-                    return "On Quest '<a href='http://wowhead.com/quest=" + Lines[id].event_param1 + "'>" + getQuestName(Lines[id].event_param1) + "</a>' Accepted";
+                    return "On Quest '<a href='http://wowhead.com/quest=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Accepted";
                     break;
                 case "20":
-                    return "On Quest '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getQuestName(Lines[id].event_param1) + "</a>' Rewarded";
+                    return "On Quest '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Rewarded";
                     break;
                 case "21":
                     return "On Reached Home";
                     break;
                 case "22":
-                    return "On Received Emote " + Lines[id].event_param1;
+                    return "On Received Emote " + EventParam1;
                     break;
                 case "23":
-                    if (Lines[id].event_param2 > "0") {
-                        return "On Has Aura '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
-                    } else if (Lines[id].event_param2 == "0") {
-                        return "On Missing Aura '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    if (EventParam2 > "0") {
+                        return "On Has Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
+                    } else if (EventParam2 == "0") {
+                        return "On Missing Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     } else {
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
                     }
                     break;
                 case "24":
-                    if (Lines[id].event_param2 > "0") {
-                        return "On Target Buffed With '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
-                    } else if (Lines[id].event_param2 == "0") {
-                        return "On Target Missing Aura '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    if (EventParam2 > "0") {
+                        return "On Target Buffed With '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
+                    } else if (EventParam2 == "0") {
+                        return "On Target Missing Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     } else {
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
@@ -495,19 +360,19 @@
                     return "On Target Charmed";
                     break;
                 case "31":
-                    return "On Target Spellhit '<a href='http://wowhead.com/spell=" + Lines[id].event_param1 + "'>" + getSpellName(Lines[id].event_param1) + "</a>'";
+                    return "On Target Spellhit '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
                     break;
                 case "32":
-                    return "On Damaged Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2;
+                    return "On Damaged Between " + EventParam1 + "-" + EventParam2;
                     break;
                 case "33":
-                    return "On Damaged Target Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2;
+                    return "On Damaged Target Between " + EventParam1 + "-" + EventParam2;
                     break;
                 case "34":
-                    return "On Reached Point " + Lines[id].event_param2;
+                    return "On Reached Point " + EventParam2;
                     break;
                 case "35":
-                    return "On Summon '<a href='http://wowhead.com/npc=" + Lines[id].event_param1 + "'>" + getCreatureName(Lines[id].event_param1) + "</a>' Despawned";
+                    return "On Summon '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>' Despawned";
                     break;
                 case "36":
                     return "On Corpse Removed";
@@ -516,13 +381,13 @@
                     return "On AI Initialize";
                     break;
                 case "38":
-                    return "On Data Set " + Lines[id].event_param1 + " " + Lines[id].event_param2;
+                    return "On Data Set " + EventParam1 + " " + EventParam2;
                     break;
                 case "39":
-                    return "On Waypoint " + Lines[id].event_param1 + " Started";
+                    return "On Waypoint " + EventParam1 + " Started";
                     break;
                 case "40":
-                    return "On Waypoint " + Lines[id].event_param1 + " Reached";
+                    return "On Waypoint " + EventParam1 + " Reached";
                     break;
                 case "41":
                     return "On Transport Player Added";
@@ -558,28 +423,28 @@
                     return "On Quest Failed";
                     break;
                 case "52":
-                    return "On Text " + Lines[id].event_param1 + " Over";
+                    return "On Text " + EventParam1 + " Over";
                     break;
                 case "53":
-                    return "On Received Heal Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2;
+                    return "On Received Heal Between " + EventParam1 + "-" + EventParam2;
                     break;
                 case "54":
                     return "On Just Summoned";
                     break;
                 case "55":
-                    return "On Waypoint " + Lines[id].event_param1 + " Paused";
+                    return "On Waypoint " + EventParam1 + " Paused";
                     break;
                 case "56":
-                    return "On Waypoint " + Lines[id].event_param1 + " Resumed";
+                    return "On Waypoint " + EventParam1 + " Resumed";
                     break;
                 case "57":
-                    return "On Waypoint " + Lines[id].event_param1 + " Stopped";
+                    return "On Waypoint " + EventParam1 + " Stopped";
                     break;
                 case "58":
-                    return "On Waypoint " + Lines[id].event_param1 + " Ended";
+                    return "On Waypoint " + EventParam1 + " Ended";
                     break;
                 case "59":
-                    return "On Timed Event " + Lines[id].event_param1 + " Triggered";
+                    return "On Timed Event " + EventParam1 + " Triggered";
                     break;
                 case "60":
                     return "On Update";
@@ -597,7 +462,7 @@
                     return generateEventComment(Event);
                     break;
                 case "62":
-                    return "On Gossip Option " + Lines[id].event_param2 + " Selected";
+                    return "On Gossip Option " + EventParam2 + " Selected";
                     break;
                 case "63":
                     return "On Just Created";
@@ -615,25 +480,25 @@
                     return "On Behind Target";
                     break;
                 case "68":
-                    return "On Game Event " + Lines[id].event_param1 + " Started";
+                    return "On Game Event " + EventParam1 + " Started";
                     break;
                 case "69":
-                    return "On Game Event " + Lines[id].event_param1 + " Ended";
+                    return "On Game Event " + EventParam1 + " Ended";
                     break;
                 case "70":
                     return "On GO State Changed";
                     break;
                 case "71":
-                    return "On Event " + Lines[id].event_param1 + " Inform";
+                    return "On Event " + EventParam1 + " Inform";
                     break;
                 case "72":
-                    return "On Action " + Lines[id].event_param1 + " Done";
+                    return "On Action " + EventParam1 + " Done";
                     break;
                 case "73":
                     return "On Spellclick";
                     break;
                 case "74":
-                    return "On Friendly Between " + Lines[id].event_param1 + "-" + Lines[id].event_param2 + "% HP";
+                    return "On Friendly Between " + EventParam1 + "-" + EventParam2 + "% HP";
                     break;
                 case "75":
                     return "On Distance To Creature";
@@ -642,15 +507,15 @@
                     return "On Distance To GO";
                     break;
                 case "77":
-                    return "On Counter Set " + Lines[id].event_param1;
+                    return "On Counter Set " + EventParam1;
                     break;
                 case "100":
-                    return "On Friendly Killed In " + Lines[id].event_param1 + " Range";
+                    return "On Friendly Killed In " + EventParam1 + " Range";
                     break;
                 case "101":
-                    if (Lines[id].event_param2 == "0") {
+                    if (EventParam2 == "0") {
                         return "On Victim Not In LoS";
-                    } else if (Lines[id].event_param2 == "1") {
+                    } else if (EventParam2 == "1") {
                         return "On Victim In LoS";
                     } else {
                         alert("Error:\nLine " + id + ": 'Reverts' must be either 0 or 1.");
@@ -661,38 +526,44 @@
                     return "On Victim Died";
                     break;
                 case "103":
-                    return "On Enter Phase " + Lines[id].event_param1;
+                    return "On Enter Phase " + EventParam1;
                     break;
             }
         }
         function generateActionComment(id) {
+            var ActionParam1 = Lines[id].action_param1;
+            var ActionParam2 = Lines[id].action_param2;
+            var ActionParam3 = Lines[id].action_param3;
+            var ActionParam4 = Lines[id].action_param4;
+            var ActionParam5 = Lines[id].action_param5;
+            var ActionParam6 = Lines[id].action_param6;
             switch (Lines[id].action_type) {
                 case "0":
                     return "No Action Type";
                     break;
                 case "1":
-                    return "Say Line " + Lines[id].action_param1;
+                    return "Say Line " + ActionParam1;
                     break;
                 case "2":
-                    return "Set Faction " + Lines[id].action_param1;
+                    return "Set Faction " + ActionParam1;
                     break;
                 case "3":
-                    return "Morph To '" + Lines[id].action_param1 + "'";
+                    return "Morph To '" + ActionParam1 + "'";
                     break;
                 case "4":
-                    return "Play Sound " + Lines[id].action_param1;
+                    return "Play Sound " + ActionParam1;
                     break;
                 case "5":
-                    return "Play Emote " + Lines[id].action_param1;
+                    return "Play Emote " + ActionParam1;
                     break;
                 case "6":
-                    return "Fail Quest '<a href='http://wowhead.com/quest=" + Lines[id].action_param1 + "'>" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Fail Quest '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "7":
-                    return "Add Quest 'http://wowhead.com/quest=" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Add Quest 'http://wowhead.com/quest=" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "8":
-                    switch (Lines[id].action_param2) {
+                    switch (ActionParam2) {
                         case "0":
                             return "Set React State Passive";
                             break;
@@ -710,20 +581,20 @@
                     return "Activate GO";
                     break;
                 case "10":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 != "0") {
-                        return "Play Random Emote (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "," + Lines[id].action_param4 + "," + Lines[id].action_param5 + "&" + Lines[id].action_param6 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 == "0") {
-                        return "Play Random Emote (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "," + Lines[id].action_param4 + "&" + Lines[id].action_param5 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Play Random Emote (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "&" + Lines[id].action_param4 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Play Random Emote (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "&" + Lines[id].action_param3 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Play Random Emote (" + Lines[id].action_param1 + "&" + Lines[id].action_param2 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
+                        return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + "&" + ActionParam6 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0") {
+                        return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "&" + ActionParam5 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "&" + ActionParam4 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "&" + ActionParam3 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Play Random Emote (" + ActionParam1 + "&" + ActionParam2 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Emote id 2' should not be 0.");
                         return "Error";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Emote id 1 & 2' should not be 0.");
                         return "Error";
                     } else {
@@ -732,270 +603,82 @@
                     }
                     break;
                 case "11":
-                    return "Cast '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "12":
-                    return "Summon '<a href='http://wowhead.com/npc=" + Lines[id].action_param1 + "'>" + getCreatureName(Lines[id].action_param1) + "</a>'";
+                    return "Summon '<a href='http://wowhead.com/npc=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
                     break;
                 case "13":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0") {
-                        return "Increase Target Threat By " + Lines[id].action_param1 + "%";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 != "0") {
-                        return "Decrease Target Threat By " + Lines[id].action_param1 + "%";
+                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                        return "Increase Target Threat By " + ActionParam1 + "%";
+                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                        return "Decrease Target Threat By " + ActionParam1 + "%";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "14":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0") {
-                        return "Increase All Threat By " + Lines[id].action_param1 + "%";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 != "0") {
-                        return "Decrease All Threat By " + Lines[id].action_param1 + "%";
+                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                        return "Increase All Threat By " + ActionParam1 + "%";
+                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                        return "Decrease All Threat By " + ActionParam1 + "%";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "15":
-                    return "Quest Credit ''<a href='http://wowhead.com/quest" + Lines[id].action_param1 + "'>" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Quest Credit ''<a href='http://wowhead.com/quest" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "16":
                     return "Unused Action Type 16";
                     break;
                 case "17":
-                    return "Set Emote State " + Lines[id].action_param1;
+                    return "Set Emote State " + ActionParam1;
                     break;
                 case "18":
                 case "19":
                     var Comment = "Set Unit Flag ";
-                    var Binary = "0x" + Hex(Lines[id].action_param1);
-                    if (0x1 & Binary) {
-                        Comment += "Server Controlled";
-                    }
-                    if (0x2 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Non Attackable";
-                        } else {
-                            Comment += "Non Attackable"
-                        }
-                    }
-                    if (0x4 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Disable Move";
-                        } else {
-                            Comment += "Disable Move"
-                        }
-                    }
-                    if (0x8 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", PvP Attackable";
-                        } else {
-                            Comment += "PvP Attackable"
-                        }
-                    }
-                    if (0x10 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Rename";
-                        } else {
-                            Comment += "Rename"
-                        }
-                    }
-                    if (0x20 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Preparation";
-                        } else {
-                            Comment += "Preparation"
-                        }
-                    }
-                    if (0x40 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK6";
-                        } else {
-                            Comment += "UNK6"
-                        }
-                    }
-                    if (0x80 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Not Attackable 1";
-                        } else {
-                            Comment += "Not Attackable 1"
-                        }
-                    }
-                    if (0x100 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Immune to PC";
-                        } else {
-                            Comment += "Immune to PC"
-                        }
-                    }
-                    if (0x200 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Immune to NPC";
-                        } else {
-                            Comment += "Immune to NPC"
-                        }
-                    }
-                    if (0x400 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Looting";
-                        } else {
-                            Comment += "Looting"
-                        }
-                    }
-                    if (0x800 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Pet In Combat";
-                        } else {
-                            Comment += "Pet In Combat"
-                        }
-                    }
-                    if (0x1000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", PvP";
-                        } else {
-                            Comment += "PvP"
-                        }
-                    }
-                    if (0x2000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Silenced";
-                        } else {
-                            Comment += "Silenced"
-                        }
-                    }
-                    if (0x4000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK 14";
-                        } else {
-                            Comment += "UNK 14"
-                        }
-                    }
-                    if (0x8000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK 15";
-                        } else {
-                            Comment += "UNK 15"
-                        }
-                    }
-                    if (0x10000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Not PL Spell Target";
-                        } else {
-                            Comment += "Not PL Spell Target"
-                        }
-                    }
-                    if (0x20000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Pacified";
-                        } else {
-                            Comment += "Pacified"
-                        }
-                    }
-                    if (0x40000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Stunned";
-                        } else {
-                            Comment += "Stunned"
-                        }
-                    }
-                    if (0x80000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", In Combat";
-                        } else {
-                            Comment += "In Combat"
-                        }
-                    }
-                    if (0x100000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Taxi Flight";
-                        } else {
-                            Comment += "Taxi Flight"
-                        }
-                    }
-                    if (0x200000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Disarmed";
-                        } else {
-                            Comment += "Disarmed"
-                        }
-                    }
-                    if (0x400000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Confused";
-                        } else {
-                            Comment += "Confused"
-                        }
-                    }
-                    if (0x800000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Fleeing";
-                        } else {
-                            Comment += "Fleeing"
-                        }
-                    }
-                    if (0x1000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Player Controlled";
-                        } else {
-                            Comment += "Player Controlled"
-                        }
-                    }
-                    if (0x2000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Not Selectable";
-                        } else {
-                            Comment += "Not Selectable"
-                        }
-                    }
-                    if (0x4000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Skinnable";
-                        } else {
-                            Comment += "Skinnable"
-                        }
-                    }
-                    if (0x8000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Mount";
-                        } else {
-                            Comment += "Mount"
-                        }
-                    }
-                    if (0x10000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK 28";
-                        } else {
-                            Comment += "UNK 28"
-                        }
-                    }
-                    if (0x20000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK 29";
-                        } else {
-                            Comment += "UNK 29"
-                        }
-                    }
-                    if (0x40000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", Sheathe";
-                        } else {
-                            Comment += "Sheathe"
-                        }
-                    }
-                    if (0x80000000 & Binary) {
-                        if (Comment != "Set Unit Flag ") {
-                            Comment += ", UNK 31";
-                        } else {
-                            Comment += "UNK 31"
-                        }
-                    }
+                    var Binary = "0x" + Hex(ActionParam1);
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1, 'Server Controlled');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2, 'Non Attackable');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4, 'Diasable Move');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8, 'PvP Attackable');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10, 'Rename');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20, 'Preparation');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40, 'Unknown 6');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80, 'Not Atackable 1');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x100, 'Immune to PC');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x200, 'Immune to NPC');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x400, 'Looting');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x800, 'Pet In Combat');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1000, 'PvP');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2000, 'Silenced');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4000, 'Unkown 14');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8000, 'Unknown 15');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10000, 'Not PL Spell Target');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20000, 'Pacified');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40000, 'Stunned');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80000, 'In Combat');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x100000, 'Taxi Flight');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x200000, 'Disarmed');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x400000, 'Confused');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x800000, 'Fleeing');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1000000, 'Player Controlled');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2000000, 'Not Selectable');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4000000, 'Skinnable');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8000000, 'Mount');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10000000, 'Unknown 28');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20000000, 'Unknown 29');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40000000, 'Sheathe');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80000000, 'Unknown 31');
                     return replaceComma(Comment);
                     break;
                 case "20":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Stop Attacking";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Start Attacking";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1003,9 +686,9 @@
                     }
                     break;
                 case "21":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Disable Combat Movement";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Enable Combat Movement";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1013,13 +696,13 @@
                     }
                     break;
                 case "22":
-                    return "Set Event Phase " + Lines[id].action_param1;
+                    return "Set Event Phase " + ActionParam1;
                     break;
                 case "23":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0") {
-                        return "Increase Phase By " + Lines[id].action_param1;
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 != "0") {
-                        return "Decrease Phase By " + Lines[id].action_param1;
+                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                        return "Increase Phase By " + ActionParam1;
+                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                        return "Decrease Phase By " + ActionParam1;
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
@@ -1032,32 +715,32 @@
                     return "Flee For Assist";
                     break;
                 case "26":
-                    return "Quest Credit '<a href='http://wowhead.com/quest=" + Lines[id].action_param1 + "'>" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "27":
-                    return "Quest Credit '<a href='http://wowhead.com/quest=" + Lines[id].action_param1 + "'>" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "28":
-                    return "Remove Aura '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Remove Aura '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "29":
                     return "Follow Target";
                     break;
                 case "30":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 != "0") {
-                        return "Set Random Phase (" + getPower(Lines[id].action_param1) + ", " + getPower(Lines[id].action_param2) + ", " + getPower(Lines[id].action_param3) + ", " + getPower(Lines[id].action_param4) + ", " + getPower(Lines[id].action_param5) + " and " + getPower(Lines[id].action_param6) + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 == "0") {
-                        return "Set Random Phase (" + getPower(Lines[id].action_param1) + ", " + getPower(Lines[id].action_param2) + ", " + getPower(Lines[id].action_param3) + ", " + getPower(Lines[id].action_param4) + " and " + getPower(Lines[id].action_param5) + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Set Random Phase (" + getPower(Lines[id].action_param1) + ", " + getPower(Lines[id].action_param2) + ", " + getPower(Lines[id].action_param3) + " and " + getPower(Lines[id].action_param4) + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Set Random Phase (" + getPower(Lines[id].action_param1) + ", " + getPower(Lines[id].action_param2) + " and " + getPower(Lines[id].action_param3) + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Set Random Phase (" + getPower(Lines[id].action_param1) + " and " + getPower(Lines[id].action_param2) + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
+                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + ", " + getPower(ActionParam4) + ", " + getPower(ActionParam5) + " and " + getPower(ActionParam6) + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0") {
+                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + ", " + getPower(ActionParam4) + " and " + getPower(ActionParam5) + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + " and " + getPower(ActionParam4) + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + " and " + getPower(ActionParam3) + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Set Random Phase (" + getPower(ActionParam1) + " and " + getPower(ActionParam2) + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Phase index 2' should not be 0.");
                         return "Error";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Phase index 1 & 2' should not be 0.");
                         return "Error";
                     } else {
@@ -1066,8 +749,8 @@
                     }
                     break;
                 case "31":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0" && Lines[id].action_param1 != Lines[id].action_param2 && Lines[id].action_param2 > Lines[id].action_param1) {
-                        return "Set Phase Random Between " + Lines[id].action_param1 + "-" + Lines[id].action_param2;
+                    if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam1 != ActionParam2 && ActionParam2 > ActionParam1) {
+                        return "Set Phase Random Between " + ActionParam1 + "-" + ActionParam2;
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
@@ -1077,16 +760,16 @@
                     return "Reset GO";
                     break;
                 case "33":
-                    return "Quest Credit '<a href='http://wowhead.com/quest=" + Lines[id].action_param1 + "'>" + getQuestName(Lines[id].action_param1) + "</a>'";
+                    return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "34":
-                    return "Set Instance Data " + Lines[id].action_param1 + " to " + Lines[id].action_param2;
+                    return "Set Instance Data " + ActionParam1 + " to " + ActionParam2;
                     break;
                 case "35":
-                    return "Set Instance Data " + Lines[id].action_param1 + " to " + Lines[id].action_param2;
+                    return "Set Instance Data " + ActionParam1 + " to " + ActionParam2;
                     break;
                 case "36":
-                    return "Update Template To '<a href='http://wowhead.com/npc=" + Lines[id].action_param1 + "'>" + getCreatureName(Lines[id].action_param1) + "</a>'";
+                    return "Update Template To '<a href='http://wowhead.com/npc=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
                     break;
                 case "37":
                     return "Die";
@@ -1098,7 +781,7 @@
                     return "Call For Help";
                     break;
                 case "40":
-                    switch (Lines[id].action_param1) {
+                    switch (ActionParam1) {
                         case "0":
                             return "Set Sheath Unarmed";
                             break;
@@ -1113,31 +796,31 @@
                     }
                     break;
                 case "41":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Despawn Instant";
-                    } else if (Lines[id].action_param1 > "0") {
-                        return "Despawn In " + Lines[id].action_param1 + "ms";
+                    } else if (ActionParam1 > "0") {
+                        return "Despawn In " + ActionParam1 + "ms";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "42":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0") {
-                        return "Set Invincibility At " + Lines[id].action_param1 + " HP";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 != "0") {
-                        return "Set Invincibility At " + Lines[id].action_param1 + "% HP";
+                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                        return "Set Invincibility At " + ActionParam1 + " HP";
+                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                        return "Set Invincibility At " + ActionParam1 + "% HP";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "43":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0") {
-                        return "Mount To Creature '<a href='http://wowhead.com/npc=" + Lines[id].action_param1 + "'>" + getCreatureName(Lines[id].action_param1) + "</a>'";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 != "0") {
-                        return "Mount To Model " + Lines[id].action_param1;
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                        return "Mount To Creature '<a href='http://wowhead.com/npc=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
+                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                        return "Mount To Model " + ActionParam1;
+                    } else if (ActionParam1 == "0" && ActionParam2 == "0") {
                         return "Dismount";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1145,18 +828,18 @@
                     }
                     break;
                 case "44":
-                    return "Set Phase Mask " + Lines[id].action_param1;
+                    return "Set Phase Mask " + ActionParam1;
                     break;
                 case "45":
-                    return "Set Data " + Lines[id].action_param1 + " " + Lines[id].action_param2;
+                    return "Set Data " + ActionParam1 + " " + ActionParam2;
                     break;
                 case "46":
-                    return "Move Forward " + Lines[id].action_param1 + " Yards";
+                    return "Move Forward " + ActionParam1 + " Yards";
                     break;
                 case "47":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Visibility Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Visibility On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1164,9 +847,9 @@
                     }
                     break;
                 case "48":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Active Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Active On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1177,16 +860,16 @@
                     return "Start Attacking";
                     break;
                 case "50":
-                    return "Summon GO '<a href='http://wowhead.com/object=" + Lines[id].action_param1 + "'>" + getGOName(Lines[id].action_param1) + "</a>'";
+                    return "Summon GO '<a href='http://wowhead.com/object=" + ActionParam1 + "'>" + getGOName(ActionParam1) + "</a>'";
                     break;
                 case "51":
                     return "Kill Target";
                     break;
                 case "52":
-                    return "Activate Taxi Path " + Lines[id].action_param1;
+                    return "Activate Taxi Path " + ActionParam1;
                     break;
                 case "53":
-                    return "Start Waypoint " + Lines[id].action_param2;
+                    return "Start Waypoint " + ActionParam2;
                     break;
                 case "54":
                     return "Pause Waypoint";
@@ -1195,13 +878,13 @@
                     return "Stop Waypoint";
                     break;
                 case "56":
-                    return "Add Item '<a href='http://wowhead.com/item=" + Lines[id].action_param1 + "'>" + getItemName(Lines[id].action_param1) + "</a>' x" + Lines[id].action_param2;
+                    return "Add Item '<a href='http://wowhead.com/item=" + ActionParam1 + "'>" + getItemName(ActionParam1) + "</a>' x" + ActionParam2;
                     break;
                 case "57":
-                    return "Remove Item '<a href='http://wowhead.com/item=" + Lines[id].action_param1 + "'>" + getItemName(Lines[id].action_param1) + "</a>' x" + Lines[id].action_param2;
+                    return "Remove Item '<a href='http://wowhead.com/item=" + ActionParam1 + "'>" + getItemName(ActionParam1) + "</a>' x" + ActionParam2;
                     break;
                 case "58":
-                    switch (Lines[id].action_param1) {
+                    switch (ActionParam1) {
                         case "0":
                             return "Install Basic Template";
                             break;
@@ -1225,9 +908,9 @@
                     }
                     break;
                 case "59":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Run Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Run On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1235,9 +918,9 @@
                     }
                     break;
                 case "60":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Fly Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Fly On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1245,9 +928,9 @@
                     }
                     break;
                 case "61":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Swim Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Swim On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1273,7 +956,7 @@
                     return "Create Timed Event";
                     break;
                 case "68":
-                    return "Play Movie " + Lines[id].action_param1;
+                    return "Play Movie " + ActionParam1;
                     break;
                 case "69":
                     return "Move To Pos";
@@ -1288,13 +971,13 @@
                     return "Close Gossip";
                     break;
                 case "73":
-                    return "Trigger Timed Event " + Lines[id].action_param1;
+                    return "Trigger Timed Event " + ActionParam1;
                     break;
                 case "74":
-                    return "Remove Timed Event " + Lines[id].action_param1;
+                    return "Remove Timed Event " + ActionParam1;
                     break;
                 case "75":
-                    return "Add Aura '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Add Aura '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "76":
                     return "Override Base Object Script";
@@ -1309,405 +992,139 @@
                     return "Set Ranged Movement";
                     break;
                 case "80":
-                    return "Run Script <a href='/smartai/script/" + Lines[id].action_param1 + "'>" + Lines[id].action_param1 + "</a>";
+                    return "Run Script <a href='/smartai/script/" + ActionParam1 + "'>" + ActionParam1 + "</a>";
                     break;
                 case "81":
                 case "82":
                 case "83":
-                    Binary = "0x" + Hex(Lines[id].action_param1);
+                    Binary = "0x" + Hex(ActionParam1);
                     Comment = "Set NPC Flag ";
-                    if (0x1 & Binary) {
-                        Comment += "Gossip"
-                    }
-                    if (0x2 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Questgiver";
-                        } else {
-                            Comment += "Questgiver";
-                        }
-                    }
-                    if (0x4 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", UNK 1";
-                        } else {
-                            Comment += "UNK 1";
-                        }
-                    }
-                    if (0x8 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", UNK 2";
-                        } else {
-                            Comment += "UNK 2";
-                        }
-                    }
-                    if (0x10 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Trainer";
-                        } else {
-                            Comment += "Trainer";
-                        }
-                    }
-                    if (0x20 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Trainer Class";
-                        } else {
-                            Comment += "Trainer Class";
-                        }
-                    }
-                    if (0x40 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Trainer Profession";
-                        } else {
-                            Comment += "Trainer Profession";
-                        }
-                    }
-                    if (0x80 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Vendor";
-                        } else {
-                            Comment += "Vendor";
-                        }
-                    }
-                    if (0x100 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Vendor Ammo";
-                        } else {
-                            Comment += "Vendor Ammo";
-                        }
-                    }
-                    if (0x200 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Vendor Food";
-                        } else {
-                            Comment += "Vendor Food";
-                        }
-                    }
-                    if (0x400 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Vendor Poison";
-                        } else {
-                            Comment += "Vendor Poison";
-                        }
-                    }
-                    if (0x800 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Vendor Reagent";
-                        } else {
-                            Comment += "Vendor Reagent";
-                        }
-                    }
-                    if (0x1000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Repair";
-                        } else {
-                            Comment += "Repair";
-                        }
-                    }
-                    if (0x2000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Flightmaster";
-                        } else {
-                            Comment += "Flightmaster";
-                        }
-                    }
-                    if (0x4000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Spirithealer";
-                        } else {
-                            Comment += "Spirithealer";
-                        }
-                    }
-                    if (0x8000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Spiritguide";
-                        } else {
-                            Comment += "Spiritguide";
-                        }
-                    }
-                    if (0x10000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Innkeeper";
-                        } else {
-                            Comment += "Innkeeper";
-                        }
-                    }
-                    if (0x20000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Banker";
-                        } else {
-                            Comment += "Banker";
-                        }
-                    }
-                    if (0x40000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Petitioner";
-                        } else {
-                            Comment += "Petitioner";
-                        }
-                    }
-                    if (0x80000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Tabard Designer";
-                        } else {
-                            Comment += "Tabard Designer";
-                        }
-                    }
-                    if (0x100000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Battle Master";
-                        } else {
-                            Comment += "Battle Master";
-                        }
-                    }
-                    if (0x200000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Auctioneer";
-                        } else {
-                            Comment += "Auctioneer";
-                        }
-                    }
-                    if (0x400000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Stable Master";
-                        } else {
-                            Comment += "Stable Master";
-                        }
-                    }
-                    if (0x800000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Guild Banker";
-                        } else {
-                            Comment += "Guild Banker";
-                        }
-                    }
-                    if (0x1000000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Spellclick";
-                        } else {
-                            Comment += "Spellclick";
-                        }
-                    }
-                    if (0x4000000 & Binary) {
-                        if (Comment != "Set NPC Flag ") {
-                            Comment += ", Mailbox";
-                        } else {
-                            Comment += "Mailbox";
-                        }
-                    }
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x1, 'Gossip');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x2, 'Quest Giver');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x4, 'Unknown 1');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x8, 'Unknown 2');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x10, 'Trainer');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x20, 'Trainer Class');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x40, 'Trainer Profession');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x80, 'Vendor');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x100, 'Vendor Ammo');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x200, 'Vendor Food');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x400, 'Vendor Poison');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x800, 'Vendor Reagent');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x1000, 'Repair');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x2000, 'Flightmaster');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x4000, 'Spirit Healer');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x8000, 'Spirit Guide');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x10000, 'Innkeeper');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x20000, 'Banker');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x40000, 'Petitioner');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x80000, 'Tabard Designer');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x100000, 'Battle Master');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x200000, 'Auctioneer');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x400000, 'Stable Master');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x800000, 'Guild Banker');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x1000000, 'Spellclick');
+                    Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x4000000, 'Mailbox');
                     return replaceComma(Comment);
                     break;
                 case "84":
-                    return "Say Line " + Lines[id].action_param1;
+                    return "Say Line " + ActionParam1;
                     break;
                 case "85":
-                    return "Invoker Cast '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Invoker Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "86":
-                    return "Cross Cast '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Cross Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "87":
                     return "Run Random Script";
                     break;
                 case "88":
-                    return "Run Random Script Between " + Lines[id].action_param1 + "-" + Lines[id].action_param2;
+                    return "Run Random Script Between " + ActionParam1 + "-" + ActionParam2;
                     break;
                 case "89":
                     return "Start Random Movement";
                     break;
                 case "90":
                 case "91":
-                    Binary = "0x" + Hex(Lines[id].action_param1);
+                    Binary = "0x" + Hex(ActionParam1);
                     Comment = "Set Flag ";
-                    if (Lines[id].action_param2 == "0") {
-                        switch (Lines[id].action_param1) {
-                            case "0":
-                                return "Set Flag Stand Up";
-                                break;
-                            case "1":
-                                return "Set Flag Sit Down";
-                                break;
-                            case "2":
-                                return "Set Flag Sit Down Chair";
-                                break;
-                            case "3":
-                                return "Set Flag Sleep";
-                                break;
-                            case "4":
-                                return "Set Flag Sit Low Chair";
-                                break;
-                            case "5":
-                                return "Set Flag Sit Medium Chair";
-                                break;
-                            case "6":
-                                return "Set Flag Sit High Chair";
-                                break;
-                            case "7":
-                                return "Set Flag Dead";
-                                break;
-                            case "8":
-                                return "Set Flag Kneel";
-                                break;
-                            case "9":
-                                return "Set Flag Submerged";
-                                break;
-                            default:
-                                return;
+                    if (ActionParam2 == "0") {
+                        switch (ActionParam1) {
+                            case "0": return "Set Flag Stand Up"; break;
+                            case "1": return "Set Flag Sit Down"; break;
+                            case "2": return "Set Flag Sit Down Chair"; break;
+                            case "3": return "Set Flag Sleep"; break;
+                            case "4": return "Set Flag Sit Low Chair"; break;
+                            case "5": return "Set Flag Sit Medium Chair"; break;
+                            case "6": return "Set Flag Sit High Chair"; break;
+                            case "7": return "Set Flag Dead"; break;
+                            case "8": return "Set Flag Kneel"; break;
+                            case "9": return "Set Flag Submerged"; break;
+                            default: return;
                         }
                     }
-                    if (Lines[id].action_param2 == "2") {
-                        if (0x1 & Binary) {
-                            Comment += "UNK1"
-                        }
-                        if (0x2 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", Creep";
-                            } else {
-                                Comment += "Creep";
-                            }
-                        }
-                        if (0x4 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", Untrackable";
-                            } else {
-                                Comment += "Untrackable";
-                            }
-                        }
-                        if (0x8 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 4";
-                            } else {
-                                Comment += "UNK 4";
-                            }
-                        }
-                        if (0x10 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 5";
-                            } else {
-                                Comment += "UNK 5";
-                            }
-                        }
-                        if (0xFF & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", All";
-                            } else {
-                                Comment += "All";
-                            }
-                        }
+                    if (ActionParam2 == "2") {
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'Unknown 1');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Creep');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Untrackable');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x8, 'Unknown 4');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x10, 'Unknown 5');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0xFF, 'All');
                         return replaceComma(Comment);
                     }
-                    if (Lines[id].action_param2 == "3") {
-                        if (0x1 & Binary) {
-                            Comment += "Always Stand"
-                        }
-                        if (0x2 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", Hover";
-                            } else {
-                                Comment += "Hover";
-                            }
-                        }
-                        if (0x4 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 3";
-                            } else {
-                                Comment += "UNK 3";
-                            }
-                        }
-                        if (0xFF & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", All";
-                            } else {
-                                Comment += "All";
-                            }
-                        }
+                    if (ActionParam2 == "3") {
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'Always Stand');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Hover');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Unknown 3');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0xFF, 'All');
                         return replaceComma(Comment);
                     }
                     break;
                 case "92":
-                    return "Interrupt Spell '<a href='http://wowhead.com/spell=" + Lines[id].action_param1 + "'>" + getSpellName(Lines[id].action_param1) + "</a>'";
+                    return "Interrupt Spell '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                     break;
                 case "93":
-                    return "Send Custom Animation " + Lines[id].action_param1;
+                    return "Send Custom Animation " + ActionParam1;
                     break;
                 case "94":
                 case "95":
                 case "96":
-                    Binary = "0x" + Hex(Lines[id].action_param1);
+                    Binary = "0x" + Hex(ActionParam1);
                     Comment = "Set Flag ";
-                    if (0x1 & Binary) {
-                        Comment += "Lootable"
-                    }
-                    if (0x2 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Track Unit";
-                        } else {
-                            Comment += "Track Unit";
-                        }
-                    }
-                    if (0x4 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Tapped";
-                        } else {
-                            Comment += "Tapped";
-                        }
-                    }
-                    if (0x8 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Tapped By Player";
-                        } else {
-                            Comment += "Tapped By Player";
-                        }
-                    }
-                    if (0x10 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Special Info";
-                        } else {
-                            Comment += "Special Info";
-                        }
-                    }
-                    if (0x20 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Dead";
-                        } else {
-                            Comment += "Dead";
-                        }
-                    }
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'Lootable');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Track Unit');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Tapped');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x8, 'Tapped By Player');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x10, 'Special Info');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x20, 'Dead');
                     return replaceComma(Comment);
                     break;
                 case "97":
                     return "Jump To Pos";
                     break;
                 case "98":
-                    return "Send Gossip Menu " + Lines[id].action_param1;
+                    return "Send Gossip Menu " + ActionParam1;
                     break;
                 case "99":
-                    switch (Lines[id].action_param1) {
-                        case "0":
-                            return "Set Lootstate Not Ready";
-                            break;
-                        case "1":
-                            return "Set Lootstate Ready";
-                            break;
-                        case "2":
-                            return "Set Lootstate Activated";
-                            break;
-                        case "3":
-                            return "Set Lootstate Deactivated";
-                            break;
-                        default:
-                            return;
+                    switch (ActionParam1) {
+                        case "0": return "Set Lootstate Not Ready"; break;
+                        case "1": return "Set Lootstate Ready"; break;
+                        case "2": return "Set Lootstate Activated";  break;
+                        case "3": return "Set Lootstate Deactivated";  break;
+                        default: return;
                     }
                     break;
                 case "100":
-                    return "Send Target " + Lines[id].action_param1;
+                    return "Send Target " + ActionParam1;
                     break;
                 case "101":
                     return "Set Home Position";
                     break;
                 case "102":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Health Regeneration Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Health Regeneration On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1715,9 +1132,9 @@
                     }
                     break;
                 case "103":
-                    if (Lines[id].action_param1 == "0") {
+                    if (ActionParam1 == "0") {
                         return "Set Root Off";
-                    } else if (Lines[id].action_param1 == "1") {
+                    } else if (ActionParam1 == "1") {
                         return "Set Root On";
                     } else {
                         alert("Error:\nLine " + id + ": something is wrong.");
@@ -1727,142 +1144,72 @@
                 case "104":
                 case "105":
                 case "106":
-                    Binary = "0x" + Hex(Lines[id].action_param1);
+                    Binary = "0x" + Hex(ActionParam1);
                     Comment = "Set Flag ";
-                    if (0x1 & Binary) {
-                        Comment += "In Use"
-                    }
-                    if (0x2 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Locked";
-                        } else {
-                            Comment += "Locked";
-                        }
-                    }
-                    if (0x4 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Interact Cond";
-                        } else {
-                            Comment += "Interact Cond";
-                        }
-                    }
-                    if (0x8 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Transport";
-                        } else {
-                            Comment += "Transport";
-                        }
-                    }
-                    if (0x10 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Not Selectable";
-                        } else {
-                            Comment += "Not Selectable";
-                        }
-                    }
-                    if (0x20 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", No Despawn";
-                        } else {
-                            Comment += "No Despawn";
-                        }
-                    }
-                    if (0x40 & Binary) {
-                        if (Comment != "Set Flag ") {
-                            Comment += ", Triggered";
-                        } else {
-                            Comment += "Triggered";
-                        }
-                    }
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'In Use');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Locked');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Interact Cond');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x8, 'Transport');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x10, 'Not Selectable');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x20, 'No Despawn');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x40, 'Triggered');
+                    Comment = generateBitComment('Set Flag ', Comment, Binary, 0x80, 'Vendor');
                     return replaceComma(Comment);
                     break;
                 case "107":
-                    return "Summon Group " + Lines[id].action_param1;
+                    return "Summon Group " + ActionParam1;
                     break;
                 case "108":
-                    switch (Lines[id].action_param1) {
-                        case "0":
-                            return "Set Mana To " + Lines[id].action_param2;
-                            break;
-                        case "1":
-                            return "Set Rage To " + Lines[id].action_param2;
-                            break;
-                        case "2":
-                            return "Set Focus To " + Lines[id].action_param2;
-                            break;
-                        case "3":
-                            return "Set Happiness To " + Lines[id].action_param2;
-                            break;
-                        case "5":
-                            return "Set Health To " + Lines[id].action_param2;
-                            break;
-                        default:
-                            return;
+                    switch (ActionParam1) {
+                        case "0": return "Set Mana To " + ActionParam2; break;
+                        case "1": return "Set Rage To " + ActionParam2; break;
+                        case "2": return "Set Focus To " + ActionParam2; break;
+                        case "3": return "Set Happiness To " + ActionParam2; break;
+                        case "5": return "Set Health To " + ActionParam2; break;
+                        default: return;
                     }
                     break;
                 case "109":
-                    switch (Lines[id].action_param1) {
-                        case "0":
-                            return "Add " + Lines[id].action_param2 + "Mana";
-                            break;
-                        case "1":
-                            return "Add " + Lines[id].action_param2 + "Rage";
-                            break;
-                        case "2":
-                            return "Add " + Lines[id].action_param2 + "Focus";
-                            break;
-                        case "3":
-                            return "Add " + Lines[id].action_param2 + "Happiness";
-                            break;
-                        case "5":
-                            return "Add " + Lines[id].action_param2 + "Health";
-                            break;
-                        default:
-                            return;
+                    switch (ActionParam1) {
+                        case "0": return "Add " + ActionParam2 + "Mana"; break;
+                        case "1": return "Add " + ActionParam2 + "Rage"; break;
+                        case "2": return "Add " + ActionParam2 + "Focus"; break;
+                        case "3": return "Add " + ActionParam2 + "Happiness"; break;
+                        case "5": return "Add " + ActionParam2 + "Health"; break;
+                        default: return;
                     }
                     break;
                 case "110":
-                    switch (Lines[id].action_param1) {
-                        case "0":
-                            return "Remove " + Lines[id].action_param2 + "Mana";
-                            break;
-                        case "1":
-                            return "Remove " + Lines[id].action_param2 + "Rage";
-                            break;
-                        case "2":
-                            return "Remove " + Lines[id].action_param2 + "Focus";
-                            break;
-                        case "3":
-                            return "Remove " + Lines[id].action_param2 + "Happiness";
-                            break;
-                        case "5":
-                            return "Remove " + Lines[id].action_param2 + "Health";
-                            break;
-                        default:
-                            return;
+                    switch (ActionParam1) {
+                        case "0": return "Remove " + ActionParam2 + "Mana"; break;
+                        case "1": return "Remove " + ActionParam2 + "Rage"; break;
+                        case "2": return "Remove " + ActionParam2 + "Focus"; break;
+                        case "3": return "Remove " + ActionParam2 + "Happiness"; break;
+                        case "5": return "Remove " + ActionParam2 + "Health"; break;
+                        default: return;
                     }
                     break;
                 case "111":
-                    return "Stop Game Event " + Lines[id].action_param1;
+                    return "Stop Game Event " + ActionParam1;
                     break;
                 case "112":
-                    return "Start Game Event " + Lines[id].action_param1;
+                    return "Start Game Event " + ActionParam1;
                     break;
                 case "113":
-                    if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 != "0") {
-                        return "Pick Closest Waypoint (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "," + Lines[id].action_param4 + "," + Lines[id].action_param5 + "&" + Lines[id].action_param6 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 != "0" && Lines[id].action_param6 == "0") {
-                        return "Pick Closest Waypoint (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "," + Lines[id].action_param4 + "&" + Lines[id].action_param5 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 != "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Pick Closest Waypoint (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "," + Lines[id].action_param3 + "&" + Lines[id].action_param4 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 != "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Pick Closest Waypoint (" + Lines[id].action_param1 + "," + Lines[id].action_param2 + "&" + Lines[id].action_param3 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 != "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
-                        return "Pick Closest Waypoint (" + Lines[id].action_param1 + "&" + Lines[id].action_param2 + ")";
-                    } else if (Lines[id].action_param1 != "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
+                        return "Pick Closest Waypoint (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + "&" + ActionParam6 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0") {
+                        return "Pick Closest Waypoint (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "&" + ActionParam5 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Pick Closest Waypoint (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "&" + ActionParam4 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Pick Closest Waypoint (" + ActionParam1 + "," + ActionParam2 + "&" + ActionParam3 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                        return "Pick Closest Waypoint (" + ActionParam1 + "&" + ActionParam2 + ")";
+                    } else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Phase index 2' should not be 0.");
                         return "Error";
-                    } else if (Lines[id].action_param1 == "0" && Lines[id].action_param2 == "0" && Lines[id].action_param3 == "0" && Lines[id].action_param4 == "0" && Lines[id].action_param5 == "0" && Lines[id].action_param6 == "0") {
+                    } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Phase index 1 & 2' should not be 0.");
                         return "Error";
                     } else {
@@ -1872,74 +1219,29 @@
                     break;
                 case "150":
                 case "151":
-                    Binary = "0x" + Hex(Lines[id].action_param1);
+                    Binary = "0x" + Hex(ActionParam1);
                     Comment = "Set Flag ";
-                    if (Lines[id].action_param2 == "0") {
-                        switch (Lines[id].action_param1) {
-                            case "0":
-                                return "Set Sheathe Unarmed";
-                                break;
-                            case "1":
-                                return "Set Sheathe Melee";
-                                break;
-                            case "2":
-                                return "Set Sheathe Ranged";
-                                break;
-                            default:
-                                return;
+                    if (ActionParam2 == "0") {
+                        switch (ActionParam1) {
+                            case "0": return "Set Sheathe Unarmed"; break;
+                            case "1": return "Set Sheathe Melee"; break;
+                            case "2": return "Set Sheathe Ranged"; break;
+                            default: return;
                         }
                     }
-                    if (Lines[id].action_param2 == "1") {
-                        if (0x1 & Binary) {
-                            Comment += "UNK1"
-                        }
-                        if (0x2 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK2";
-                            } else {
-                                Comment += "UNK2";
-                            }
-                        }
-                        if (0x4 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", Sanctuary";
-                            } else {
-                                Comment += "Sanctuary";
-                            }
-                        }
-                        if (0x8 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", Auras";
-                            } else {
-                                Comment += "Auras";
-                            }
-                        }
-                        if (0x10 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 5";
-                            } else {
-                                Comment += "UNK 5";
-                            }
-                        }
-                        if (0x20 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 6";
-                            } else {
-                                Comment += "UNK 6";
-                            }
-                        }
-                        if (0x40 & Binary) {
-                            if (Comment != "Set Flag ") {
-                                Comment += ", UNK 7";
-                            } else {
-                                Comment += "UNK 7";
-                            }
-                        }
+                    if (ActionParam2 == "1") {'Set Flag ',
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'Unknown 1');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Unknown 2');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Sanctuary');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x8, 'Auras');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x10, 'Unknown 5');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x20, 'Unknown 6');
+                        Comment = generateBitComment('Set Flag ', Comment, Binary, 0x40, 'Unknown 7');
                     }
                     return replaceComma(Comment);
                     break;
                 case "152":
-                    return "Load Path " + Lines[id].action_param1;
+                    return "Load Path " + ActionParam1;
                     break;
                 case "153":
                     return "Teleport Target On Self";
@@ -2066,7 +1368,7 @@
             RefreshTable();
         }
         function displayLine(id, line) {
-            $(line).closest('tr').addClass('active').siblings('tr').removeClass('active');
+            $(line).closest('tr').addClass('active info').siblings('tr').removeClass('active info');
             window.scrollTo(0, 0);
 
             $('#id_val').val(Lines[id].id);
@@ -2083,126 +1385,46 @@
             changeActionsParams(Lines[id]);
             changeTargetsParams(Lines[id].target_type);
 
+
+            var SelectFlags = '#event_flags_value';
+            var SelectPhase = '#event_phase_mask_value';
+            var SelectTargetFlags = '#target_flags_value';
+
             if (Lines[id].event_flags != "0") {
-                var SelectFlags = '#event_flags_value';
                 var Binary = "0x" + Hex(Lines[id].event_flags);
-                if (0x1 & Binary) {
-                    $(SelectFlags + ' > option:first-child').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:first-child').removeAttr('selected');
-                }
-                if (0x2 & Binary) {
-                    $(SelectFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:nth-child(2)').removeAttr('selected');
-                }
-                if (0x4 & Binary) {
-                    $(SelectFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:nth-child(3)').removeAttr('selected', 'selected');
-                }
-                if (0x8 & Binary) {
-                    $(SelectFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:nth-child(4)').removeAttr('selected', 'selected');
-                }
-                if (0x10 & Binary) {
-                    $(SelectFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:nth-child(5)').removeAttr('selected', 'selected');
-                }
-                if (0x20 & Binary) {
-                    $(SelectFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                } else {
-                    $(SelectFlags + ' > option:nth-child(6)').removeAttr('selected', 'selected');
-                }
+                selectByte(SelectFlags, 0x1, Binary, 1);
+                selectByte(SelectFlags, 0x2, Binary, 2);
+                selectByte(SelectFlags, 0x4, Binary, 3);
+                selectByte(SelectFlags, 0x8, Binary, 4);
+                selectByte(SelectFlags, 0x10, Binary, 5);
+                selectByte(SelectFlags, 0x20, Binary, 6);
             } else {
-                SelectFlags = '#event_flags_value';
                 $(SelectFlags + ' > option').removeAttr('selected');
             }
             if (Lines[id].event_phase_mask != "0") {
-                var SelectPhase = '#event_phase_mask_value';
                 Binary = "0x" + Hex(Lines[id].event_phase_mask);
-                if (0x1 & Binary) {
-                    $(SelectPhase + ' > option:first-child').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:first-child').removeAttr('selected');
-                }
-                if (0x2 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(2)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(2)').removeAttr('selected');
-                }
-                if (0x4 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(3)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(3)').removeAttr('selected', 'selected');
-                }
-                if (0x8 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(4)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(4)').removeAttr('selected', 'selected');
-                }
-                if (0x10 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(5)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(5)').removeAttr('selected', 'selected');
-                }
-                if (0x20 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(6)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(6)').removeAttr('selected', 'selected');
-                }
-                if (0x40 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(7)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(7)').removeAttr('selected', 'selected');
-                }
-                if (0x80 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(8)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(8)').removeAttr('selected', 'selected');
-                }
-                if (0x100 & Binary) {
-                    $(SelectPhase + ' > option:nth-child(9)').attr('selected', 'selected');
-                } else {
-                    $(SelectPhase + ' > option:nth-child(9)').removeAttr('selected', 'selected');
-                }
+                selectByte(SelectPhase, 0x1, Binary, 1);
+                selectByte(SelectPhase, 0x2, Binary, 2);
+                selectByte(SelectPhase, 0x4, Binary, 3);
+                selectByte(SelectPhase, 0x8, Binary, 4);
+                selectByte(SelectPhase, 0x10, Binary, 5);
+                selectByte(SelectPhase, 0x20, Binary, 6);
+                selectByte(SelectPhase, 0x40, Binary, 7);
+                selectByte(SelectPhase, 0x80, Binary, 8);
+                selectByte(SelectPhase, 0x100, Binary, 9);
             } else {
-                SelectPhase = '#event_phase_mask_value';
                 $(SelectPhase + ' > option').removeAttr('selected');
             }
             if (Lines[id].target_flags != "0") {
                 Binary = "0x" + Hex(Lines[id].target_flags);
-                if (0x001 & Binary) {
-                    $(SelectTargetFlags + ' > option:first-child').attr('selected', 'selected');
-                } else {
-                    $(SelectTargetFlags + ' > option:first-child').removeAttr('selected');
-                }
-                if (0x002 & Binary) {
-                    $(SelectTargetFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                } else {
-                    $(SelectTargetFlags + ' > option:nth-child(2)').removeAttr('selected');
-                }
-                if (0x004 & Binary) {
-                    $(SelectTargetFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                } else {
-                    $(SelectTargetFlags + ' > option:nth-child(3)').removeAttr('selected', 'selected');
-                }
-                if (0x008 & Binary) {
-                    $(SelectTargetFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                } else {
-                    $(SelectTargetFlags + ' > option:nth-child(4)').removeAttr('selected', 'selected');
-                }
-                if (0x010 & Binary) {
-                    $(SelectTargetFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                } else {
-                    $(SelectTargetFlags + ' > option:nth-child(5)').removeAttr('selected', 'selected');
-                }
+                selectByte(SelectTargetFlags, 0x1, Binary, 1);
+                selectByte(SelectTargetFlags, 0x2, Binary, 2);
+                selectByte(SelectTargetFlags, 0x4, Binary, 3);
+                selectByte(SelectTargetFlags, 0x8, Binary, 4);
+                selectByte(SelectTargetFlags, 0x10, Binary, 5);
             } else {
                 $(SelectTargetFlags + ' > option').removeAttr('selected');
             }
-            $('.npc_flags').trigger('chosen:updated');
             $(SelectPhase).trigger('chosen:updated');
             $(SelectFlags).trigger('chosen:updated');
             $(SelectTargetFlags).trigger('chosen:updated');
@@ -2339,26 +1561,10 @@
                     } else {
                         $(Flags + ' > option:first-child').removeAttr('selected');
                     }
-                    if (0x1 & Binary) {
-                        $(Flags + ' > option:nth-child(2)').attr('selected', 'selected');
-                    } else {
-                        $(Flags + ' > option:nth-child(2)').removeAttr('selected');
-                    }
-                    if (0x2 & Binary) {
-                        $(Flags + ' > option:nth-child(3)').attr('selected', 'selected');
-                    } else {
-                        $(Flags + ' > option:nth-child(3)').removeAttr('selected');
-                    }
-                    if (0x20 & Binary) {
-                        $(Flags + ' > option:nth-child(4)').attr('selected', 'selected');
-                    } else {
-                        $(Flags + ' > option:nth-child(4)').removeAttr('selected');
-                    }
-                    if (0x40 & Binary) {
-                        $(Flags + ' > option:nth-child(5)').attr('selected', 'selected');
-                    } else {
-                        $(Flags + ' > option:nth-child(5)').removeAttr('selected');
-                    }
+                    selectByte(Flags, 0x1, Binary, 2);
+                    selectByte(Flags, 0x2, Binary, 3);
+                    selectByte(Flags, 0x20, Binary, 4);
+                    selectByte(Flags, 0x40, Binary, 5);
                     break;
                 case "12":
                     displayActionValDefault(1, id);
@@ -2432,171 +1638,39 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x0 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x1 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x2 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
-                        if (0x4 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                        }
-                        if (0x8 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                        }
-                        if (0x10 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                        }
-                        if (0x20 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                        }
-                        if (0x40 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(8)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(8)').removeAttr('selected');
-                        }
-                        if (0x80 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(9)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(9)').removeAttr('selected');
-                        }
-                        if (0x100 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(10)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(10)').removeAttr('selected');
-                        }
-                        if (0x200 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(11)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(11)').removeAttr('selected');
-                        }
-                        if (0x400 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(12)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(12)').removeAttr('selected');
-                        }
-                        if (0x800 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(13)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(13)').removeAttr('selected');
-                        }
-                        if (0x1000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(14)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(14)').removeAttr('selected');
-                        }
-                        if (0x2000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(15)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(15)').removeAttr('selected');
-                        }
-                        if (0x4000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(16)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(16)').removeAttr('selected');
-                        }
-                        if (0x8000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(17)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(17)').removeAttr('selected');
-                        }
-                        if (0x10000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(18)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(18)').removeAttr('selected');
-                        }
-                        if (0x20000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(19)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(19)').removeAttr('selected');
-                        }
-                        if (0x40000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(20)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(20)').removeAttr('selected');
-                        }
-                        if (0x80000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(21)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(21)').removeAttr('selected');
-                        }
-                        if (0x100000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(22)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(22)').removeAttr('selected');
-                        }
-                        if (0x200000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(23)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(23)').removeAttr('selected');
-                        }
-                        if (0x400000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(24)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(24)').removeAttr('selected');
-                        }
-                        if (0x800000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(25)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(25)').removeAttr('selected');
-                        }
-                        if (0x1000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(26)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(26)').removeAttr('selected');
-                        }
-                        if (0x2000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(27)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(27)').removeAttr('selected');
-                        }
-                        if (0x4000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(28)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(28)').removeAttr('selected');
-                        }
-                        if (0x8000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(29)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(29)').removeAttr('selected');
-                        }
-                        if (0x10000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(30)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(30)').removeAttr('selected');
-                        }
-                        if (0x20000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(31)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(31)').removeAttr('selected');
-                        }
-                        if (0x40000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(32)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(32)').removeAttr('selected');
-                        }
-                        if (0x80000000 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(33)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(33)').removeAttr('selected');
-                        }
+                        selectByte(NPCFlags, 0x0, Binary, 1);
+                        selectByte(NPCFlags, 0x1, Binary, 2);
+                        selectByte(NPCFlags, 0x2, Binary, 3);
+                        selectByte(NPCFlags, 0x4, Binary, 4);
+                        selectByte(NPCFlags, 0x8, Binary, 5);
+                        selectByte(NPCFlags, 0x10, Binary, 6);
+                        selectByte(NPCFlags, 0x20, Binary, 7);
+                        selectByte(NPCFlags, 0x40, Binary, 8);
+                        selectByte(NPCFlags, 0x80, Binary, 9);
+                        selectByte(NPCFlags, 0x100, Binary, 10);
+                        selectByte(NPCFlags, 0x200, Binary, 11);
+                        selectByte(NPCFlags, 0x400, Binary, 12);
+                        selectByte(NPCFlags, 0x800, Binary, 13);
+                        selectByte(NPCFlags, 0x1000, Binary, 14);
+                        selectByte(NPCFlags, 0x2000, Binary, 15);
+                        selectByte(NPCFlags, 0x4000, Binary, 16);
+                        selectByte(NPCFlags, 0x8000, Binary, 17);
+                        selectByte(NPCFlags, 0x10000, Binary, 18);
+                        selectByte(NPCFlags, 0x20000, Binary, 19);
+                        selectByte(NPCFlags, 0x40000, Binary, 20);
+                        selectByte(NPCFlags, 0x80000, Binary, 21);
+                        selectByte(NPCFlags, 0x100000, Binary, 22);
+                        selectByte(NPCFlags, 0x200000, Binary, 23);
+                        selectByte(NPCFlags, 0x400000, Binary, 24);
+                        selectByte(NPCFlags, 0x800000, Binary, 25);
+                        selectByte(NPCFlags, 0x1000000, Binary, 26);
+                        selectByte(NPCFlags, 0x2000000, Binary, 27);
+                        selectByte(NPCFlags, 0x4000000, Binary, 28);
+                        selectByte(NPCFlags, 0x8000000, Binary, 29);
+                        selectByte(NPCFlags, 0x10000000, Binary, 30);
+                        selectByte(NPCFlags, 0x20000000, Binary, 31);
+                        selectByte(NPCFlags, 0x40000000, Binary, 32);
+                        selectByte(NPCFlags, 0x80000000, Binary, 33);
                     }
                     if (Lines[id].action_param2 == "1") {
                         $('<select multiple class="form-control npc_flags" id="action_param1_val">' +
@@ -2607,26 +1681,10 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x1 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x8 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x10 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
-                        if (0x40 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                        }
+                        selectByte(SelectFlags, 0x1, Binary, 1);
+                        selectByte(SelectFlags, 0x8, Binary, 2);
+                        selectByte(SelectFlags, 0x10, Binary, 3);
+                        selectByte(SelectFlags, 0x40, Binary, 4);
                     }
                     break;
                 case "20":
@@ -2815,141 +1873,33 @@
                     '</select>').appendTo(ActionParam1DIV);
                     var NPCFlags = '#action_param1_val';
                     var Binary = "0x" + Hex(Lines[id].action_param1);
-                    if (0x0 & Binary) {
-                        $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                    }
-                    if (0x1 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                    }
-                    if (0x2 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                    }
-                    if (0x4 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                    }
-                    if (0x8 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                    }
-                    if (0x10 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                    }
-                    if (0x20 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                    }
-                    if (0x40 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(8)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(8)').removeAttr('selected');
-                    }
-                    if (0x80 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(9)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(9)').removeAttr('selected');
-                    }
-                    if (0x100 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(10)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(10)').removeAttr('selected');
-                    }
-                    if (0x200 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(11)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(11)').removeAttr('selected');
-                    }
-                    if (0x400 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(12)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(12)').removeAttr('selected');
-                    }
-                    if (0x800 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(13)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(13)').removeAttr('selected');
-                    }
-                    if (0x1000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(14)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(14)').removeAttr('selected');
-                    }
-                    if (0x2000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(15)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(15)').removeAttr('selected');
-                    }
-                    if (0x4000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(16)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(16)').removeAttr('selected');
-                    }
-                    if (0x8000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(17)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(17)').removeAttr('selected');
-                    }
-                    if (0x10000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(18)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(18)').removeAttr('selected');
-                    }
-                    if (0x20000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(19)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(19)').removeAttr('selected');
-                    }
-                    if (0x40000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(20)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(20)').removeAttr('selected');
-                    }
-                    if (0x80000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(21)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(21)').removeAttr('selected');
-                    }
-                    if (0x100000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(22)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(22)').removeAttr('selected');
-                    }
-                    if (0x200000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(23)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(23)').removeAttr('selected');
-                    }
-                    if (0x400000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(24)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(24)').removeAttr('selected');
-                    }
-                    if (0x800000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(25)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(25)').removeAttr('selected');
-                    }
-                    if (0x1000000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(26)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(26)').removeAttr('selected');
-                    }
-                    if (0x4000000 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(27)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(27)').removeAttr('selected');
-                    }
+                    selectByte(NPCFlags, 0x0, Binary, 1);
+                    selectByte(NPCFlags, 0x1, Binary, 2);
+                    selectByte(NPCFlags, 0x2, Binary, 3);
+                    selectByte(NPCFlags, 0x4, Binary, 4);
+                    selectByte(NPCFlags, 0x8, Binary, 5);
+                    selectByte(NPCFlags, 0x10, Binary, 6);
+                    selectByte(NPCFlags, 0x20, Binary, 7);
+                    selectByte(NPCFlags, 0x40, Binary, 8);
+                    selectByte(NPCFlags, 0x80, Binary, 9);
+                    selectByte(NPCFlags, 0x100, Binary, 10);
+                    selectByte(NPCFlags, 0x200, Binary, 11);
+                    selectByte(NPCFlags, 0x400, Binary, 12);
+                    selectByte(NPCFlags, 0x800, Binary, 13);
+                    selectByte(NPCFlags, 0x1000, Binary, 14);
+                    selectByte(NPCFlags, 0x2000, Binary, 15);
+                    selectByte(NPCFlags, 0x4000, Binary, 16);
+                    selectByte(NPCFlags, 0x8000, Binary, 17);
+                    selectByte(NPCFlags, 0x10000, Binary, 18);
+                    selectByte(NPCFlags, 0x20000, Binary, 19);
+                    selectByte(NPCFlags, 0x40000, Binary, 20);
+                    selectByte(NPCFlags, 0x80000, Binary, 21);
+                    selectByte(NPCFlags, 0x100000, Binary, 22);
+                    selectByte(NPCFlags, 0x200000, Binary, 23);
+                    selectByte(NPCFlags, 0x400000, Binary, 24);
+                    selectByte(NPCFlags, 0x800000, Binary, 25);
+                    selectByte(NPCFlags, 0x1000000, Binary, 26);
+                    selectByte(NPCFlags, 0x4000000, Binary, 27);
                     break;
                 case "90": //ACTION_SET_UNIT_FIELD_BYTES_1
                 case "91": //ACTION_REMOVE_UNIT_FIELD_BYTES_1
@@ -2984,41 +1934,13 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x0 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x1 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x2 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
-                        if (0x4 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                        }
-                        if (0x8 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                        }
-                        if (0x10 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                        }
-                        if (0xFF & Binary) {
-                            $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                        }
+                        selectByte(NPCFlags, 0x0, Binary, 1);
+                        selectByte(NPCFlags, 0x1, Binary, 2);
+                        selectByte(NPCFlags, 0x2, Binary, 3);
+                        selectByte(NPCFlags, 0x4, Binary, 4);
+                        selectByte(NPCFlags, 0x8, Binary, 5);
+                        selectByte(NPCFlags, 0x10, Binary, 6);
+                        selectByte(NPCFlags, 0xFF, Binary, 7);
                     }
                     if (Lines[id].action_param2 == "3") {
                         ActionParam1.addClass('display_flags');
@@ -3032,31 +1954,13 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x0 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x1 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x2 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
-                        if (0x4 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                        }
-                        if (0xFF & Binary) {
-                            $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                        }
+                        selectByte(NPCFlags, 0x0, Binary, 1);
+                        selectByte(NPCFlags, 0x1, Binary, 2);
+                        selectByte(NPCFlags, 0x2, Binary, 3);
+                        selectByte(NPCFlags, 0x4, Binary, 4);
+                        selectByte(NPCFlags, 0x8, Binary, 5);
+                        selectByte(NPCFlags, 0x10, Binary, 6);
+                        selectByte(NPCFlags, 0xFF, Binary, 7);
                     }
 
                     ActionParam2DIV.empty();
@@ -3098,41 +2002,13 @@
                     '</select>').appendTo(ActionParam1DIV);
                     var NPCFlags = '#action_param1_val';
                     var Binary = "0x" + Hex(Lines[id].action_param1);
-                    if (0x0 & Binary) {
-                        $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                    }
-                    if (0x1 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                    }
-                    if (0x2 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                    }
-                    if (0x4 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                    }
-                    if (0x8 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                    }
-                    if (0x10 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                    }
-                    if (0x20 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                    }
+                    selectByte(NPCFlags, 0x0, Binary, 1);
+                    selectByte(NPCFlags, 0x1, Binary, 2);
+                    selectByte(NPCFlags, 0x2, Binary, 3);
+                    selectByte(NPCFlags, 0x4, Binary, 4);
+                    selectByte(NPCFlags, 0x8, Binary, 5);
+                    selectByte(NPCFlags, 0x10, Binary, 6);
+                    selectByte(NPCFlags, 0x20, Binary, 7);
                     break;
                 case "104": //ACTION_SET_GO_FLAG
                 case "105": //ACTION_ADD_GO_FLAG
@@ -3151,46 +2027,14 @@
                     '</select>').appendTo(ActionParam1DIV);
                     var NPCFlags = '#action_param1_val';
                     var Binary = "0x" + Hex(Lines[id].action_param1);
-                    if (0x0 & Binary) {
-                        $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                    }
-                    if (0x1 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                    }
-                    if (0x2 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                    }
-                    if (0x4 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                    }
-                    if (0x8 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                    }
-                    if (0x10 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                    }
-                    if (0x20 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                    }
-                    if (0x40 & Binary) {
-                        $(NPCFlags + ' > option:nth-child(8)').attr('selected', 'selected');
-                    } else {
-                        $(NPCFlags + ' > option:nth-child(8)').removeAttr('selected');
-                    }
+                    selectByte(NPCFlags, 0x0, Binary, 1);
+                    selectByte(NPCFlags, 0x1, Binary, 2);
+                    selectByte(NPCFlags, 0x2, Binary, 3);
+                    selectByte(NPCFlags, 0x4, Binary, 4);
+                    selectByte(NPCFlags, 0x8, Binary, 5);
+                    selectByte(NPCFlags, 0x10, Binary, 6);
+                    selectByte(NPCFlags, 0x20, Binary, 7);
+                    selectByte(NPCFlags, 0x40, Binary, 8);
                     break;
                 case "108":
                 case "109":
@@ -3218,7 +2062,7 @@
                         '</select>').appendTo(ActionParam1DIV);
                         $('#action_param1_val').val(Lines[id].action_param1);
                     }
-                    if (Lines[id].action_param2 == "1") {
+                    else if (Lines[id].action_param2 == "1") {
                         ActionParam1.addClass('display_flags');
                         ActionParam1DIV.empty();
                         $('<select multiple class="form-control npc_flags" id="action_param1_val">' +
@@ -3233,48 +2077,16 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x0 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x1 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x2 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
-                        if (0x4 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(4)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(4)').removeAttr('selected');
-                        }
-                        if (0x8 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(5)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(5)').removeAttr('selected');
-                        }
-                        if (0x10 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(6)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(6)').removeAttr('selected');
-                        }
-                        if (0x20 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(7)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(7)').removeAttr('selected');
-                        }
-                        if (0x40 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(8)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(8)').removeAttr('selected');
-                        }
+                        selectByte(NPCFlags, 0x0, Binary, 1);
+                        selectByte(NPCFlags, 0x1, Binary, 2);
+                        selectByte(NPCFlags, 0x2, Binary, 3);
+                        selectByte(NPCFlags, 0x4, Binary, 4);
+                        selectByte(NPCFlags, 0x8, Binary, 5);
+                        selectByte(NPCFlags, 0x10, Binary, 6);
+                        selectByte(NPCFlags, 0x20, Binary, 7);
+                        selectByte(NPCFlags, 0x40, Binary, 8);
                     }
-                    if (Lines[id].action_param2 == "2") {
+                    else if (Lines[id].action_param2 == "2") {
                         ActionParam1.addClass('display_flags');
                         ActionParam1DIV.empty();
                         $('<select multiple class="form-control npc_flags" id="action_param1_val">' +
@@ -3284,24 +2096,12 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        if (0x0 & Binary) {
-                            $(NPCFlags + ' > option:first-child').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:first-child').removeAttr('selected');
-                        }
-                        if (0x2 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(2)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(2)').removeAttr('selected');
-                        }
-                        if (0x3 & Binary) {
-                            $(NPCFlags + ' > option:nth-child(3)').attr('selected', 'selected');
-                        } else {
-                            $(NPCFlags + ' > option:nth-child(3)').removeAttr('selected');
-                        }
+                        selectByte(NPCFlags, 0x0, Binary, 1);
+                        selectByte(NPCFlags, 0x2, Binary, 2);
+                        selectByte(NPCFlags, 0x3, Binary, 3);
                     }
-
                     ActionParam2DIV.empty();
+                    ActionParam2.addClass('display_flags');
                     $('<select class="form-control" id="action_param2_val">' +
                     '   <option value="0">SHEATH_STATE</option>' +
                     '   <option value="1">BYTES2_FLAGS_TYPE</option>' +
@@ -3743,7 +2543,7 @@
             var Data;
             $.ajax({
                 type: 'GET',
-                url: '/smartai/creature/entry/' + id + '/name',
+                url: '/creature/entry/' + id + '/name',
                 async: false,
                 dataType: 'text',
                 'success': function (data) {
@@ -3756,7 +2556,7 @@
             var Data;
             $.ajax({
                 type: 'GET',
-                url: '/smartai/gameobject/entry/' + id + '/name',
+                url: '/gameobject/entry/' + id + '/name',
                 async: false,
                 dataType: 'text',
                 'success': function (data) {
@@ -3791,15 +2591,35 @@
             });
             return Data;
         }
-        function RGB2Hex(rgb) {
-            rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-            return (rgb && rgb.length === 4) ? "#" +
-            ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
-        }
         function Hex(d) {
             return (+d).toString(16).toUpperCase();
+        }
+        function selectByte(NPCFlags, Mask, Binary, child) {
+            var select;
+            if(child == 1)
+                select = 'first-child';
+            else
+                select = 'nth-child('+child+')';
+
+            if (Mask & Binary) {
+                $(NPCFlags + ' > option:'+select).attr('selected', 'selected');
+            } else {
+                $(NPCFlags + ' > option:'+select).removeAttr('selected');
+            }
+        }
+        function generateBitComment(Start, Comment, Binary, Mask, String) {
+            if (Mask & Binary) {
+                if (Comment != Start) {
+                    Comment += ", " + String;
+                } else {
+                    Comment += String;
+                }
+            }
+            return Comment;
+        }
+        function setPhaseColor(Color, Mask, Binary, Phase) {
+            if(Mask & Binary)
+                Color.push(parseInt(Object.keys(PHASE)[Phase]));
         }
     }
 })(jQuery);

@@ -4,7 +4,8 @@
 $app->get('/object/entry/{entry}/smartai', function($entry) use($app) {
     $go		 	= new SUN\Domain\Gameobject(["entry" => $entry]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
-    $go->setName($manager->findGOEntryName($go)->getName());
+    $manager2	= new \SUN\DAO\GameobjectDAO($app);
+    $go->setName($manager2->findGOEntryName($go)->getName());
     $lines		= $manager->getGOEntryScript($go);
 
     return $app['twig']->render('smartai/go/entry.html.twig',
@@ -21,7 +22,8 @@ $app->get('/object/entry/{entry}/smartai', function($entry) use($app) {
 $app->get('/object/guid/{guid}/smartai', function($guid) use($app) {
     $go		 	= new SUN\Domain\Gameobject(["guid" => $guid]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
-    $go->setName($manager->findGOGuidName($go)->getName());
+    $manager2	= new \SUN\DAO\GameobjectDAO($app);
+    $go->setName($manager2->findGOEntryName($go)->getName());
     $lines		= $manager->getGOGuidScript($go);
 
     return $app['twig']->render('smartai/go/guid.html.twig',

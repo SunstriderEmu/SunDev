@@ -163,7 +163,6 @@
         });
         function generateData(Lines) {
             var Data = [];
-            console.log(Object.keys(Lines));
             $.each(Object.keys(Lines), function(index, i) {
                 Data.push([Lines[i].id, Lines[i].link, Lines[i].event_type, Lines[i].event_phase_mask, Lines[i].event_chance, Lines[i].event_flags, Lines[i].event_param1, Lines[i].event_param2, Lines[i].event_param3, Lines[i].event_param4, Lines[i].action_type, Lines[i].action_param1, Lines[i].action_param2, Lines[i].action_param3, Lines[i].action_param4, Lines[i].action_param5, Lines[i].action_param6, Lines[i].target_type, Lines[i].target_flags, Lines[i].target_param1, Lines[i].target_param2, Lines[i].target_param3, Lines[i].target_x, Lines[i].target_y, Lines[i].target_z, Lines[i].target_o, Lines[i].comment.replace(/'/g, '"').toString()]);
             });

@@ -63,6 +63,7 @@
         </div>
     {% endblock %}
     {% block script %}
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
             "use strict";
 
@@ -94,9 +95,8 @@
                         }
                     }
                 });
-                if (Entry === '') {
+                if (Entry === '')
                     EntryName.html("Entry");
-                }
             });
             $('#path').keyup(function() {
                 PathID = $(this).val();
@@ -107,14 +107,12 @@
                     dataType: 'json',
                     success: function(data) {
                         PathIDInfos.html("PathID");
-                        console.log(data);
                         PathIDInfos.append(' (' + data.points + ' points)');
                     }
                 });
 
-                if (PathID === '') {
+                if (PathID === '')
                     PathIDInfos.html("PathID");
-                }
             });
             $('#transfer').click(function() {
                 debugger;
@@ -124,17 +122,10 @@
                     alert('Entry and/or Path should not be empty.');
                     return;
                 } else {
-                    var info = { "entry": Entry.toString(), "path": Path.toString(), "user": "{{ app.user.id }}", "source": "3" };
-                    $.ajax({
-                        type: 'POST',
-                        data: 'info=' + JSON.stringify(info),
-                        url: '{{ app.request.basepath }}/waypoints/transfer',
-                        success: function(data) {
-                            console.log(data);
-                        }
-                    });
+                    var Info = { entryorguid: Entry.toString(), source_type: 70, info1: Path.toString() };
+                    var Data = { entry: Entry.toString(), path: Path.toString() };
+                    apply(Data, Info);
                 }
-
             });
 
 
@@ -146,43 +137,37 @@
                     dataType: 'json',
                     success: function(data) {
                         Data = data;
-                        console.log(Data);
                         PathIDPauseInfos.html("PathID");
                         PathIDPauseInfos.append(' (' + data.points + ' points)');
                     }
                 });
 
-                if (PathID === '') {
+                if (PathID === '')
                     PathIDPauseInfos.html("PathID");
-                }
             });
 
             $('#pointid').keyup(function() {
                 if(Data != null) {
                     PointID = parseInt($(this).val());
                     var Points = parseInt(Data.points);
-                    if(PointID < 1 || PointID > Points) {
+                    if(PointID < 1 || PointID > Points)
                         $('#form-point').removeClass('has-success').addClass('has-warning');
-                    } else {
+                    else
                         $('#form-point').removeClass('has-warning').addClass('has-success');
-                    }
                 }
-                if(isNaN(PointID)) {
+                if(isNaN(PointID))
                     $('#form-point').removeClass('has-success').removeClass('has-warning');
-                }
             });
 
             $('#delay').keyup(function() {
                 var Delay = $(this).val();
 
-                if(Delay <= 0) {
+                if(Delay <= 0)
                     $('#form-delay').removeClass('has-success').addClass('has-warning');
-                } else {
+                else
                     $('#form-delay').removeClass('has-warning').addClass('has-success');
-                }
-                if(isNaN(Delay) || Delay == "") {
+                if(isNaN(Delay) || Delay == "")
                     $('#form-delay').removeClass('has-success').removeClass('has-warning');
-                }
             });
 
             $('#pause').click(function() {
@@ -193,15 +178,9 @@
                     alert('Path, Point or Delay should not be empty.');
                     return;
                 } else {
-                    var info = { "path": Path.toString(), "point": Point.toString(), "delay": Delay.toString(), "user": "{{ app.user.id }}", "source": "5" };
-                    $.ajax({
-                        type: 'POST',
-                        data: 'info=' + JSON.stringify(info),
-                        url: '{{ app.request.basepath }}/waypoints/pause',
-                        success: function(data) {
-                            console.log(data);
-                        }
-                    });
+                    var Info = { entryorguid: Path.toString(), source_type: 71, info1: Point.toString(), info2: Delay.toString() };
+                    var Data = { path: Path.toString(), point: Point.toString(), delay: Delay.toString() };
+                    apply(Data, Info);
                 }
 
             });

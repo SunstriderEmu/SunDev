@@ -28,6 +28,7 @@ class DAO {
 	 * 40-49	Spell
 	 * 50-59	Loot
 	 * 60-69	Item
+	 * 70-79	Waypoints
 	 *
 	 * @param $data
 	 * @param $db
@@ -113,6 +114,22 @@ class DAO {
 			case 57: $this->setLoot($data, $db, 'quest_mail');	break;
 			case 58: $this->setLoot($data, $db, 'reference');	break;
 			case 59: $this->setLoot($data, $db, 'skinning');	break;
+			case 70:
+				$name  = $this->$db->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array(intval($data['script']->entry)));
+				// Delete previous waypoints
+				$this->$db->executeQuery('DELETE FROM waypoints WHERE entry = ?', array(intval($data['script']->entry)));
+				// Points to transfer
+				$points = $this->$db->fetchAll('SELECT point, position_x, position_y, position_z FROM waypoint_data WHERE id = ?', array(intval($data['script']->path)));
+				// Transfer
+				$insert = 'INSERT INTO waypoints (entry, pointid, position_x, position_y, position_z, point_comment) VALUES ';
+				foreach($points as $point)
+					$insert .= "({$data['script']->entry}, {$point['point']}, {$point['position_x']}, {$point['position_y']}, {$point['position_z']}, '{$name['name']}'),";
+				$insert = rtrim($insert, ',');
+				$this->$db->executeQuery($insert);
+				break;
+			case 71:
+				$this->$db->executeQuery('UPDATE waypoint_data SET delay = ? WHERE id = ? AND point = ?', array(intval($data['script']->delay), intval($data['script']->path), intval($data['script']->point)));
+				break;
 			default: return "Error - {$data['review']->source_type}";
 		}
 		return "Success";

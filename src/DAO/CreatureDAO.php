@@ -62,6 +62,10 @@ class CreatureDAO extends DAO {
         return $creature;
     }
 
+    public function getStats($class, $level) {
+        return $this->test->fetchAssoc('SELECT * FROM creature_classlevelstats WHERE level = ? AND class = ?', array($level, $class));
+    }
+
     public function findCreatureEntryName(Creature $creature) {
         $name = $this->test->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array($creature->getEntry()));
         $creature->setName($name['name']);

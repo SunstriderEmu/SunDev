@@ -56,7 +56,7 @@
                     <tbody>
                     {% for script in scripts %}
                         {% if script.user == app.user.id %}
-                            <tr {% if script.state == 1 %}class="ok"{% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
+                            <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
                                 <td>{{ script.date|date("m-j-y G:i:s") }}</td>
                                 <td>
                                     {% if script.source_type == 0 %}

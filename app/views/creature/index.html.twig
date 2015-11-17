@@ -37,7 +37,7 @@
                         {% endif %}
                         <tr>
                             <td><strong>Script</strong></td>
-                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{% if creature.AIName == null %}<abbr title="{{ creature.ScriptName }}">C++</abbr>{% elseif creature.AIName == "TotemAI" %}{{ creature.AIName }} - <a href="https://wowhead.com/spell={{ creature.spell1 }}">{{ creature.spell1 }}</a>{% else %}{{ creature.AIName }}{% endif %}</td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{% if creature.AIName == null %}<abbr title="{{ creature.ScriptName }}">C++</abbr>{% elseif creature.AIName == "TotemAI" %}{{ creature.AIName }} - <a href="https://wowhead.com/spell={{ creature.spell1 }}">{{ creature.spell1 }}</a>{% elseif creature.AIName == "SmartAI" %}<a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/smartai">{{ creature.AIName }}</a>{% else %}{{ creature.AIName }}{% endif %}</td>
                         </tr>
                         <tr>
                             <td><strong>Rank</strong></td>

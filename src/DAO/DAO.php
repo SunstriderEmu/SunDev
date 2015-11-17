@@ -22,6 +22,13 @@ class DAO {
 	}
 
 	/**
+	 * 0-9		SmartAI
+	 * 10-29	Creature
+	 * 30-39	GameObject
+	 * 40-49	Spell
+	 * 50-59	Loot
+	 * 60-69	Item
+	 *
 	 * @param $data
 	 * @param $db
 	 * @return string
@@ -45,7 +52,18 @@ class DAO {
 					$this->$db->executeQuery($insert);
 				}
 				break;
-			case 3: // Equipment
+			case 10: // Stats
+				$this->$db->executeQuery("UPDATE creature_template
+										  SET AIName = ?, ScriptName = ?, rank = ?, type = ?, family = ?, InhabitType = ?, mingold = ?, maxgold = ?,
+										  exp = ?, unit_class = ?, minlevel = ?, maxlevel = ?, HealthModifier = ?, ManaModifier = ?, ArmorModifier = ?, DamageModifier = ?, BaseAttackTime = ?, RangeAttackTime = ?, BaseVariance = ?, RangeVariance = ?,
+										  resistance1 = ?, resistance2 = ?, resistance3 = ?, resistance4 = ?, resistance5 = ?, resistance6 = ?
+										  WHERE entry = ?",
+                    array($data['script']->info[0], $data['script']->info[1], $data['script']->info[2], $data['script']->info[3], $data['script']->info[4], $data['script']->info[5], $data['script']->info[6], $data['script']->info[7],
+                        $data['script']->modifiers[0], $data['script']->modifiers[1], $data['script']->modifiers[2], $data['script']->modifiers[3], $data['script']->modifiers[4], $data['script']->modifiers[5], $data['script']->modifiers[6], $data['script']->modifiers[7], $data['script']->modifiers[8], $data['script']->modifiers[9], $data['script']->modifiers[10], $data['script']->modifiers[11],
+                        $data['script']->resistance[0], $data['script']->resistance[1], $data['script']->resistance[2], $data['script']->resistance[3], $data['script']->resistance[4], $data['script']->resistance[5],
+                        intval($data['review']->entryorguid)));
+				break;
+			case 11: // Equipment
 				$this->$db->executeQuery("UPDATE creature_template SET equipment_id = ? WHERE entry = ?", array(intval($data['review']->info1), intval($data['review']->entryorguid)));
 				$this->$db->executeQuery("DELETE FROM creature_equip_template WHERE entry = ?", array(intval($data['review']->info1)));
                 $insert = "INSERT IGNORE INTO creature_equip_template (entry, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES ";
@@ -55,7 +73,7 @@ class DAO {
                 $insert = rtrim($insert, ',');
                 $this->$db->executeQuery($insert);
 				break;
-            case 4: // Text
+            case 12: // Text
                 $this->$db->executeQuery("DELETE FROM creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                 $insert = "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";
                 foreach($data['script'] as $line) {
@@ -64,37 +82,37 @@ class DAO {
                 $insert = rtrim($insert, ',');
                 $this->$db->executeQuery($insert);
                 break;
-			case 5: // Immunities
-                $this->$db->executeQuery("UPDATE creature_template SET mechanic_immune_mask = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
-                break;
-			case 6: // NPC Flag
+			case 20: // NPC Flag
                 $this->$db->executeQuery("UPDATE creature_template SET npcflag = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 7: // Unit Flag
+			case 21: // Unit Flag
                 $this->$db->executeQuery("UPDATE creature_template SET unit_flags = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 8: // Unit Flag 2
+			case 22: // Unit Flag 2
                 $this->$db->executeQuery("UPDATE creature_template SET unit_flags2 = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 20: // Dynamic Flag
+			case 23: // Dynamic Flag
                 $this->$db->executeQuery("UPDATE creature_template SET dynamicflags = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 21: // Type Flag
+			case 24: // Type Flag
                 $this->$db->executeQuery("UPDATE creature_template SET type_flags = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 22: // Flag extra
+			case 25: // Flag extra
                 $this->$db->executeQuery("UPDATE creature_template SET flags_extra = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
                 break;
-			case 10: $this->setLoot($data, $db, 'creature');	break;
-			case 11: $this->setLoot($data, $db, 'disenchant');	break;
-			case 12: $this->setLoot($data, $db, 'fishing');		break;
-			case 13: $this->setLoot($data, $db, 'gameobject');	break;
-			case 14: $this->setLoot($data, $db, 'item');		break;
-			case 15: $this->setLoot($data, $db, 'pickpocket');	break;
-			case 16: $this->setLoot($data, $db, 'prospecting');	break;
-			case 17: $this->setLoot($data, $db, 'quest_mail');	break;
-			case 18: $this->setLoot($data, $db, 'reference');	break;
-			case 19: $this->setLoot($data, $db, 'skinning');	break;
+			case 26: // Immunities
+				$this->$db->executeQuery("UPDATE creature_template SET mechanic_immune_mask = ? WHERE entry = ?", array(intval($data['script']), intval($data['review']->entryorguid)));
+				break;
+			case 50: $this->setLoot($data, $db, 'creature');	break;
+			case 51: $this->setLoot($data, $db, 'disenchant');	break;
+			case 52: $this->setLoot($data, $db, 'fishing');		break;
+			case 53: $this->setLoot($data, $db, 'gameobject');	break;
+			case 54: $this->setLoot($data, $db, 'item');		break;
+			case 55: $this->setLoot($data, $db, 'pickpocket');	break;
+			case 56: $this->setLoot($data, $db, 'prospecting');	break;
+			case 57: $this->setLoot($data, $db, 'quest_mail');	break;
+			case 58: $this->setLoot($data, $db, 'reference');	break;
+			case 59: $this->setLoot($data, $db, 'skinning');	break;
 			default: return "Error - {$data['review']->source_type}";
 		}
 		return "Success";

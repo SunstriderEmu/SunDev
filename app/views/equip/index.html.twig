@@ -184,7 +184,7 @@
     {% block script %}
         <script src="{{ app.request.basepath }}/js/dev.js"></script>
         <script type="text/javascript">
-            var Info = { "entryorguid": {{ entry }}, "source_type": 3, "info1": {{ equip.equipmentID }} };
+            var Info = { "entryorguid": {{ entry }}, "source_type": 11, "info1": {{ equip.equipmentID }} };
             var Equip = {{ equip|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
             console.log(Equip);
             if(Equip.id == undefined) {

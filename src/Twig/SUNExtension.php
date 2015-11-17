@@ -5,8 +5,9 @@ namespace SUN\Twig;
 use Silex\Application;
 use SUN\Domain\Creature;
 use SUN\Domain\Gameobject;
+use SUN\DAO\CreatureDAO;
+use SUN\DAO\GameobjectDAO;
 use SUN\DAO\SmartAIDAO;
-use PDO;
 
 class SUNExtension extends \Twig_Extension {
 	protected $app;
@@ -59,11 +60,11 @@ class SUNExtension extends \Twig_Extension {
 	public function getCreatureName($id) {
 		if($id > 0) {
 			$creature 	= new Creature(["entry" => $id]);
-			$manager	= new SmartAIDAO($this->app);
+			$manager	= new CreatureDAO($this->app);
 			return $manager->findCreatureEntryName($creature)->getName();
 		} else {
 			$creature 	= new Creature(["guid" => $id]);
-			$manager	= new SmartAIDAO($this->app);
+			$manager	= new CreatureDAO($this->app);
 			return $manager->findCreatureGuidName($creature)->getName();
 		}
 	}
@@ -71,18 +72,18 @@ class SUNExtension extends \Twig_Extension {
 	public function getGOName($id) {
 		if($id > 0) {
 			$gameobject	= new Gameobject(["entry" => $id]);
-			$manager	= new SmartAIDAO($this->app);
+			$manager	= new GameobjectDAO($this->app);
 			return $manager->findGOEntryName($gameobject)->getName();
-		} else  {
+		} else {
 			$gameobject	= new Gameobject(["guid" => $id]);
-			$manager	= new SmartAIDAO($this->app);
+			$manager	= new GameobjectDAO($this->app);
 			return $manager->findGOGuidName($gameobject)->getName();
 		}
 	}
 
 	public function getScriptName($script) {
 		$creature 	= new Creature(["entry" => substr($script, 0, -2)]);
-		$manager	= new SmartAIDAO($this->app);
+		$manager	= new CreatureDAO($this->app);
 		return $manager->findCreatureEntryName($creature)->getName();
 	}
 

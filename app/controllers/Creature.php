@@ -3,17 +3,31 @@
 // Creature Summary
 $app->get('/creature/entry/{entry}', function($entry) use($app) {
     $manager	= new \SUN\DAO\CreatureDAO($app);
-    return $app['twig']->render('creature.html.twig', array(
+    return $app['twig']->render('creature/index.html.twig', array(
         "creature"	=> $manager->getCreature($entry),
     ));
 })->assert('entry', '\d+');
+
+// Creature Summary
+$app->get('/creature/entry/{entry}/stats', function($entry) use($app) {
+    $manager	= new \SUN\DAO\CreatureDAO($app);
+    return $app['twig']->render('creature/stats.html.twig', array(
+        "creature"	=> $manager->getCreature($entry)
+    ));
+})->assert('entry', '\d+');
+
+// Creature Summary
+$app->get('/creature/stats/{class}/{level}', function($class, $level) use($app) {
+    $manager	= new \SUN\DAO\CreatureDAO($app);
+    return $app->json($manager->getStats($class, $level));
+})->assert('class', '\d+')->assert('level', '\d+');
 
 // CreatureText
 $app->get('/creature/entry/{entry}/text', function($entry) use($app) {
     $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
     $manager	= new \SUN\DAO\CreatureDAO($app);
     $creature->setName($manager->findCreatureEntryName($creature)->getName());
-    return $app['twig']->render('smartai/text.html.twig', array(
+    return $app['twig']->render('creature/text.html.twig', array(
         "texts" 	=> $manager->getCreatureText($entry),
         "creature"	=> $creature,
     ));
@@ -23,7 +37,7 @@ $app->get('/creature/entry/{entry}/text', function($entry) use($app) {
 $app->get('/creature/entry/{entry}/immune', function($entry) use($app) {
     $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
     $manager	= new \SUN\DAO\CreatureDAO($app);
-    return $app['twig']->render('smartai/immunities.html.twig', array(
+    return $app['twig']->render('creature/immunities.html.twig', array(
         "entry"		=> $entry,
         "name"		=> $manager->findCreatureEntryName($creature)->getName(),
         "immunities"=> $manager->getImmunities($entry),
@@ -101,7 +115,7 @@ $app->get('/creature/entry/{entry}/smartai', function($entry) use($app) {
     $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
     $manager2   = new \SUN\DAO\CreatureDAO($app);
-    $creature->setName($manager2->findCreatureGuidName($creature)->getName());
+    $creature->setName($manager2->findCreatureEntryName($creature)->getName());
     $lines		= $manager->getCreatureEntryScript($creature);
 
     return $app['twig']->render('smartai/creature/entry.html.twig',

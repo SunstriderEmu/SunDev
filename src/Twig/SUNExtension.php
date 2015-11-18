@@ -35,20 +35,22 @@ class SUNExtension extends \Twig_Extension {
 	public function getFilters()
 	{
 		return array(
-			"getItemName" 		=> new \Twig_Filter_Method($this, "getItemName"),
-			"getSpellName" 		=> new \Twig_Filter_Method($this, "getSpellName"),
-			"getCreatureName" 	=> new \Twig_Filter_Method($this, "getCreatureName"),
-			"getGOName" 		=> new \Twig_Filter_Method($this, "getGOEntryName"),
-			"getScriptName" 	=> new \Twig_Filter_Method($this, "getScriptName"),
-			"getScript" 		=> new \Twig_Filter_Method($this, "getScript"),
-			"getUsername" 		=> new \Twig_Filter_Method($this, "getUsername"),
-			"getStateName" 		=> new \Twig_Filter_Method($this, "getStateName"),
-			"getGold" 			=> new \Twig_Filter_Method($this, "getGold"),
-			"getRank" 			=> new \Twig_Filter_Method($this, "getRank"),
-			"getType" 			=> new \Twig_Filter_Method($this, "getType"),
-			"getFamily" 		=> new \Twig_Filter_Method($this, "getFamily"),
-			"getUnitClass" 		=> new \Twig_Filter_Method($this, "getUnitClass"),
-			"getInhabitType" 	=> new \Twig_Filter_Method($this, "getInhabitType"),
+			"getItemName" 			=> new \Twig_Filter_Method($this, "getItemName"),
+			"getSpellName" 			=> new \Twig_Filter_Method($this, "getSpellName"),
+			"getCreatureName" 		=> new \Twig_Filter_Method($this, "getCreatureName"),
+			"getGOName" 			=> new \Twig_Filter_Method($this, "getGOEntryName"),
+			"getScriptName" 		=> new \Twig_Filter_Method($this, "getScriptName"),
+			"getScript" 			=> new \Twig_Filter_Method($this, "getScript"),
+			"getUsername" 			=> new \Twig_Filter_Method($this, "getUsername"),
+			"getStateName" 			=> new \Twig_Filter_Method($this, "getStateName"),
+			"getGold" 				=> new \Twig_Filter_Method($this, "getGold"),
+			"getRank" 				=> new \Twig_Filter_Method($this, "getRank"),
+			"getType" 				=> new \Twig_Filter_Method($this, "getType"),
+			"getFamily" 			=> new \Twig_Filter_Method($this, "getFamily"),
+			"getUnitClass" 			=> new \Twig_Filter_Method($this, "getUnitClass"),
+			"getInhabitType" 		=> new \Twig_Filter_Method($this, "getInhabitType"),
+			"getGossipOptionIcon" 	=> new \Twig_Filter_Method($this, "getGossipOptionIcon"),
+			"getFaction" 			=> new \Twig_Filter_Method($this, "getFaction"),
 		);
 	}
 
@@ -212,6 +214,30 @@ class SUNExtension extends \Twig_Extension {
 			case 6: echo "Water & Flying"; break;
 			case 76: echo "All"; break;
 			default: echo "Error";
+		}
+	}
+
+	public function getGossipOptionIcon($icon) {
+		switch($icon) {
+			case 0: echo "<img src='/img/gossip/GossipGossipIcon.png' alt='Chat' />"; break;
+			case 1: echo "<img src='/img/gossip/VendorGossipIcon.png' alt='Vendor' />"; break;
+			case 2: echo "<img src='/img/gossip/TaxiGossipIcon.png' alt='Taxi' />"; break;
+			case 3: echo "<img src='/img/gossip/TrainerGossipIcon.png' alt='Chat' />"; break;
+			case 4: echo "<img src='/img/gossip/BinderGossipIcon.png' alt='Binder' />"; break;
+			case 5: echo "<img src='/img/gossip/HealerGossipIcon.png' alt='Healer' />"; break;
+			case 6: echo "<img src='/img/gossip/BankerGossipIcon.png' alt='Banker' />"; break;
+			case 7: echo "<img src='/img/gossip/PetitionGossipIcon.png' alt='Petition' />"; break;
+			case 8: echo "<img src='/img/gossip/TabardGossipIcon.png' alt='Tabard' />"; break;
+			case 9: echo "<img src='/img/gossip/BattleMasterGossipIcon.png' alt='Battle Master' />"; break;
+			case 10: echo "<img src='/img/gossip/UI-Quest-BulletPoint.png' alt='Chat' />"; break;
+		}
+	}
+
+	public function getFaction($faction) {
+		switch($faction) {
+			case 690:  echo "<img src='/img/quests/horde.png' alt='Horde' /><span>Horde</span>"; break;
+			case 1101: echo "<img src='/img/quests/alliance.png' alt='Alliance' /><span>Alliance</span>"; break;
+			default: echo "";
 		}
 	}
 } 

@@ -17,7 +17,7 @@
         }
         .dataTables_info {
             position: absolute;
-            top: 0;
+            top: 55px;
         }
         #table_filter {
             text-align: right;
@@ -113,12 +113,12 @@
                     <td class="small" rowspan="2">#</td>
                     <td class="small" rowspan="2">Start<br />End</td>
                     <td class="small" rowspan="2">Test</td>
-                    <td class="med" colspan="3">Textes</td>
+                    <td class="med" colspan="3">Texts</td>
                     <td class="med" colspan="3">Event</td>
                     <td class="med" colspan="3">Gains</td>
                     <td class="med" colspan="3">NPCs</td>
-                    <td class="med" colspan="2">Objets</td>
-                    <td class="big" rowspan="2">Commentaire</td>
+                    <td class="med" colspan="2">Objects</td>
+                    <td class="big" rowspan="2">Comment</td>
                 </tr>
                 <tr class="top">
                     <td class="part">Start</td>
@@ -141,7 +141,7 @@
             {% for quest in quests %}
                 <tr>
                     <td>
-                        <?php echo $race; ?>
+                        {{ quest.race|getFaction }}
                     </td>
                     <td>
                         <a href="http://www.wowhead.com/quest={{ quest.entry }}">{{ quest.name }}</a>
@@ -194,7 +194,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#table').dataTable( {
-                "scrollY":        "calc(100vh - 104px)",
+                "scrollY":        "calc(100vh - 156px)",
                 "scrollCollapse": false,
                 "paging":         false,
                 "order": [[ 2, "asc" ]]
@@ -257,13 +257,6 @@
             setElementColorByStatus(element, status);
 
             var info = { "id": questId.toString(), "column": column.toString(), "status": status.toString() };
-            console.log(info);
-            /*var UrlToPass = 'questId='+questId+'&column='+column+'&status='+status;
-            $.ajax({
-                type : 'GET',
-                data : UrlToPass,
-                url  : 'quest.php'
-            });*/
             $.ajax({
                 type: "POST",
                 url: '/quests/apply/status',
@@ -286,13 +279,6 @@
                 var tester = 0;
             }
             var info = { "id": questId, "tester": tester };
-
-            /*var UrlToPass = 'questId='+questId+'&tester='+tester;
-            $.ajax({
-                type : 'GET',
-                data : UrlToPass,
-                url  : 'quest.php'
-            });*/
             $.ajax({
                 type: "POST",
                 url: '/quests/apply/tester',
@@ -307,18 +293,11 @@
             });
         }
 
-
         $('textarea').change(function(){
             var questId = $(this).attr('id');
             var Comment = $(this).val();
             var info = { "id": questId, "comment": Comment };
             Comment = Comment.replace(/\r?\n/g, '%0D%0A');
-            /*var UrlToPass = 'questId='+questId+'&comment='+Comment;
-            $.ajax({
-                type : 'GET',
-                data : UrlToPass,
-                url  : 'quest.php'
-            });*/
             $.ajax({
                 type: "POST",
                 url: '/quests/apply/comment',

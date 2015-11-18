@@ -9,34 +9,32 @@ use SUN\Domain\Zone;
 class SunQuestDAO extends DAO
 {
 	public function getQuests($zone) {
-		$getZoneID = $this->dbc->executeQuery('SELECT id, name FROM dbc_areatable WHERE id = ?', array($zone))->rowCount();
+		$getZoneID = $this->dbc->fetchAll('SELECT id, name FROM dbc_areatable WHERE id = ?', array($zone));
 
-		if($getZoneID === 0) {
+		if($getZoneID == null) {
 			return $this->app->redirect('/quests');
 		}
 
-		$getZoneID->fetchAll();
-
 		$fetch = $this->test->fetchAll("SELECT qt.entry, qt.Title as name, qt.RequiredRaces as race, it.entry as itemid, it.name as itemname,
-							  ct.entry as idstarter, ct.name as starter, ct2.entry as idender, ct2.name as ender,
-							  qtest.startTxt, qtest.progTxt, qtest.endTxt, qtest.txtEvent, qtest.pathEvent, qtest.timeEvent,
-							  qtest.Exp, qtest.Stuff, qtest.Gold, qtest.emotNPC, qtest.spellNPC, qtest.placeNPC, qtest.workObj, qtest.baObj,
-                              qtest.other as comment, qtest.tester,
-							  objstart.id as objidstarter, objt.name as objstarter,
-							  objend.id as objidender, objt2.name as objender
-							  FROM quest_template qt
-							  LEFT JOIN creature_queststarter qstart ON qt.entry = qstart.quest
-							  LEFT JOIN creature_questender qend ON qt.entry = qend.quest
-							  LEFT JOIN creature_template ct ON qstart.id = ct.entry
-							  LEFT JOIN creature_template ct2 ON qend.id = ct2.entry
-							  LEFT JOIN gameobject_queststarter objstart ON qt.entry = objstart.quest
-							  LEFT JOIN gameobject_questender objend ON qt.entry = objend.quest
-							  LEFT JOIN gameobject_template objt ON objstart.id = objt.entry
-							  LEFT JOIN gameobject_template objt2 ON objend.id = objt2.entry
-							  LEFT JOIN item_template it ON qt.entry = it.startquest
-							  LEFT JOIN {$this->app['dbs.options']['suntools']['dbname']}.quest_test qtest ON qt.entry = qtest.questid
-							  WHERE ZoneOrSort = ? AND qt.Title NOT LIKE '%BETA%'
-							  GROUP BY qt.entry", array($zone));
+							  			ct.entry as idstarter, ct.name as starter, ct2.entry as idender, ct2.name as ender,
+							  			qtest.startTxt, qtest.progTxt, qtest.endTxt, qtest.txtEvent, qtest.pathEvent, qtest.timeEvent,
+							  			qtest.Exp, qtest.Stuff, qtest.Gold, qtest.emotNPC, qtest.spellNPC, qtest.placeNPC, qtest.workObj, qtest.baObj,
+                              			qtest.other as comment, qtest.tester,
+							  			objstart.id as objidstarter, objt.name as objstarter,
+							  			objend.id as objidender, objt2.name as objender
+							  			FROM quest_template qt
+							  			LEFT JOIN creature_queststarter qstart ON qt.entry = qstart.quest
+							  			LEFT JOIN creature_questender qend ON qt.entry = qend.quest
+							  			LEFT JOIN creature_template ct ON qstart.id = ct.entry
+							  			LEFT JOIN creature_template ct2 ON qend.id = ct2.entry
+							  			LEFT JOIN gameobject_queststarter objstart ON qt.entry = objstart.quest
+							  			LEFT JOIN gameobject_questender objend ON qt.entry = objend.quest
+							  			LEFT JOIN gameobject_template objt ON objstart.id = objt.entry
+							  			LEFT JOIN gameobject_template objt2 ON objend.id = objt2.entry
+							  			LEFT JOIN item_template it ON qt.entry = it.startquest
+							  			LEFT JOIN {$this->app['dbs.options']['suntools']['dbname']}.quest_test qtest ON qt.entry = qtest.questid
+							  			WHERE ZoneOrSort = ? AND qt.Title NOT LIKE '%BETA%'
+							  			GROUP BY qt.entry", array($zone));
 		$quests = [];
 		foreach($fetch as $quest) {
 			$quests[$quest['entry']] = new Quest($quest);
@@ -145,7 +143,7 @@ class SunQuestDAO extends DAO
 		$testedQuest = $this->tools->fetchAssoc("SELECT count(*) as count
                                          		 FROM quest_test qtest
                                          		 LEFT JOIN {$this->app['dbs.options']['test_world']['dbname']}.quest_template qt ON qtest.questid = qt.entry
-                                         		 WHERE ZoneOrSort = :zoneID
+                                         		 WHERE ZoneOrSort = ?
                                                	 AND questid != 0 AND startTxt != 0 AND progTxt != 0 AND endTxt != 0 AND pathEvent != 0
                                                	 AND timeEvent != 0 AND Exp != 0 AND Stuff != 0 AND Gold != 0
                                                	 AND emotNPC != 0 AND spellNPC != 0 AND placeNPC != 0 AND workObj != 0 AND baObj != 0", array($zoneID));

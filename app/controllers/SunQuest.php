@@ -50,9 +50,8 @@ $app->get('/quests', function () use ($app) {
 
 $app->get('/quests/zone/{zone}', function ($zone) use ($app) {
 	$manager	= new SUN\DAO\SunQuestDAO($app);
-	$quests		= $manager->getQuests($zone);
 	return $app['twig']->render('quests/zone.html.twig', array(
-		"quests" => $quests,
+		"quests" => $manager->getQuests($zone),
 	));
 })->assert('zone', '\d+');
 

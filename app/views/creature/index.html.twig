@@ -206,6 +206,9 @@
             {% if creature.AIName == "SmartAI" and creature.rank != 3 %}
                 <a href="{{ app.request.requestUri }}/smartai"><button class="btn btn-primary">SmartAI</button></a>
             {% endif %}
+            {% if creature.gossip_menu_id > 0 %}
+                <a href="{{ app.request.requestUri }}/gossip"><button class="btn btn-primary">Gossip</button></a>
+            {% endif %}
         </div>
         <div class="col-md-12">
             {% if creature.ScriptName == null %}

@@ -101,9 +101,10 @@ class SUNExtension extends \Twig_Extension {
 
 	public function getStateName($state) {
 		switch($state) {
+			case 0: return "Pending"; break;
 			case 1: return "Accepted"; break;
 			case 2: return "Rejected"; break;
-			default: return "Pending";
+			default: return "WIP";
 		}
 	}
 

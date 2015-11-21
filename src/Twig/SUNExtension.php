@@ -66,7 +66,7 @@ class SUNExtension extends \Twig_Extension {
 			$manager	= new CreatureDAO($this->app);
 			return $manager->findCreatureEntryName($creature)->getName();
 		} else {
-			$creature 	= new Creature(["guid" => $id]);
+			$creature 	= new Creature(["guid" => abs($id)]);
 			$manager	= new CreatureDAO($this->app);
 			return $manager->findCreatureGuidName($creature)->getName();
 		}
@@ -249,13 +249,13 @@ class SUNExtension extends \Twig_Extension {
 				if($script['entryorguid'] > 0)
 					echo "<a href=\"/creature/entry/{$script['entryorguid']}/smartai\">{$this->getCreatureName($script['entryorguid'])} - SmartAI</a>";
 				else
-					echo "<a href=\"/creature/guid/".abs($script['entryorguid'])."/smartai\">{$this->getCreatureName(abs($script['entryorguid']))} - SmartAI</a>";
+					echo "<a href=\"/creature/guid/".abs($script['entryorguid'])."/smartai\">{$this->getCreatureName($script['entryorguid'])} - SmartAI</a>";
 				break;
 			case 1: // SmartAI GameObject
 				if($script['entryorguid'] > 0)
 					echo "<a href=\"/object/entry/{$script['entryorguid']}/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
 				else
-					echo "<a href=\"/object/guid/".abs($script['entryorguid'])."/smartai\">{$this->getGOName(abs($script['entryorguid']))} - SmartAI</a>";
+					echo "<a href=\"/object/guid/".abs($script['entryorguid'])."/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
 				break;
 			case 9: // SmartAI Script
 				echo "<a href=\"/smartai/script/{$script['entryorguid']}\">{$this->getScriptName($script['entryorguid'])} - Script {$this->getScript($script['entryorguid'])}</a>";

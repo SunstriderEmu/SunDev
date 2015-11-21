@@ -1,8 +1,11 @@
 <?php
 
+use SUN\DAO\CreatureDAO;
+use SUN\Domain\Creature;
+
 // Creature Summary
 $app->get('/creature/entry/{entry}', function($entry) use($app) {
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/index.html.twig', array(
         "creature"	=> $manager->getCreature($entry),
     ));
@@ -10,7 +13,7 @@ $app->get('/creature/entry/{entry}', function($entry) use($app) {
 
 // Creature Summary
 $app->get('/creature/entry/{entry}/stats', function($entry) use($app) {
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/stats.html.twig', array(
         "creature"	=> $manager->getCreature($entry)
     ));
@@ -18,14 +21,14 @@ $app->get('/creature/entry/{entry}/stats', function($entry) use($app) {
 
 // Creature Summary
 $app->get('/creature/stats/{class}/{level}', function($class, $level) use($app) {
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $manager	= new CreatureDAO($app);
     return $app->json($manager->getStats($class, $level));
 })->assert('class', '\d+')->assert('level', '\d+');
 
 // CreatureText
 $app->get('/creature/entry/{entry}/text', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     $creature->setName($manager->findCreatureEntryName($creature)->getName());
     return $app['twig']->render('creature/text.html.twig', array(
         "texts" 	=> $manager->getCreatureText($entry),
@@ -35,8 +38,8 @@ $app->get('/creature/entry/{entry}/text', function($entry) use($app) {
 
 // Immunities
 $app->get('/creature/entry/{entry}/immune', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/immunities.html.twig', array(
         "entry"		=> $entry,
         "name"		=> $manager->findCreatureEntryName($creature)->getName(),
@@ -46,8 +49,8 @@ $app->get('/creature/entry/{entry}/immune', function($entry) use($app) {
 
 // NPC Flag
 $app->get('/creature/entry/{entry}/npcflag', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/npcflag.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -57,8 +60,8 @@ $app->get('/creature/entry/{entry}/npcflag', function($entry) use($app) {
 
 // Unit Flag
 $app->get('/creature/entry/{entry}/unitflag', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/unitflag.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -68,8 +71,8 @@ $app->get('/creature/entry/{entry}/unitflag', function($entry) use($app) {
 
 // Unit Flag2
 $app->get('/creature/entry/{entry}/unitflag2', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/unitflag2.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -79,8 +82,8 @@ $app->get('/creature/entry/{entry}/unitflag2', function($entry) use($app) {
 
 // Dynamic Flags
 $app->get('/creature/entry/{entry}/dynamicflag', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/dynamicflag.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -90,8 +93,8 @@ $app->get('/creature/entry/{entry}/dynamicflag', function($entry) use($app) {
 
 // Type Flags
 $app->get('/creature/entry/{entry}/typeflag', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/typeflag.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -101,8 +104,8 @@ $app->get('/creature/entry/{entry}/typeflag', function($entry) use($app) {
 
 // Flag extra
 $app->get('/creature/entry/{entry}/flagextra', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $app['twig']->render('creature/flagextra.html.twig', array(
         "entry"	=> $entry,
         "name"	=> $manager->findCreatureEntryName($creature)->getName(),
@@ -110,11 +113,25 @@ $app->get('/creature/entry/{entry}/flagextra', function($entry) use($app) {
     ));
 })->assert('entry', '\d+');
 
+// Gossip
+$app->get('/creature/entry/{entry}/gossip', function($entry) use($app) {
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
+    $creature = $manager->getCreature($entry);
+    $array = [
+        "menus"      => [],
+    ];
+    return $app['twig']->render('creature/gossip.html.twig', array(
+        "creature"	=> $creature,
+        "gossip"    => $manager->addMenuAndChildren($creature['gossip_menu_id'], $array),
+    ));
+})->assert('entry', '\d+');
+
 // SmartAI Entry
 $app->get('/creature/entry/{entry}/smartai', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
+    $creature 	= new Creature(["entry" => $entry]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
-    $manager2   = new \SUN\DAO\CreatureDAO($app);
+    $manager2   = new CreatureDAO($app);
     $creature->setName($manager2->findCreatureEntryName($creature)->getName());
     $lines		= $manager->getCreatureEntryScript($creature);
 
@@ -130,9 +147,9 @@ $app->get('/creature/entry/{entry}/smartai', function($entry) use($app) {
 
 // SmartAI Guid
 $app->get('/creature/guid/{guid}/smartai', function($guid) use($app) {
-    $creature 	= new SUN\Domain\Creature(["guid" => $guid]);
+    $creature 	= new Creature(["guid" => $guid]);
     $manager	= new \SUN\DAO\SmartAIDAO($app);
-    $manager2   = new \SUN\DAO\CreatureDAO($app);
+    $manager2   = new CreatureDAO($app);
     $lines		= $manager->getCreatureGuidScript($manager2->findCreatureGuidName($creature));
 
     return $app['twig']->render('smartai/creature/guid.html.twig',
@@ -147,14 +164,14 @@ $app->get('/creature/guid/{guid}/smartai', function($guid) use($app) {
 
 // GET NAMES
 $app->get('/creature/entry/{entry}/name', function($entry) use($app) {
-    $creature 	= new SUN\Domain\Creature(["entry" => $entry]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["entry" => $entry]);
+    $manager	= new CreatureDAO($app);
     return $manager->findCreatureEntryName($creature)->getName();
 })->assert('entry', '\d+');
 
 $app->get('/creature/guid/{guid}/name', function($guid) use($app) {
-    $creature 	= new SUN\Domain\Creature(["guid" => $guid]);
-    $manager	= new \SUN\DAO\CreatureDAO($app);
+    $creature 	= new Creature(["guid" => $guid]);
+    $manager	= new CreatureDAO($app);
     return $manager->findCreatureGuidName($creature)->getName();
 })->assert('guid', '\d+');
 

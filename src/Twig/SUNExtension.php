@@ -51,6 +51,7 @@ class SUNExtension extends \Twig_Extension {
 			"getInhabitType" 		=> new \Twig_Filter_Method($this, "getInhabitType"),
 			"getGossipOptionIcon" 	=> new \Twig_Filter_Method($this, "getGossipOptionIcon"),
 			"getFaction" 			=> new \Twig_Filter_Method($this, "getFaction"),
+			"getReviewComment" 		=> new \Twig_Filter_Method($this, "getReviewComment"),
 		);
 	}
 
@@ -238,6 +239,100 @@ class SUNExtension extends \Twig_Extension {
 			case 690:  echo "<img src='/img/quests/horde.png' alt='Horde' /><span>Horde</span>"; break;
 			case 1101: echo "<img src='/img/quests/alliance.png' alt='Alliance' /><span>Alliance</span>"; break;
 			default: echo "";
+		}
+	}
+
+	public function getReviewComment($script) {
+		switch($script['source_type']){
+			// SmartAI
+			case 0: // SmartAI Creature
+				if($script['entryorguid'] > 0)
+					echo "<a href=\"/creature/entry/{$script['entryorguid']}/smartai\">{$this->getCreatureName($script['entryorguid'])} - SmartAI</a>";
+				else
+					echo "<a href=\"/creature/guid/{$script['entryorguid']}/smartai\">{$this->getCreatureName($script['entryorguid'])} - SmartAI</a>";
+				break;
+			case 1: // SmartAI GameObject
+				if($script['entryorguid'] > 0)
+					echo "<a href=\"/object/entry/{$script['entryorguid']}/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
+				else
+					echo "<a href=\"/object/guid/{$script['entryorguid']}/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
+				break;
+			case 9: // SmartAI Script
+				echo "<a href=\"/smartai/script/{$script['entryorguid']}\">{$this->getScriptName($script['entryorguid'])} - Script {$this->getScript($script['entryorguid'])}</a>";
+				break;
+
+			// Creature
+			case 10: // Creature Stats
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/stats\">{$this->getCreatureName($script['entryorguid'])} - Stats</a>";
+				break;
+			case 11: // Creature Equipment
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/equip\">{$this->getCreatureName($script['entryorguid'])} - Equipment</a>";
+				break;
+			case 12: // Creature Text
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/text\">{$this->getCreatureName($script['entryorguid'])} - Text</a>";
+				break;
+			case 20: // Creature NPC Flag
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/npcflag\">{$this->getCreatureName($script['entryorguid'])} - NPC Flag</a>";
+				break;
+			case 21: // Creature Unit Flag
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/unitflag\">{$this->getCreatureName($script['entryorguid'])} - Unit Flag</a>";
+				break;
+			case 22: // Creature Unit Flag 2
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/unitflag2\">{$this->getCreatureName($script['entryorguid'])} - Unit Flag 2</a>";
+				break;
+			case 23: // Creature Dynamic Flag
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/dynamicflag\">{$this->getCreatureName($script['entryorguid'])} - Dynamic Flag</a>";
+				break;
+			case 24: // Creature Type Flag
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/typeflag\">{$this->getCreatureName($script['entryorguid'])} - Type Flag</a>";
+				break;
+			case 25: // Creature Flag Extra
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/flagextra\">{$this->getCreatureName($script['entryorguid'])} - Flag Extra</a>";
+				break;
+			case 26: // Creature Immunities
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/immunities\">{$this->getCreatureName($script['entryorguid'])} - Immunities</a>";
+				break;
+
+			// Loot
+			case 50: // Creature Loot
+				echo "<a href=\"/loot/creature/{$script['entryorguid']}\">Creature Loot {$script['entryorguid']}</a>";
+				break;
+			case 51: // Disenchant Loot
+				echo "<a href=\"/loot/disenchant/{$script['entryorguid']}\">Disenchant Loot {$script['entryorguid']}</a>";
+				break;
+			case 52: // Fishing Loot
+				echo "<a href=\"/loot/fishing/{$script['entryorguid']}\">Fishing Loot {$script['entryorguid']}</a>";
+				break;
+			case 53: // GameObject Loot
+				echo "<a href=\"/loot/gameobject/{$script['entryorguid']}\">GameObject Loot {$script['entryorguid']}</a>";
+				break;
+			case 54: // Item Loot
+				echo "<a href=\"/loot/item/{$script['entryorguid']}\">Item Loot {$script['entryorguid']}</a>";
+				break;
+			case 55: // Pickpocket Loot
+				echo "<a href=\"/loot/pickpocket/{$script['entryorguid']}\">Pickpocket Loot {$script['entryorguid']}</a>";
+				break;
+			case 56: // Prospecting Loot
+				echo "<a href=\"/loot/prospecting/{$script['entryorguid']}\">Prospecting Loot {$script['entryorguid']}</a>";
+				break;
+			case 57: // Quest Mail Loot
+				echo "<a href=\"/loot/questmail/{$script['entryorguid']}\">Quest Mail Loot {$script['entryorguid']}</a>";
+				break;
+			case 58: // Reference Loot
+				echo "<a href=\"/loot/reference/{$script['entryorguid']}\">Reference Loot {$script['entryorguid']}</a>";
+				break;
+			case 59: // Skinning Loot
+				echo "<a href=\"/loot/skinning/{$script['entryorguid']}\">Skinning Loot {$script['entryorguid']}</a>";
+				break;
+
+			//Waypoints
+			case 70: // Set Path
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}\">{$this->getCreatureName($script['entryorguid'])} - Set Path {$script['info1']}</a>";
+				break;
+			case 71: // Pause
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}\">Path {$script['entryorguid']} - Point {$script['info1']} - Set Pause {$script['info2']}ms</a>";
+				break;
+			default: return "Error: Entry:{$script['entryorguid']} - Source_type:{$script['source_type']}";
 		}
 	}
 } 

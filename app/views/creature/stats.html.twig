@@ -447,12 +447,14 @@
             hideMana();
 
             SelectExp.change(function(){
+                Creature.exp = $(this).val();
                 getStats(Stats, SelectClass.val(), MinLevel.val(), 'min');
                     if(MinLevel.val() != MaxLevel.val())
                     getStats(Stats, SelectClass.val(), MaxLevel.val(), 'max');
             });
 
             SelectClass.change(function(){
+                Creature.unit_class = $(this).val();
                 getStats(Stats, SelectClass.val(), MinLevel.val(), 'min');
                     if(MinLevel.val() != MaxLevel.val())
                     getStats(Stats, SelectClass.val(), MaxLevel.val(), 'max');
@@ -464,6 +466,7 @@
                     $(this).val(MaxLevel.val());
                     return alert('The minimum level cannot be superior than the maximum level.');
                 }
+                Creature.minlevel = $(this).val();
                 getStats(Stats, SelectClass.val(), $(this).val(), 'min');
                 $('#max-level').attr('min', $(this).val());
                 checkLevels();
@@ -472,6 +475,7 @@
             MaxLevel.change(function(){
                 getStats(Stats, SelectClass.val(), $(this).val(), 'max');
                 $('#min-level').attr('max', $(this).val());
+                Creature.maxlevel = $(this).val();
                 checkLevels();
             });
 
@@ -560,6 +564,9 @@
                 else
                     $('.mana').show();
             }
+
+            BaseTimeAttack.change(function(){  Creature.BaseAttackTime = $(this).val() });
+            RangeTimeAttack.change(function(){ Creature.RangeAttackTime = $(this).val() });
 
             ResistHoly.change(function(){   changeResist(1, $(this).val()) });
             ResistFire.change(function(){   changeResist(2, $(this).val()) });

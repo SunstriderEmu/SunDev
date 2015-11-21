@@ -22,25 +22,6 @@
                 SunDev assembles all the tools we have made to produce quality scripts faster.
             </p>
             {% if is_granted('ROLE_DEV') %}
-            <div class="col-md-6">
-                <h3>Development</h3>
-                <ul>
-                    <li><a href="{{ app.request.basepath }}/smartai">SmartAI</a></li>
-                    <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
-                    <li><a href="{{ app.request.basepath }}/loot">SunLoot</a></li>
-                </ul>
-            </div>
-            {% endif %}
-            {% if is_granted('ROLE_TESTER') %}
-            <div class="col-md-6">
-                <h3>Testing</h3>
-                <ul>
-                    <li><a href="{{ app.request.basepath }}/classes">SunClasses</a></li>
-                    <li><a href="{{ app.request.basepath }}/quests">SunQuests</a></li>
-                </ul>
-            </div>
-            {% endif %}
-            {% if is_granted('ROLE_DEV') %}
             <div class="col-md-12">
                 <hr>
                 <h3>My reviews</h3>
@@ -58,59 +39,7 @@
                         {% if script.user == app.user.id %}
                             <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
                                 <td>{{ script.date|date("m-j-y G:i:s") }}</td>
-                                <td>
-                                    {% if script.source_type == 0 %}
-                                        {% if script.entryorguid > 0 %}
-                                            <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getCreatureName }}</a>
-                                        {% else %}
-                                            <a href="{{ app.request.basepath }}/creature/guid/{{ script.entryorguid|abs }}/smartai">{{ script.entryorguid|getCreatureName }}</a>
-                                        {% endif %}
-                                    {% elseif script.source_type == 1 %}
-                                        {% if script.entryorguid > 0 %}
-                                            <a href="{{ app.request.basepath }}/object/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getGOName }}</a>
-                                        {% else %}
-                                            <a href="{{ app.request.basepath }}/object/guid/{{ script.entryorguid|abs }}/smartai">{{ script.entryorguid|getGOName }}</a>
-                                        {% endif %}
-                                    {% elseif script.source_type == 3 %}
-                                        <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/equip">{{ script.entryorguid|getCreatureName }} - Equipment</a>
-                                    {% elseif script.source_type == 4 %}
-                                        <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
-                                    {% elseif script.source_type == 5 %}
-                                        <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/immune">{{ script.entryorguid|getCreatureName }} - Immunities</a>
-
-                                    {% elseif script.source_type == 8 %}
-                                        {% if script.info1 > 0 %}
-                                            <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Set Path {{ script.path }}
-                                        {% else %}
-                                            <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}">{{ script.entryorguid|getCreatureName }}</a> - Replace with Path {{ script.path|abs }}
-                                        {% endif %}
-                                    {% elseif script.source_type == 7 %}
-                                        PathID {{ script.entryorguid }} - Point {{ script.path }} - Pause {{ script.info1 }}ms
-
-                                    {% elseif script.source_type == 9 %}
-                                        <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
-                                    {% elseif script.source_type == 10 %}
-                                        <a href="{{ app.request.basepath }}/loot/creature/{{ script.entryorguid }}">Creature Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 11 %}
-                                        <a href="{{ app.request.basepath }}/loot/disenchant/{{ script.entryorguid }}">Disenchant Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 12 %}
-                                        <a href="{{ app.request.basepath }}/loot/fishing/{{ script.entryorguid }}">Fishing Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 13 %}
-                                        <a href="{{ app.request.basepath }}/loot/gameobject/{{ script.entryorguid }}">GO Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 14 %}
-                                        <a href="{{ app.request.basepath }}/loot/item/{{ script.entryorguid }}">Item Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 15 %}
-                                        <a href="{{ app.request.basepath }}/loot/pickpocket/{{ script.entryorguid }}">Pickpocket Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 16 %}
-                                        <a href="{{ app.request.basepath }}/loot/prospect/{{ script.entryorguid }}">Prospect Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 17 %}
-                                        <a href="{{ app.request.basepath }}/loot/questmail/{{ script.entryorguid }}">Quest Mail Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 18 %}
-                                        <a href="{{ app.request.basepath }}/loot/reference/{{ script.entryorguid }}">Reference Loot {{ script.entryorguid }}</a>
-                                    {% elseif script.source_type == 19 %}
-                                        <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
-                                    {% endif %}
-                                </td>
+                                <td>{{ script|getReviewComment }}</td>
                                 <td>{{ script.state|getStateName }}</td>
                                 <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
                             </tr>
@@ -138,57 +67,7 @@
                 {% if script.state == 0 %}
                     <tr>
                         <td>{{ script.user|getUsername }}</td>
-                        <td>
-                            {% if script.source_type == 0 %}
-                                {% if script.entryorguid > 0 %}
-                                    <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getCreatureName }}</a>
-                                {% else %}
-                                    <a href="{{ app.request.basepath }}/creature/guid/{{ script.entryorguid|abs }}/smartai">{{ script.entryorguid|getCreatureName }}</a>
-                                {% endif %}
-                            {% elseif script.source_type == 1 %}
-                                {% if script.entryorguid > 0 %}
-                                    <a href="{{ app.request.basepath }}/object/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getGOName }}</a>
-                                {% else %}
-                                    <a href="{{ app.request.basepath }}/object/guid/{{ script.entryorguid|abs }}/smartai">{{ script.entryorguid|getGOName }}</a>
-                                {% endif %}
-                            {% elseif script.source_type == 3 %}
-                                <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/equip">{{ script.entryorguid|getCreatureName }} - Equipment</a>
-                            {% elseif script.source_type == 8 %}
-                                {% if script.info1 > 0 %}
-                                    <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getCreatureName }}</a> - Set Path {{ script.path }}
-                                {% else %}
-                                    <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/smartai">{{ script.entryorguid|getCreatureName }}</a> - Replace with Path {{ script.path|abs }}
-                                {% endif %}
-                            {% elseif script.source_type == 4 %}
-                                <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/text">{{ script.entryorguid|getCreatureName }} - Text</a>
-                            {% elseif script.source_type == 5 %}
-                                PathID {{ script.entryorguid }} - Point {{ script.path }} - Pause {{ script.info1 }}ms
-                            {% elseif script.source_type == 7 %}
-                                <a href="{{ app.request.basepath }}/creature/entry/{{ script.entryorguid }}/immune">{{ script.entryorguid|getCreatureName }} - Immunities</a>
-                            {% elseif script.source_type == 9 %}
-                                <a href="{{ app.request.basepath }}/smartai/script/{{ script.entryorguid }}">{{ script.entryorguid|getScriptName }} - Script {{ script.entryorguid|getScript }}</a>
-                            {% elseif script.source_type == 10 %}
-                                <a href="{{ app.request.basepath }}/loot/creature/{{ script.entryorguid }}">Creature Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 11 %}
-                                <a href="{{ app.request.basepath }}/loot/disenchant/{{ script.entryorguid }}">Disenchant Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 12 %}
-                                <a href="{{ app.request.basepath }}/loot/fishing/{{ script.entryorguid }}">Fishing Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 13 %}
-                                <a href="{{ app.request.basepath }}/loot/gameobject/{{ script.entryorguid }}">GO Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 14 %}
-                                <a href="{{ app.request.basepath }}/loot/item/{{ script.entryorguid }}">Item Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 15 %}
-                                <a href="{{ app.request.basepath }}/loot/pickpocket/{{ script.entryorguid }}">Pickpocket Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 16 %}
-                                <a href="{{ app.request.basepath }}/loot/prospect/{{ script.entryorguid }}">Prospect Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 17 %}
-                                <a href="{{ app.request.basepath }}/loot/questmail/{{ script.entryorguid }}">Quest Mail Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 18 %}
-                                <a href="{{ app.request.basepath }}/loot/reference/{{ script.entryorguid }}">Reference Loot {{ script.entryorguid }}</a>
-                            {% elseif script.source_type == 19 %}
-                                <a href="{{ app.request.basepath }}/loot/skining/{{ script.entryorguid }}">Skinning Loot {{ script.entryorguid }}</a>
-                            {% endif %}
-                        </td>
+                        <td>{{ script|getReviewComment }}</td>
                         <td>{{ script.date|date("m-j-y G:i:s") }}</td>
                         <td>
                             <span class="glyphicon glyphicon-ok" onclick="validate({{ script.entryorguid }}, {{ script.source_type }}, this)"></span>
@@ -208,14 +87,14 @@
         {% block script %}
             <script type="text/javascript">
                 function validate(Entry, Type, span) {
-                    var Review = { "entryorguid": Entry, "source_type": Type, "user": "{{ app.user.id }}" };
+                    var Review = { "entryorguid": Entry, "source_type": Type };
                     $.ajax({
                         type: "POST",
                         url: '/dev/validate',
                         data: 'review=' + JSON.stringify(Review),
                         success: function (data) {
                             console.log(Date() + " - " + data);
-                            //$(span).closest('tr').remove();
+                            $(span).closest('tr').remove();
                         },
                         error: function (xhr, err) {
                             console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
@@ -224,7 +103,7 @@
                     });
                 }
                 function disprove(Entry, Type, span) {
-                    var Review = { "entryorguid": Entry, "source_type": Type, "user": "{{ app.user.id }}" };
+                    var Review = { "entryorguid": Entry, "source_type": Type };
                     $.ajax({
                         type: "POST",
                         url: '/dev/refuse',

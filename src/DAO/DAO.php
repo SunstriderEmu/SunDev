@@ -114,7 +114,7 @@ class DAO {
 			case 57: $this->setLoot($data, $db, 'quest_mail');	break;
 			case 58: $this->setLoot($data, $db, 'reference');	break;
 			case 59: $this->setLoot($data, $db, 'skinning');	break;
-			case 70:
+			case 70: // Transfer Waypoints
 				$name  = $this->$db->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array(intval($data['script']->entry)));
 				// Delete previous waypoints
 				$this->$db->executeQuery('DELETE FROM waypoints WHERE entry = ?', array(intval($data['script']->entry)));
@@ -127,7 +127,7 @@ class DAO {
 				$insert = rtrim($insert, ',');
 				$this->$db->executeQuery($insert);
 				break;
-			case 71:
+			case 71: // Set Pause on Waypoint
 				$this->$db->executeQuery('UPDATE waypoint_data SET delay = ? WHERE id = ? AND point = ?', array(intval($data['script']->delay), intval($data['script']->path), intval($data['script']->point)));
 				break;
 			default: return "Error - {$data['review']->source_type}";

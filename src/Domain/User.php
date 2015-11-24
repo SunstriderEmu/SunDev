@@ -35,6 +35,13 @@ class User implements UserInterface
 	private $salt;
 
 	/**
+	 * Salt that was originally used to encode the password.
+	 *
+	 * @var string
+	 */
+	private $role;
+
+	/**
 	 * Role.
 	 * Values : ROLE_USER or ROLE_ADMIN.
 	 *
@@ -83,6 +90,14 @@ class User implements UserInterface
 	public function setSalt($salt)
 	{
 		$this->salt = $salt;
+	}
+
+	public function getRole() {
+		return $this->role;
+	}
+
+	public function setRole($role) {
+		$this->role = $role;
 	}
 
 	public function setRoles($roles) {

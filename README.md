@@ -13,7 +13,7 @@ SunDev is developed with the micro-framework Silex.
     - suntools
     - world: your live world
     - test_world: your ptr world (can be the same as world)
-- Create et edit `app/config.php` from `app/config.sample.php`
+- Create and edit `app/config.php` from `app/config.sample.php`
 - Edit your host file so that `dev.sunstrider.com` points to your server. For example:   
         `127.0.0.1  dev.sunstrider.com`
 - Create a virtual host in your web server config.
@@ -25,8 +25,7 @@ SunDev is developed with the micro-framework Silex.
         </VirtualHost>
 
 # Usage
-
-- Access:  
+## Access
 Just go into the address you put into your host file, such as `dev.sunstrider.com`  
 The following dummy users are already created in the database included (user:password):
     - admin:admin
@@ -34,19 +33,28 @@ The following dummy users are already created in the database included (user:pas
     - dev:dev
     - tester:tester
 
-- Creating a user  
+## Creating a user
     `dev.sunstrider.com/admin/user/add`
 
 # Development
 * SmartAI:
   SmartAI Web Editor inspired by SmartAI Editor by Discover- using a custom jQuery library(smartai.js), [dataTables.js](http://www.datatables.net/), [chosen.js](http://harvesthq.github.io/chosen/) and [jQuery.xcolor.js](https://github.com/infusion/jQuery-xcolor).
 
+* SunEquip:
+  Equipment Web Editor.
+
 * SunDungeon:
   Checklist of points to check for every NPCs in Outland Dungeons.
+
+* SunWaypoints:
+  Allow to transfer waypoints and set a pause to a point.
 
 # Testing
 * SunQuests:
   Checklist of points to check for every quests in Outland including zones, dungeons, raids and cities.
+
+* SunClasses:
+  Checklist of points to check for every classes including talents and spells.
 
 # Roles
 | Role  		| Access      							|
@@ -58,8 +66,5 @@ The following dummy users are already created in the database included (user:pas
 
 # To Do
 Implement:
-* SunClasses
-* SunEquip
-* SunGossip
-* SunWaypoints
+* SunGossip: work in progress
 * SunWorld

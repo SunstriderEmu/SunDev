@@ -6,31 +6,31 @@ use SUN\Domain\Classes;
 
 class ClassesDAO extends DAO {
 	public function getTotal() {
-		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells');
-		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents');
+		$spells = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells');
+		$talents = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents');
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTested() {
-		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0');
-		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0');
+		$spells = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0');
+		$talents = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0');
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTotalClass(Classes $classes) {
-		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
-		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
+		$spells = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
+		$talents = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getTestedClass(Classes $classes) {
-		$spells = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0 AND class = ?', array($classes->getIndex()));
-		$talents = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0 AND class = ?', array($classes->getIndex()));
+		$spells = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells WHERE tester != 0 AND class = ?', array($classes->getIndex()));
+		$talents = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents WHERE tester != 0 AND class = ?', array($classes->getIndex()));
 		return $spells['count'] + $talents['count'];
 	}
 
 	public function getClassSpells(Classes $classes) {
-		$spells = $this->tools->fetchAll('SELECT * FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
+		$spells = $this->getDb('tools')->fetchAll('SELECT * FROM class_test_spells WHERE class = ?', array($classes->getIndex()));
 		foreach($spells as $spell) {
 			if($spell['tested'] == "2") {
 				$classes->setSuccess($classes->getSuccess() + 1);
@@ -45,7 +45,7 @@ class ClassesDAO extends DAO {
 	}
 
 	public function getClassTalents(Classes $classes) {
-		$talents = $this->tools->fetchAll('SELECT * FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
+		$talents = $this->getDb('tools')->fetchAll('SELECT * FROM class_test_talents WHERE class = ?', array($classes->getIndex()));
 
 		foreach($talents as $talent) {
 			if($talent['tested'] == "2") {
@@ -62,8 +62,8 @@ class ClassesDAO extends DAO {
 	}
 
 	public function getGlobal() {
-		$spells = $this->tools->fetchAll('SELECT * FROM class_test_spells');
-		$talents = $this->tools->fetchALl('SELECT * FROM class_test_talents');
+		$spells = $this->getDb('tools')->fetchAll('SELECT * FROM class_test_spells');
+		$talents = $this->getDb('tools')->fetchALl('SELECT * FROM class_test_talents');
 
 		$classes = new Classes(["spells" => count($spells), "talents" => count($talents)]);
 		foreach($spells as $spell) {
@@ -176,11 +176,11 @@ class ClassesDAO extends DAO {
 	}
 
 	public function getSpecSpells(Classes $classes, $spe) {
-		return $this->tools->fetchAll('SELECT * FROM class_test_spells WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
+		return $this->getDb('tools')->fetchAll('SELECT * FROM class_test_spells WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
 	}
 
 	public function getSpecTalents(Classes $classes, $spe) {
-		return $this->tools->fetchAll('SELECT * FROM class_test_talents WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
+		return $this->getDb('tools')->fetchAll('SELECT * FROM class_test_talents WHERE class = ? AND spe = ?', array($classes->getIndex(), $spe));
 	}
 
 	public function getSpec(Classes $classes) {
@@ -194,15 +194,15 @@ class ClassesDAO extends DAO {
 	}
 
 	public function setTested($info, $category) {
-		$this->tools->executeQuery("UPDATE class_test_{$category} SET tested = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
+		$this->getDb('tools')->executeQuery("UPDATE class_test_{$category} SET tested = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setTester($info, $category) {
-		$this->tools->executeQuery("UPDATE class_test_{$category} SET tester = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
+		$this->getDb('tools')->executeQuery("UPDATE class_test_{$category} SET tester = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setIssue($info, $category) {
-		$this->tools->executeQuery("UPDATE class_test_{$category} SET issue = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
+		$this->getDb('tools')->executeQuery("UPDATE class_test_{$category} SET issue = ? WHERE name = ? AND class = ?", array($info->value, $info->name, $info->class));
 	}
 
 	public function setInfo($info) {

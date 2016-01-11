@@ -7,12 +7,12 @@ use Doctrine\DBAL\Connection;
 class LootDAO extends DAO {
 
 	public function getCreatureLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM creature_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM creature_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
-		$creatures = $this->test->fetchAll('SELECT COUNT(*) as count, entry, name FROM creature_template WHERE lootid = ?', array(intval($id)));
+		$creatures = $this->getDb('test')->fetchAll('SELECT COUNT(*) as count, entry, name FROM creature_template WHERE lootid = ?', array(intval($id)));
 
 		return [
 			"id"		=> $id,
@@ -24,7 +24,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getDisenchantLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM disenchant_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM disenchant_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
@@ -37,7 +37,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getFishingLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM fishing_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM fishing_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -52,7 +52,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getGOLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM gameobject_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM gameobject_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -67,7 +67,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getItemLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM item_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM item_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -82,7 +82,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getPickpocketLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM pickpocketing_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM pickpocketing_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -97,7 +97,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getProspectLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM prospecting_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM prospecting_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -112,7 +112,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getQuestMailLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM quest_mail_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM quest_mail_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
@@ -127,20 +127,20 @@ class LootDAO extends DAO {
 	}
 
 	public function getReferenceLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM reference_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM reference_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
 
-		$lootId = $this->test->fetchAll('SELECT entry, COUNT(*) as count FROM creature_loot_template WHERE item = ? AND mincountOrRef < 0 and ChanceOrQuestChance > 0', array(intval($id)));
+		$lootId = $this->getDb('test')->fetchAll('SELECT entry, COUNT(*) as count FROM creature_loot_template WHERE item = ? AND mincountOrRef < 0 and ChanceOrQuestChance > 0', array(intval($id)));
 		$entries = [];
 		foreach($lootId as $creature) {
 			$entries[] = $creature['entry'];
 		}
 		$entries = array_unique($entries);
-		$get = $this->test->fetchAll('SELECT entry, name FROM creature_template WHERE lootid IN (?)', array((array) $entries), array(Connection::PARAM_INT_ARRAY));
+		$get = $this->getDb('test')->fetchAll('SELECT entry, name FROM creature_template WHERE lootid IN (?)', array((array) $entries), array(Connection::PARAM_INT_ARRAY));
 		$creatures = [];
 		foreach($get as $creature) {
 			$creatures[$creature['entry']]['entry'] = $creature['entry'];
@@ -158,7 +158,7 @@ class LootDAO extends DAO {
 	}
 
 	public function getSkinningLoot($id) {
-		$loots = $this->test->fetchAll('SELECT * FROM skinning_loot_template WHERE entry = ?', array(intval($id)));
+		$loots = $this->getDb('test')->fetchAll('SELECT * FROM skinning_loot_template WHERE entry = ?', array(intval($id)));
 
 		$items= [];
 		foreach($loots as $item) {

@@ -61,14 +61,14 @@ $app['dao.user'] = $app->share(function ($app) {
 
 require_once __DIR__.'/config.php';
 
-$app->register(new Silex\Provider\MonologServiceProvider(), array(
-	'monolog.logfile' => __DIR__.'/../logs/sunstrider.log',
-	'monolog.name' => 'SUN',
-	'monolog.level' => $app['monolog.level']
-));
 $app->register(new Silex\Provider\HttpFragmentServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
-
+if (isset($app['debug']) && $app['debug']) {
+	$app->register(new Silex\Provider\WebProfilerServiceProvider(), array(
+		'profiler.cache_dir' 	=> __DIR__.'/../var/profiler',
+		'profiler.mount_prefix' => '/_profiler',
+	));
+}
 if($app['debug'] == false) {
 	$app->error(function (\Exception $e, $code) use ($app) {
 		switch ($code) {

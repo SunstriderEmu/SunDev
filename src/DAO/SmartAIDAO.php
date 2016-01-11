@@ -9,14 +9,14 @@ use SUN\Domain\Text;
 
 class SmartAIDAO extends DAO {
 	public function getAvailableEntry() {
-		return $this->test->fetchAssoc('SELECT entryorguid FROM smart_scripts WHERE entryorguid BETWEEN 50000 AND 50099 ORDER BY entryorguid DESC LIMIT 1');
+		return $this->getDb('test')->fetchAssoc('SELECT entryorguid FROM smart_scripts WHERE entryorguid BETWEEN 50000 AND 50099 ORDER BY entryorguid DESC LIMIT 1');
 	}
 
 	/*
 	 * GET CREATURE ENTRY SCRIPT
 	 */
 	public function getCreatureEntryScript(Creature $creature) {
-		$all = $this->test->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 0', array($creature->getEntry()));
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 0', array($creature->getEntry()));
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);
@@ -28,7 +28,7 @@ class SmartAIDAO extends DAO {
 	 * GET CREATURE GUID SCRIPT
 	 */
 	public function getCreatureGuidScript(Creature $creature) {
-		$all = $this->test->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = -? AND source_type = 0', array($creature->getGuid()));
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = -? AND source_type = 0', array($creature->getGuid()));
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);
@@ -40,7 +40,7 @@ class SmartAIDAO extends DAO {
 	 * GET GAMEOBJECT ENTRY SCRIPT
 	 */
 	public function getGOEntryScript(Gameobject $go) {
-		$all = $this->test->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 1', $go->getEntry());
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 1', $go->getEntry());
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);
@@ -52,7 +52,7 @@ class SmartAIDAO extends DAO {
 	 * GET GAMEOBJECT GUID SCRIPT
 	 */
 	public function getGOGuidScript(Gameobject $go) {
-		$all = $this->test->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = -? AND source_type = 1', array($go->getGuid()));
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = -? AND source_type = 1', array($go->getGuid()));
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);
@@ -64,7 +64,7 @@ class SmartAIDAO extends DAO {
 	 * GET SCRIPT
 	 */
 	public function getScript($script) {
-		$all = $this->test->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 9', array($script));
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 9', array($script));
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);
@@ -73,7 +73,7 @@ class SmartAIDAO extends DAO {
 	}
 
 	public function getEvents() {
-		$fetch = $this->tools->fetchAll('SELECT * FROM smartai_events');
+		$fetch = $this->getDb('tools')->fetchAll('SELECT * FROM smartai_events');
 		$events = [];
 		foreach($fetch as $event) {
 			$events[$event['id']] = $event;
@@ -82,11 +82,11 @@ class SmartAIDAO extends DAO {
 	}
 
 	public function getEvent($event) {
-		return $this->tools->fetchAssoc('SELECT * FROM smartai_events WHERE id = ?', array($event));
+		return $this->getDb('tools')->fetchAssoc('SELECT * FROM smartai_events WHERE id = ?', array($event));
 	}
 
 	public function getActions() {
-		$fetch = $this->tools->fetchAll('SELECT * FROM smartai_actions');
+		$fetch = $this->getDb('tools')->fetchAll('SELECT * FROM smartai_actions');
 		$actions = [];
 		foreach($fetch as $action) {
 			$actions[$action['id']] = $action;
@@ -95,11 +95,11 @@ class SmartAIDAO extends DAO {
 	}
 
 	public function getAction($action) {
-		return $this->tools->fetchAssoc('SELECT * FROM smartai_actions WHERE id = ?', array($action));
+		return $this->getDb('tools')->fetchAssoc('SELECT * FROM smartai_actions WHERE id = ?', array($action));
 	}
 
 	public function getTargets() {
-		$fetch = $this->tools->fetchAll('SELECT * FROM smartai_targets');
+		$fetch = $this->getDb('tools')->fetchAll('SELECT * FROM smartai_targets');
 		$targets = [];
 		foreach($fetch as $target) {
 			$targets[$target['id']] = $target;
@@ -108,26 +108,26 @@ class SmartAIDAO extends DAO {
 	}
 
 	public function getTarget($target) {
-		return $this->tools->fetchAssoc('SELECT * FROM smartai_targets WHERE id = ?', array($target));
+		return $this->getDb('tools')->fetchAssoc('SELECT * FROM smartai_targets WHERE id = ?', array($target));
 	}
 
 	public function getSpellName($id) {
-		$spell = $this->test->fetchAssoc('SELECT spellName1 FROM spell_template WHERE entry = ?', array($id));
+		$spell = $this->getDb('test')->fetchAssoc('SELECT spellName1 FROM spell_template WHERE entry = ?', array($id));
 		return $spell['spellName1'];
 	}
 
 	public function getQuestName($id) {
-		$quest = $this->test->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
+		$quest = $this->getDb('test')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
 		return $quest['Title'];
 	}
 
 	public function getItemName($id) {
-		$item = $this->test->fetchAssoc('SELECT name FROM item_template WHERE entry = ?', array($id));
+		$item = $this->getDb('test')->fetchAssoc('SELECT name FROM item_template WHERE entry = ?', array($id));
 		return $item['name'];
 	}
 
 	public function getItemDisplay($id) {
-		$item = $this->test->fetchAssoc('SELECT displayid FROM item_template WHERE entry = ?', array($id));
+		$item = $this->getDb('test')->fetchAssoc('SELECT displayid FROM item_template WHERE entry = ?', array($id));
 		return $item['displayid'];
 	}
 } 

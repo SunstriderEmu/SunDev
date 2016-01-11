@@ -7,14 +7,10 @@ use SUN\Domain\Creature;
 use SUN\Domain\Gameobject;
 use SUN\DAO\CreatureDAO;
 use SUN\DAO\GameobjectDAO;
-use SUN\DAO\SmartAIDAO;
 
-class SUNExtension extends \Twig_Extension {
+class SUNExtension extends \Twig_Extension
+{
 	protected $app;
-	protected $dbc;
-	protected $world;
-	protected $tools;
-	protected $test;
 
 	/**
 	 * @param Application $app
@@ -22,11 +18,12 @@ class SUNExtension extends \Twig_Extension {
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
-		$this->dbc = $app['dbs']['dbc'];
-		$this->world = $app['dbs']['world'];
-		$this->tools = $app['dbs']['suntools'];
-		$this->test = $app['dbs']['test_world'];
 	}
+
+    protected function getDb($name)
+    {
+        return $this->app['dbs'][$name];
+    }
 
 	public function getName() {
 		return "SUN";
@@ -56,7 +53,7 @@ class SUNExtension extends \Twig_Extension {
 	}
 
 	public function getItemName($id) {
-		$item = $this->test->fetchAssoc('SELECT name FROM item_template WHERE entry = ?', array($id));
+		$item = $this->getDb('test')->fetchAssoc('SELECT name FROM item_template WHERE entry = ?', array($id));
 		return $item['name'];
 	}
 
@@ -95,7 +92,7 @@ class SUNExtension extends \Twig_Extension {
 	}
 
 	public function getUsername($user) {
-		$user = $this->tools->fetchAssoc('SELECT name FROM user WHERE id = ?', array($user));
+		$user = $this->getDb('tools')->fetchAssoc('SELECT name FROM user WHERE id = ?', array($user));
 		return $user['name'];
 	}
 

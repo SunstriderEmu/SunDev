@@ -18,6 +18,7 @@
                     </select>
                 </div>
                 <button type="button" id="add" class="btn btn-primary col-sm-2">{{ gossip ? 'Add a new gossip menu' : 'Create a gossip menu' }}</button>
+                {{ gossip ? '<button type="button" id="remove" class="btn btn-danger col-sm-2">Remove the menu</button>' : '' }}
             </div>
         </div>
         <div class="col-md-3 text-right" style="margin-top: 30px">
@@ -35,7 +36,7 @@
                 <div class="gossip_options">
                     {% if gossip %}
                     {% for option in gossip.menus|first['options'] %}
-                    <div class="options" id="option_{{ option.id }}" onclick="getNextMenu({{ option.next }})" title="Next menu: {{ option.next }}">
+                    <div class="options" id="option_{{ option.id }}" onclick="displayMenu({{ option.next }})" title="Next menu: {{ option.next }}">
                         {{ option.icon|getGossipOptionIcon }} <span>{{ option.text }}</span>
                     </div>
                     {% endfor %}
@@ -49,7 +50,7 @@
                 <div class="col-md-6 row">
                 {% endif %}
                     {% if creature.gender == 'both' or creature.gender == 'male'%}
-                    <label>{% if creature.gender == 'both' %}Male {% endif %}Text</label>
+                    <h3>{% if creature.gender == 'both' %}Male {% endif %}Text</h3>
                     <textarea class="form-control" rows="4" id="gossip_text_male" {{ gossip ? 'menu='~gossip.menus|first.id : 'disabled' }}>{{ gossip ? gossip.menus|first.text0 : '' }}</textarea>
                     {% endif %}
                 {% if creature.gender == 'both' %}
@@ -59,7 +60,7 @@
                 <div class="col-md-6">
                 {% endif %}
                     {% if creature.gender == 'both' or creature.gender == 'female'%}
-                    <label>{% if creature.gender == 'both' %}Female {% endif %}Text</label>
+                    <h3>{% if creature.gender == 'both' %}Female {% endif %}Text</h3>
                     <textarea class="form-control" rows="4" id="gossip_text_female" {{ gossip ? 'menu='~gossip.menus|first.id : 'disabled' }}>{{ gossip ? gossip.menus|first.text1 : '' }}</textarea>
                     {% endif %}
                 {% if creature.gender == 'both' %}
@@ -67,66 +68,36 @@
             </div>
             {% endif %}
             <br>
-            <label>Options</label>
+            <h3>Options</h3>
             <table class="table table-striped" id="gossip_options" style="margin-bottom: 0!important;">
                 <thead>
                     <tr>
                         <th width="5%">ID</th>
-                        <th width="12%">Icon</th>
-                        <th width="45%">Text</th>
-                        <th width="13%">Follow up</th>
+                        <th width="10%">Icon</th>
+                        <th width="50%">Text</th>
+                        <th width="20%">NPC_Flag</th>
+                        <th width="10%">Follow up</th>
                         <th width="5%"></th>
                     </tr>
                 </thead>
                 <tbody>
-                {% if gossip %}
-                {% for option in gossip.menus|first['options'] %}
-                    <tr>
-                        <td>{{ option.id }}</td>
-                        <td>
-                            <select class="form-control" id="icon_{{ option.id }}" onchange="updateOption({{ gossip.menus|first.id }}, {{ option.id }}, 'icon', this.value)">
-                                <option value="0" {% if option.icon == 0 %}selected{% endif %}>Chat</option>
-                                <option value="1" {% if option.icon == 1 %}selected{% endif %}>Vendor</option>
-                                <option value="2" {% if option.icon == 2 %}selected{% endif %}>Taxi</option>
-                                <option value="3" {% if option.icon == 3 %}selected{% endif %}>Trainer</option>
-                                <option value="4" {% if option.icon == 4 %}selected{% endif %}>Interact 1</option>
-                                <option value="5" {% if option.icon == 5 %}selected{% endif %}>Interact 2</option>
-                                <option value="6" {% if option.icon == 6 %}selected{% endif %}>Banker</option>
-                                <option value="7" {% if option.icon == 7 %}selected{% endif %}>Talk</option>
-                                <option value="8" {% if option.icon == 8 %}selected{% endif %}>Tabard</option>
-                                <option value="9" {% if option.icon == 9 %}selected{% endif %}>Battle</option>
-                                <option value="10" {% if option.icon == 10 %}selected{% endif %}>Quest</option>
-                            </select>
-                        </td>
-                        <td>
-                            <textarea class="form-control" rows="1" onchange="updateOption({{ gossip.menus|first.id }}, {{ option.id }}, 'text', this.value)">{{ option.text }}</textarea>
-                        </td>
-                        <td>
-                            <input class="form-control" onchange="updateOption({{ gossip.menus|first.id }}, {{ option.id }}, 'next', this.value)" value="{{ option.next }}" type="text">
-                        </td>
-                        <td>
-                            <span class="glyphicon glyphicon-remove" onclick="updateOption({{ gossip.menus|first.id }}, {{ option.id }}, 'delete', 0)"></span>
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% endif %}
                 </tbody>
             </table>
             <br>
             <button type="button" id="addoption" class="btn btn-primary col-sm-2" {{ gossip ? '' : 'disabled' }}>Add new option</button>
         </div>
-        <div class="col-md-12" id="conditions">
-            <label>Conditions</label>
+        <div class="col-md-8 col-md-offset-4" id="types">
+            <h3>Conditions</h3>
             <table class="table table-striped" id="gossip_conditions" style="margin-bottom: 0!important;">
                 <thead>
                     <tr>
-                        <th>Element</th>
-                        <th>Condition</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>Reverse</th>
-                        <th></th>
+                        <th class="col-md-1">Element</th>
+                        <th class="col-md-2">Condition</th>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-1">Reverse</th>
+                        <th class="col-md-1"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -134,14 +105,7 @@
             </table>
             <br>
             <div class="col-md-2">
-                <select class="form-control" id="newcondition">
-                    {% if gossip %}
-                    <option value="menu-{{ gossip.menus|first.id }}">Menu {{ gossip.menus|first.id }}</option>
-                    {% for option in gossip.menus|first.options %}
-                    <option value="option-{{ option.id }}">Option {{ option.id }}</option>
-                    {% endfor %}
-                    {% endif %}
-                </select>
+                <select class="form-control" id="newcondition"></select>
             </div>
             <button type="button" id="addcondition" class="btn btn-primary col-sm-2" style="display: block">Add new condition</button></div>
     {% endblock %}
@@ -152,9 +116,24 @@
             {% if gossip %}
             var Gossip = {{ gossip|json_encode|raw }};
             {% else %}
-            var Gossip = { menus: [] };
+            var Gossip = { menus: {}, main: null };
             {% endif %}
             console.log(Gossip);
+
+            var Info = { "entryorguid": {{ creature.entry }}, "source_type": 13 };
+
+            $('#apply').click(function () {
+                apply(Gossip, Info);
+            });
+            $('#review').click(function () {
+                review(Gossip, Info);
+            });
+            $('#validate').click(function () {
+                validate(Gossip, Info);
+            });
+            $('#refuse').click(function () {
+                refuse(Gossip, Info);
+            });
 
             var ConditionSourceType =
             {
@@ -183,54 +162,53 @@
                 CONDITION_SOURCE_TYPE_SMART_EVENT                    : "22",
                 CONDITION_SOURCE_TYPE_NPC_VENDOR                     : "23",
                 CONDITION_SOURCE_TYPE_SPELL_PROC                     : "24", //Not implemented
-                CONDITION_SOURCE_TYPE_PHASE_DEFINITION               : "25", // only 4.3.4
+                CONDITION_SOURCE_TYPE_PHASE_DEFINITION               : "25",
                 CONDITION_SOURCE_TYPE_MAX                            : "26"  // MAX
             };
 
             var ConditionTypes =
-            {                                                           // value1           value2         value3
-                CONDITION_NONE                  : "0",                    // 0                0              0                  always true
-                CONDITION_AURA                  : "1",                    // spell_id         effindex       use target?        true if player (or target, if value3) has aura of spell_id with effect effindex
-                CONDITION_ITEM                  : "2",                    // item_id          count          bank               true if has #count of item_ids (if 'bank' is set it searches in bank slots too)
-                CONDITION_ITEM_EQUIPPED         : "3",                    // item_id          0              0                  true if has item_id equipped
-                CONDITION_ZONEID                : "4",                    // zone_id          0              0                  true if in zone_id
-                CONDITION_REPUTATION_RANK       : "5",                    // faction_id       rankMask       0                  true if has min_rank for faction_id
-                CONDITION_TEAM                  : "6",                    // player_team      0,             0                  469 - Alliance, 67 - Horde)
-                CONDITION_SKILL                 : "7",                    // skill_id         skill_value    0                  true if has skill_value for skill_id
-                CONDITION_QUESTREWARDED         : "8",                    // quest_id         0              0                  true if quest_id was rewarded before
-                CONDITION_QUESTTAKEN            : "9",                    // quest_id         0,             0                  true while quest active
-                CONDITION_DRUNKENSTATE          : "10",                   // DrunkenState     0,             0                  true if player is drunk enough
-                CONDITION_WORLD_STATE           : "11",  //NYI            // index            value          0                  true if world has the value for the index
-                CONDITION_ACTIVE_EVENT          : "12",                   // event_id         0              0                  true if event is active
-                CONDITION_INSTANCE_INFO         : "13",                   // entry            data           type               true if the instance info defined by type (enum InstanceInfo) equals data.
-                CONDITION_QUEST_NONE            : "14",                   // quest_id         0              0                  true if doesn't have quest saved
-                CONDITION_CLASS                 : "15",                   // class            0              0                  true if player's class is equal to class
-                CONDITION_RACE                  : "16",                   // race             0              0                  true if player's race is equal to race
-                CONDITION_ACHIEVEMENT           : "17",  //NI - LK        // achievement_id   0              0                  true if achievement is complete
-                CONDITION_TITLE                 : "18",                   // title id         0              0                  true if player has title
-                CONDITION_SPAWNMASK             : "19",                   // spawnMask        0              0                  true if in spawnMask
-                CONDITION_GENDER                : "20",                   // gender           0              0                  true if player's gender is equal to gender
-                CONDITION_UNIT_STATE            : "21",                   // unitState        0              0                  true if unit has unitState
-                CONDITION_MAPID                 : "22",                   // map_id           0              0                  true if in map_id
-                CONDITION_AREAID                : "23",                   // area_id          0              0                  true if in area_id
-                CONDITION_CREATURE_TYPE         : "24",                   // cinfo.type       0              0                  true if creature_template.type : value1
-                CONDITION_SPELL                 : "25",                   // spell_id         0              0                  true if player has learned spell
-                CONDITION_PHASEMASK             : "26",                   // phasemask        0              0                  true if object is in phasemask
-                CONDITION_LEVEL                 : "27",                   // level            ComparisonType 0                  true if unit's level is equal to param1 (param2 can modify the statement)
-                CONDITION_QUEST_COMPLETE        : "28",                   // quest_id         0              0                  true if player has quest_id with all objectives complete, but not yet rewarded
-                CONDITION_NEAR_CREATURE         : "29",                   // creature entry   distance       0                  true if there is a creature of entry in range
-                CONDITION_NEAR_GAMEOBJECT       : "30",                   // gameobject entry distance       0                  true if there is a gameobject of entry in range
-                CONDITION_OBJECT_ENTRY_GUID     : "31",                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object
-                CONDITION_TYPE_MASK             : "32",                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
-                CONDITION_RELATION_TO           : "33",                   // ConditionTarget  RelationType   0                  true if object is in given relation with object specified by ConditionTarget
-                CONDITION_REACTION_TO           : "34",     //NYI         // ConditionTarget  rankMask       0                  true if object's reaction matches rankMask object specified by ConditionTarget
-                CONDITION_DISTANCE_TO           : "35",                   // ConditionTarget  distance       ComparisonType     true if object and ConditionTarget are within distance given by parameters
-                CONDITION_ALIVE                 : "36",                   // 0                0              0                  true if unit is alive
-                CONDITION_HP_VAL                : "37",                   // hpVal            ComparisonType 0                  true if unit's hp matches given value
-                CONDITION_HP_PCT                : "38",                   // hpPct            ComparisonType 0                  true if unit's hp matches given pct
-                CONDITION_REALM_ACHIEVEMENT     : "39",                   // achievement_id   0              0                  true if realm achievement is complete
-                CONDITION_IN_WATER              : "40",                   // 0                0              0                  true if unit in water
-                CONDITION_MAX                   : "41"                    // MAX
+            {                                                             // value1           value2         value3
+                0:     { name: "CONDITION_NONE",                   value1: "",                      value2: "",                     value3: "",                comment: "always true" },
+                1:     { name: "CONDITION_AURA",                   value1: "Spell ID",              value2: "effIndex",             value3: "Use target",      comment: "true if player (or target, if value3) has aura of spell_id with effect effindex" },
+                2:     { name: "CONDITION_ITEM",                   value1: "Item ID",               value2: "Count",                value3: "Bank",            comment: "true if has #count of item_ids (if 'bank' is set it searches in bank slots too)" },
+                3:     { name: "CONDITION_ITEM_EQUIPPED",          value1: "Item ID",               value2: "",                     value3: "",                comment: "true if has item_id equipped" },
+                4:     { name: "CONDITION_ZONEID",                 value1: "Zone ID",               value2: "",                     value3: "",                comment: "true if in zone_id" },
+                5:     { name: "CONDITION_REPUTATION_RANK",        value1: "Faction ID",            value2: "rankMask",             value3: "",                comment: "true if has min_rank for faction_id" },
+                6:     { name: "CONDITION_TEAM",                   value1: "Player Team",           value2: "",                     value3: "",                comment: "469 - Alliance, 67 - Horde)" },
+                7:     { name: "CONDITION_SKILL",                  value1: "Skill ID",              value2: "Skill value",          value3: "",                comment: "true if has skill_value for skill_id" },
+                8:     { name: "CONDITION_QUESTREWARDED",          value1: "Quest ID",              value2: "",                     value3: "",                comment: "true if quest_id was rewarded before" },
+                9:     { name: "CONDITION_QUESTTAKEN",             value1: "Quest ID",              value2: "",                     value3: "",                comment: "true while quest active" },
+                10:    { name: "CONDITION_DRUNKENSTATE",           value1: "Drunken State",         value2: "",                     value3: "",                comment: "true if player is drunk enough" },
+                11:    { name: "CONDITION_WORLD_STATE",            value1: "Index",                 value2: "Value",                value3: "",                comment: "true if world has the value for the index" },
+                12:    { name: "CONDITION_ACTIVE_EVENT",           value1: "Event ID",              value2: "",                     value3: "",                comment: "true if event is active" },
+                13:    { name: "CONDITION_INSTANCE_INFO",          value1: "Entry",                 value2: "Data",                 value3: "Type",            comment: "true if the instance info defined by type (enum InstanceInfo) equals data." },
+                14:    { name: "CONDITION_QUEST_NONE",             value1: "Quest ID",              value2: "",                     value3: "",                comment: "true if doesn't have quest saved" },
+                15:    { name: "CONDITION_CLASS",                  value1: "Class",                 value2: "",                     value3: "",                comment: "true if player's class is equal to class" },
+                16:    { name: "CONDITION_RACE",                   value1: "Race",                  value2: "",                     value3: "",                comment: "true if player's race       is equal to race" },
+                17:    { name: "CONDITION_ACHIEVEMENT",            value1: "Achievement ID",        value2: "",                     value3: "",                comment: "true if achievement is complete" },
+                18:    { name: "CONDITION_TITLE",                  value1: "Title ID",              value2: "",                     value3: "",                comment: "true if player has title" },
+                19:    { name: "CONDITION_SPAWNMASK",              value1: "spawnMask",             value2: "",                     value3: "",                comment: "true if in spawnMask" },
+                20:    { name: "CONDITION_GENDER",                 value1: "Gender",                value2: "",                     value3: "",                comment: "true if player's gender is equal to gender" },
+                21:    { name: "CONDITION_UNIT_STATE",             value1: "unitState",             value2: "",                     value3: "",                comment: "true if unit has unitState" },
+                22:    { name: "CONDITION_MAPID",                  value1: "Map ID",                value2: "",                     value3: "",                comment: "true if in map_id" },
+                23:    { name: "CONDITION_AREAID",                 value1: "Area ID",               value2: "",                     value3: "",                comment: "true if in area_id" },
+                24:    { name: "CONDITION_CREATURE_TYPE",          value1: "cinfo.type",            value2: "",                     value3: "",                comment: "true if creature_template.type : value1" },
+                25:    { name: "CONDITION_SPELL",                  value1: "Spell ID",              value2: "",                     value3: "",                comment: "true if player has learned spell" },
+                26:    { name: "CONDITION_PHASEMASK",              value1: "phasemask",             value2: "",                     value3: "",                comment: "true if object is in phasemask" },
+                27:    { name: "CONDITION_LEVEL",                  value1: "Level",                 value2: "ComparisonType",       value3: "",                comment: "true if unit's level is equal to param1 (param2 can modify the statement)" },
+                28:    { name: "CONDITION_QUEST_COMPLETE",         value1: "Quest ID",              value2: "",                     value3: "",                comment: "true if player has quest_id with all objectives complete, but not yet rewarded" },
+                29:    { name: "CONDITION_NEAR_CREATURE",          value1: "Creature Entry",        value2: "Distance",             value3: "",                comment: "true if there is a creature of entry in range" },
+                30:    { name: "CONDITION_NEAR_GAMEOBJECT",        value1: "Gameobject Entry",      value2: "Distance",             value3: "",                comment: "true if there is a gameobject of entry in range" },
+                31:    { name: "CONDITION_OBJECT_ENTRY_GUID",      value1: "TypeID",                value2: "Entry",                value3: "Guid",            comment: "true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object" },
+                32:    { name: "CONDITION_TYPE_MASK",              value1: "TypeMask",              value2: "",                     value3: "",                comment: "true if object is type object's TypeMask matches provided TypeMask" },
+                33:    { name: "CONDITION_RELATION_TO",            value1: "ConditionTarget",       value2: "RelationType",         value3: "",                comment: "true if object is in given relation with object specified by ConditionTarget" },
+                34:    { name: "CONDITION_REACTION_TO",            value1: "ConditionTarget",       value2: "rankMask",             value3: "",                comment: "true if object's reaction matches rankMask object specified by ConditionTarget" },
+                35:    { name: "CONDITION_DISTANCE_TO",            value1: "ConditionTarget",       value2: "Distance",             value3: "ComparisonType",  comment: "true if object and ConditionTarget are within distance given by parameters" },
+                36:    { name: "CONDITION_ALIVE",                  value1: "",                      value2: "",                     value3: "",                comment: "true if unit is alive" },
+                37:    { name: "CONDITION_HP_VAL",                 value1: "Hp val",                value2: "ComparisonType",       value3: "",                comment: "true if unit's hp matches given value" },
+                38:    { name: "CONDITION_HP_PCT",                 value1: "HP %",                  value2: "ComparisonType",       value3: "",                comment: "true if unit's hp matches given pct" },
+                39:    { name: "CONDITION_REALM_ACHIEVEMENT",      value1: "Achievement ID",        value2: "",                     value3: "",                comment: "true if realm achievement is complete" },
+                40:    { name: "CONDITION_IN_WATER",               value1: "",                      value2: "",                     value3: "",                comment: "true if unit in water" }
             };
 
 
@@ -248,6 +226,8 @@
             var AddMenu         = $('#add');
             var AddOption       = $('#addoption');
             var AddCondition    = $('#addcondition');
+            var ConditionSelect = $('#newcondition');
+            var RemoveMenu      = $('#remove');
             var newConditionID;
             var getNewCondition = -1;
             var i;
@@ -260,6 +240,8 @@
             var NewOptionsCount;
             var Conditions      = $('#gossip_conditions tbdoy');
             var CurrentMenu     = {{ gossip ? gossip.menus|first.id : 0 }};
+
+            displayMenu(CurrentMenu);
 
 
             /**
@@ -274,20 +256,72 @@
              */
             AddMenu.click(function() {
                 $('#result').html('');
-                Gossip.menus['new'+NewGossipMenu] = { id: 'new'+NewGossipMenu, text0: "", text1: "", options: [], conditions: [] };
+                Gossip.menus['new'+NewGossipMenu] = { id: 'new'+NewGossipMenu, text0: null, text1: null, options: [], conditions: [] };
+
+                if(Gossip.main == null){
+                    Gossip.main = 'new'+NewGossipMenu;
+                    Menus.append('<button type="button" id="remove" class="btn btn-danger col-sm-2">Remove the menu</button>');
+                }
 
                 $('#menusselectdiv').show();
-                MenusSelect.append('<option value="new'+NewGossipMenu+'">New '+NewGossipMenu+'</option>');
+                MenusSelect.append('<option value="new'+NewGossipMenu+'">New '+NewGossipMenu+'</option>').val('new'+NewGossipMenu);
                 displayMenu(Gossip.menus['new'+NewGossipMenu].id);
-                NewGossipMenu++;
                 $(this).html('Add a new gossip menu');
                 {% if creature.gender == 'male' or creature.gender == 'both' %}
                 GossipTextMale.removeAttr('disabled');
+                GossipTextMale.attr('menu', 'new'+NewGossipMenu);
                 {% endif %}
                 {% if creature.gender == 'female' or creature.gender == 'both' %}
                 GossipTextFemale.removeAttr('disabled');
+                GossipTextFeMale.attr('menu', 'new'+NewGossipMenu);
                 {% endif %}
-                AddOption.removeAttr('disabled');
+                AddOption.prop("disabled", false);
+                AddCondition.prop("disabled", false);
+                NewGossipMenu++;
+            });
+
+            $(document).on('click', '#remove', function(){
+                delete Gossip.menus[MenusSelect.val()];
+                $('#menusselect option[value="'+MenusSelect.val()+'"]').remove();
+                if(jQuery.isEmptyObject(Gossip.menus)){
+                    NewGossipMenu = 0;
+                    Gossip.main = null;
+                    $('#remove').remove();
+                    $('#menusselectdiv').hide();
+                    GossipTextFemale.prop("disabled", true);
+                    GossipTextMale.prop("disabled", true);
+                    AddOption.prop("disabled", true);
+                    AddCondition.prop("disabled", true);
+                } else {
+                    displayMenu(Object.keys(Gossip.menus)[0]);
+                }
+
+            }).keydown(function(e) {
+                if(!jQuery.isEmptyObject(Gossip.menus))
+                {
+                    var keys = Object.keys(Gossip.menus);
+                    var index = keys.indexOf(MenusSelect.val());
+                    switch(e.which) {
+                        case 37: // left
+                        case 38: // up
+                            if(index <= 0)
+                                index = 1;
+                            displayMenu(Object.keys(Gossip.menus)[index - 1]);
+                            break;
+
+                            break;
+
+                        case 39: // right
+                        case 40: // down
+                            if(index == Object.keys(Gossip.menus).length - 1)
+                                index = index -1;
+                            displayMenu(Object.keys(Gossip.menus)[index + 1]);
+                            break;
+
+                        default: return; // exit this handler for other keys
+                    }
+                }
+                e.preventDefault(); // prevent the default action (scroll / move caret)
             });
 
             /**
@@ -295,11 +329,12 @@
              */
             AddOption.click(function() {
                 var id;
-                if(Gossip.menus[CurrentMenu].options == '')
+                if(jQuery.isEmptyObject(Object.keys(Gossip.menus[CurrentMenu].options)))
                     id = 0;
-                else
+                else {
                     id = parseInt(Object.keys(Gossip.menus[CurrentMenu].options).reverse()[0]) + 1;
-                Gossip.menus[CurrentMenu].options[id] = { id: id, icon: 0, text: '', next: 0, conditions: [] };
+                }
+                Gossip.menus[CurrentMenu].options[id] = { id: id, icon: 0, text: '', next: 0, flag: 1, conditions: [] };
                 displayOption(CurrentMenu);
             });
 
@@ -309,9 +344,9 @@
             AddCondition.click(function(){
                 var Source = $('#newcondition').val();
                 if(Source.startsWith('menu'))
-                    Gossip.menus[CurrentMenu].conditions['new'+NewCondition] = { id: 'new'+NewCondition, type: 0, source: 0, value1: 0, value2: 0, value3: 0, reverse: 0 };
+                    Gossip.menus[CurrentMenu].conditions[NewCondition] = { id: 'new'+NewCondition, type: 0, source: 14, target: 0, value1: 0, value2: 0, value3: 0, reverse: 0 };
                 if(Source.startsWith('option'))
-                    Gossip.menus[CurrentMenu].options[Source.match(/\d+/)[0]].conditions['new'+NewCondition] = { id: 'new'+NewCondition, type: 0, source: 0, value1: 0, value2: 0, value3: 0, reverse: 0 };
+                    Gossip.menus[CurrentMenu].options[Source.match(/\d+/)[0]].conditions[NewCondition] = { id: 'new'+NewCondition, type: 0, source: 15, target: 0, value1: 0, value2: 0, value3: 0, reverse: 0 };
                 displayCondition(CurrentMenu);
                 NewCondition++;
             });
@@ -320,7 +355,7 @@
              * Save and display the Gossip Male Text on keyup
              */
             GossipTextMale.keyup(function(){
-                {% if creature.gender == 'male' or creature.gender == 'male' %}GossipTextUI.html($(this).val().replace(/\$b/g, '<br>'));{% endif %}
+                {% if creature.gender == 'male' %}GossipTextUI.html($(this).val().replace(/\$b/g, '<br>'));{% endif %}
                 Gossip.menus[$(this).attr('menu')].text0 = $(this).val();
             });
 
@@ -336,10 +371,24 @@
              * Display the given Gossip Menu
              */
             function displayMenu(id) {
+                if(id == 0)
+                    return;
+                MenusSelect.val(id);
                 CurrentMenu = id;
                 GossipTextMale.val(Gossip.menus[id].text0);
+                GossipTextMale.attr('menu', CurrentMenu);
                 GossipTextFemale.val(Gossip.menus[id].text1);
-                GossipTextUI.html(Gossip.menus[id].text{% if creature.gender == 'both' or creature.gender == 'male' %}0{% else %}1{% endif %}.replace(/\$b/g, '<br>'));
+                GossipTextFemale.attr('menu', CurrentMenu);
+
+                if(Gossip.menus[id].text0 != null || Gossip.menus[id].text1 != null)
+                    GossipTextUI.html(Gossip.menus[id].text{% if creature.gender == 'both' or creature.gender == 'male' %}0{% else %}1{% endif %}.replace(/\$b/g, '<br>'));
+                if(Gossip.menus[id].text0 == null && Gossip.menus[id].text1 == null)
+                    GossipTextUI.html('');
+
+                ConditionSelect.html('<option value="menu-'+CurrentMenu+'">Menu '+CurrentMenu+'</option>');
+                $.each(Object.keys(Gossip.menus[id].options), function(){
+                    ConditionSelect.append('<option value="option-'+this+'">Option '+this+'</option>');
+                });
                 displayOption(id);
                 displayCondition(id);
             }
@@ -370,13 +419,41 @@
                         '       </select>' +
                         '   </td>' +
                         '   <td><textarea class="form-control" rows="1" onchange="updateOption(' + id + ', ' + this.id + ', \'text\', this.value)">' + this.text + '</textarea></td>' +
+                        '   <td>' +
+                        '       <select class="form-control" id="flag_' + this.id + '" onchange="updateOption(' + id + ', ' + this.id + ', \'flag\', this.value)">' +
+                        '           <option value="1">Gossip</option>' +
+                        '           <option value="2">Quest Giver</option>' +
+                        '           <option value="16">Trainer</option>' +
+                        '           <option value="32">Trainer Class</option>' +
+                        '           <option value="64">Trainer Profession</option>' +
+                        '           <option value="128">Vendor</option>' +
+                        '           <option value="256">Vendor Ammo</option>' +
+                        '           <option value="512">Vendor Food</option>' +
+                        '           <option value="1024">Vendor Poison</option>' +
+                        '           <option value="2048">Vendor Reagent</option>' +
+                        '           <option value="4096">Repair</option>' +
+                        '           <option value="8192">Flight Master</option>' +
+                        '           <option value="16384">Spirit Healer</option>' +
+                        '           <option value="32768">Spirit Guide</option>' +
+                        '           <option value="65536">Innkeeper</option>' +
+                        '           <option value="131072">Banker</option>' +
+                        '           <option value="262144">Petitioner</option>' +
+                        '           <option value="524288">Tabard Designer</option>' +
+                        '           <option value="1048576">Battle Master</option>' +
+                        '           <option value="2097152">Auctioneer</option>' +
+                        '           <option value="4194304">Stable Master</option>' +
+                        '           <option value="8388608">Guild Banker</option>' +
+                        '           <option value="16777216">Spellclick</option>' +
+                        '       </select>' +
+                        '   </td>' +
                         '   <td><input type="text" class="form-control" onchange="updateOption(' + id + ', ' + this.id + ', \'next\', this.value)" value="' + this.next + '" /></td>' +
                         '   <td><span class="glyphicon glyphicon-remove" onclick="updateOption(' + id + ', ' + this.id + ', \'delete\', 0)"></span></td>' +
                         '</tr>');
                     $('#icon_'+this.id).val(this.icon);
+                    $('#flag_'+this.id).val(this.flag);
 
                     GossipOptionsUI.append('' +
-                        '<div class="options" id="option_'+this.id+'" onclick="getNextMenu('+this.next+')" title="Next menu: '+this.next+'">' +
+                        '<div class="options" id="option_'+this.id+'" onclick="displayMenu('+this.next+')" title="Next menu: '+this.next+'">' +
                         '    <img src="{{ app.request.basepath }}/img/gossip/'+getIcon(this.icon)+'.png" alt=""> <span>'+this.text+'</span>' +
                         '</div>');
                 });
@@ -386,14 +463,49 @@
              * Display the Gossip Condition for the given Gossip Menu
              */
             function displayCondition(id) {
-                console.log(Gossip.menus[id].conditions);
-                $.each(Gossip.menus[id].conditions, function(){
-                    console.log('coucou');
-                    appendConditions('menu', this);
+                $('#gossip_conditions tbody').html('');
+                $.each(Object.keys(Gossip.menus[id].conditions), function(){
+                    appendConditions('menu', Gossip.menus[id].conditions[this]);
+                    changeCondition('type', this);
+                    changeCondition('value1', this);
+                    changeCondition('value2', this);
+                    changeCondition('value3', this);
+                    changeCondition('reverse', this);
                 });
-                $.each(Gossip.menus[id].options, function(){
-                    $.each(this.conditions, function() {
-                        appendConditions('option', this);
+                $.each(Object.keys(Gossip.menus[id].options), function(){
+                    var option = this;
+                    $.each(Object.keys(Gossip.menus[id].options[option].conditions), function() {
+                        appendConditions('option', Gossip.menus[id].options[option].conditions[this]);
+                        changeCondition('type', this);
+                        changeCondition('value1', this);
+                        changeCondition('value2', this);
+                        changeCondition('value3', this);
+                        changeCondition('reverse', this);
+                    });
+                });
+            }
+
+            /**
+             * Save the Gossip Conditions Values in the Gossip Object
+             */
+            function changeCondition(type, id){
+                $(document).on('change', '#'+type+'_'+id.match(/\d+/)[0], function(){
+                    //debugger;
+                    var value = $(this).val();
+                    $.each(Object.keys(Gossip.menus[CurrentMenu].conditions), function() {
+                        if (this == id)
+                            Gossip.menus[CurrentMenu].conditions[id.match(/\d+/)[0]][type] = parseInt(value);
+                        if(type == 'type')
+                            appendConditionInputForm(Gossip.menus[CurrentMenu].conditions[id.match(/\d+/)[0]], value);
+                    });
+                    $.each(Object.keys(Gossip.menus[CurrentMenu].options), function() {
+                        var option = this;
+                        $.each(Object.keys(Gossip.menus[CurrentMenu].options[option].conditions), function() {
+                            if (this == id)
+                                Gossip.menus[CurrentMenu].options[option].conditions[id.match(/\d+/)[0]][type] = parseInt(value);
+                            if(type == 'type')
+                                appendConditionInputForm(Gossip.menus[CurrentMenu].options[option].conditions[id.match(/\d+/)[0]], value);
+                        });
                     });
                 });
             }
@@ -402,11 +514,16 @@
              * Append the Conditions to the table
              */
             function appendConditions(type, data) {
-                console.log(type, data);
-                Conditions.append('' +
+                var element;
+                if(type == 'menu')
+                    element = 'Menu ' + CurrentMenu;
+                else
+                    element = 'Option ' + ConditionSelect.val().match(/\d+/)[0];
+                $('#gossip_conditions tbody').append('' +
                         '<tr>' +
+                        '   <td>'+element+'</td>' +
                         '   <td>' +
-                        '       <select class="form-control" id="condition_'+data.id+'" onchange="(\''+type+'\', '+id+', \'type\', '+data.id+')">' +
+                        '       <select class="form-control" id="type_'+data.id.match(/\d+/)[0]+'">' +
                         '           <option value="0">None</option>' +
                         '           <option value="8">Quest rewarded</option>' +
                         '           <option value="9">Quest taken</option>' +
@@ -437,358 +554,44 @@
                         '           <option value="38">HP %</option>' +
                         '       </select>' +
                         '   </td>' +
-                        '   <td><input type="text" class="form-control" id="value1_'+data.id+'" onchange="(\''+type+'\', '+id+', \'value1\', '+data.id+')"></td>' +
-                        '   <td><input type="text" class="form-control" id="value2_'+data.id+'" onchange="(\''+type+'\', '+id+', \'value2\', '+data.id+')"></td>' +
-                        '   <td><input type="text" class="form-control" id="value3_'+data.id+'" onchange="(\''+type+'\', '+id+', \'value3\', '+data.id+')"></td>' +
                         '   <td>' +
-                        '       <select class="form-control" id="reverse_'+data.id+'" onchange="(\''+type+'\', '+id+', \'reverse\', '+data.id+')">' +
+                        '       <div class="input-group">' +
+                        '           <div class="input-group-addon"></div>' +
+                        '               <input type="text" class="form-control" id="value1_' + data.id.match(/\d+/)[0] + '" disabled>' +
+                        '           </div>' +
+                        '       </div>' +
+                        '   </td>' +
+                        '   <td>' +
+                        '       <div class="input-group">' +
+                        '           <div class="input-group-addon"></div>' +
+                        '               <input type="text" class="form-control" id="value2_' + data.id.match(/\d+/)[0] + '" disabled>' +
+                        '           </div>' +
+                        '       </div>' +
+                        '   </td>' +
+                        '   <td>' +
+                        '       <div class="input-group">' +
+                        '           <div class="input-group-addon"></div>' +
+                        '               <input type="text" class="form-control" id="value3_' + data.id.match(/\d+/)[0] + '" disabled>' +
+                        '           </div>' +
+                        '       </div>' +
+                        '   </td>' +
+                        '   <td>' +
+                        '       <select class="form-control" id="reverse_'+data.id.match(/\d+/)[0]+'">' +
                         '           <option value="0">No</option>' +
                         '           <option value="1">Yes</option>' +
                         '       </select>' +
                         '   </td>' +
-                        '   <td>' +
-                        '       <span class="glyphicon glyphicon-ok" onclick="saveCondition('+data.id+')"></span>' +
-                        '       <span class="glyphicon glyphicon-remove" onclick="deleteCondition('+data.id+')"></span>' +
+                        '   <td><span class="glyphicon glyphicon-remove" onclick="deleteCondition(\''+type+'\', '+ConditionSelect.val().match(/\d+/)[0]+', \''+data.id.match(/\d+/)[0]+'\')"></span>' +
                         '   </td>' +
                         '</tr>');
-                $('#condition_'+data.id).val(data.type);
-                $('#value1_'+data.id).val(data.value1);
-                $('#value2_'+data.id).val(data.value2);
-                $('#value3_'+data.id).val(data.value3);
+                appendConditionInputForm(data, data.type);
+                $('#type_'+data.id).val(data.type);
                 $('#reverse_'+data.id).val(data.reverse);
             }
 
-
-
-            // OLD BELOW
-
-            function Option(mode, data, i) {
-                if(mode === "new") {
-                    if (!data.options)
-                        data.options = [{}];
-
-                    data.options[i] = {id: "0", icon: "0", text: "", next: ""};
-                }
-                if (mode === "display" || mode === "new") {
-                    GossipIcon = getIcon(data.options[i].icon);
-                    $('<div class="options" id="option_' + data.options[i].id + '" onclick="getNextMenu(' + data.options[i].next + ')" title="Next menu: ' + data.options[i].next + '">').appendTo('.gossip_options');
-                    $('<img src="img/icons/' + GossipIcon + '.png" alt="" />').appendTo('#option_' + data.options[i].id);
-                    $(' <span>' + data.options[i].text + '</span></div>').appendTo('#option_' + data.options[i].id);
-
-                    GossipOptions.append('' +
-                        '<tr>' +
-                        '   <td>' + data.options[i].id + '</td>' +
-                        '   <td>' +
-                        '       <select class="form-control" id="icon_' + data.options[i].id + '" onchange="updateOption(' + data.id + ', ' + data.options[i].id + ', \'icon\', this.value)">' +
-                        '           <option value="0">Chat</option>' +
-                        '           <option value="1">Vendor</option>' +
-                        '           <option value="2">Taxi</option>' +
-                        '           <option value="3">Trainer</option>' +
-                        '           <option value="4">Interact 1</option>' +
-                        '           <option value="5">Interact 2</option>' +
-                        '           <option value="6">Banker</option>' +
-                        '           <option value="7">Talk</option>' +
-                        '           <option value="8">Tabard</option>' +
-                        '           <option value="9">Battle</option>' +
-                        '           <option value="10">Quest</option>' +
-                        '       </select>' +
-                        '   </td>' +
-                        '   <td><textarea class="form-control" rows="1" onchange="updateOption(' + data.id + ', ' + data.options[i].id + ', \'text\', this.value)">' + data.options[i].text + '</textarea></td>' +
-                        '   <td><input type="text" class="form-control" onchange="updateOption(' + data.id + ', ' + data.options[i].id + ', \'next\', this.value)" value="' + data.options[i].next + '" /></td>' +
-                        '   <td><span class="glyphicon glyphicon-remove" onclick="updateOption(' + data.id + ', ' + data.options[i].id + ', \'delete\', 0)"></span></td>' +
-                        '</tr>');
-
-                    $('#newcondition').append('<option value="' + data.options[i].id + '">Option ' + data.options[i].id + '</option>');
-
-                    $('#icon_' + data.options[i].id).val(data.options[i].icon);
-                    NewOptionsCount = OptionsCount++;
-                }
-            }
-
-            function displayGossip(mode, data, menu) {
-                if(mode === "new") {
-                    // Add the menus
-                    for (i = 0; i < data.menus.length ; i++) {
-                        MenusSelect.append('<option value="' + i +'">' + data.menus[i].id +'</option>').show();
-                    }
-                }
-
-                var Menu = 0;
-                if(mode === "new" && data.menus.length > 1) {
-                    $('#menusselectdiv option[value="' + Menu + '"]').html(data.menus[Menu].id + ' (Principal)');
-                    MenusSelect.val(Menu);
-                } else {
-                    Menu = MenusSelect.val();
-                }
-
-                if(menu !== null) {
-                    Menu = menu;
-                    MenusSelect.val(Menu);
-                }
-
-                if(mode === "new" || mode === "display") {
-                    // Adds the GossipUI
-                    $('#result').append('' +
-                            '<div class="col-md-4">' +
-                            '    <div class="gossip">' +
-                            '       <div class="guid_name">' + data.name + '</div>' +
-                            '        <div class="gossip_text"></div>' +
-                            '        <div class="gossip_options"></div>' +
-                            '    </div>' +
-                            '</div>' +
-                            '<div class="col-md-8 form-group" id="infos">' +
-                            '   <label>Text</label>' +
-                            '   <textarea class="form-control" rows="4" onchange="updateGossip(' + data.menus[Menu].id + ', this.value)" id="gossip_text"></textarea>' +
-                            '   <br />' +
-                            '</div>' +
-                            '<div class="col-md-12" id="conditions">' +
-                            '</div>');
-
-                    // Adds the gossips
-                    if(data.menus[Menu].text0 !== null) {
-                        $('#gossip_text').html(data.menus[Menu].text0);
-                        $('.gossip_text').html(data.menus[Menu].text0);
-                    }
-                    if(data.menus[Menu].text1 !== null) {
-                        $('#gossip_text').html(data.menus[Menu].text1);
-                        $('.gossip_text').html(data.menus[Menu].text1);
-                    }
-                    if(data.menus[Menu].text0 !== null && data.menus[Menu].text1 !== null) {
-                        $('#gossip_text').html(data.menus[Menu].text0);
-                        $('.gossip_text').html(data.menus[Menu].text0);
-                    }
-
-                    // Adds the OptionUI
-                    $('#infos').append('' +
-                            '<label>Options</label>' +
-                            '   <table class="table table-striped" id="gossip_options" style="margin-bottom: 0!important;">' +
-                            '       <thead>' +
-                            '           <tr>' +
-                            '               <th width="5%">ID</th>' +
-                            '               <th width="12%">Icon</th>' +
-                            '               <th width="45%">Text</th>' +
-                            '               <th width="13%">Follow up</th>' +
-                            '               <th width="5%"></th>' +
-                            '           </tr>' +
-                            '       </thead>' +
-                            '       <tbody>' +
-                            '       </tbody>' +
-                            '   </table>' +
-                            '   <br />');
-                    $('<button type="button" id="addoption" class="btn btn-primary col-sm-2" style="display: block">Add new option</button>').appendTo('#infos');
-
-                    // Adds the ConditionUI
-                    $('#conditions').append('' +
-                            '<label>Conditions</label>' +
-                            '   <table class="table table-striped" id="gossip_conditions" style="margin-bottom: 0!important;">' +
-                            '       <thead>' +
-                            '           <tr>' +
-                            '               <th>Element</th>' +
-                            '               <th>Condition</th>' +
-                            '               <th></th>' +
-                            '               <th></th>' +
-                            '               <th></th>' +
-                            '               <th>Reverse</th>' +
-                            '               <th></th>' +
-                            '           </tr>' +
-                            '       </thead>' +
-                            '       <tbody>' +
-                            '       </tbody>' +
-                            '   </table>' +
-                            '   <br />');
-                    $('<div class="col-md-2"><select class="form-control" id="newcondition"><option value="' + data.menus[Menu].id + '">Menu ' + data.menus[Menu].id + '</option></select></div>').appendTo('#conditions');
-                    $('<button type="button" id="addcondition" class="btn btn-primary col-sm-2" style="display: block">Add new condition</button>').appendTo('#conditions');
-
-                    $('#condition_' + i).change(function() {
-                        var NewType = $(this).val();
-                        $(this).closest('td').getNextMenu('td').html('');
-                        $(this).closest('td').getNextMenu('td').getNextMenu('td').html('');
-                        $(this).closest('td').getNextMenu('td').getNextMenu('td').getNextMenu('td').html('');
-                        appendConditionInputForm(data, NewType);
-                    });
-
-                    // Adds the conditions
-                    if(data.menus[Menu].conditions) {
-                        for (i = 0; i < data.menus[Menu].conditions.length ; i++) {
-                            Condition("display", data.menus[Menu], i);
-                        }
-                    }
-
-                    // Adds the options
-                    if(data.menus[Menu].options) {
-                        for (i = 0; i < data.menus[Menu].options.length ; i++) {
-                            Option("display", data.menus[Menu], i);
-
-                            // Add the options conditions
-                            if(data.menus[Menu].options[i].conditions) {
-                                for (x = 0; x < data.menus[Menu].options[i].conditions.length ; x++) {
-                                    Condition("display", data.menus[Menu].options[i], x);
-                                }
-                            }
-                        }
-                    }
-
-                    $('#addoption').click(function() {
-                        var ActualMenu = $('#menusselect').val();
-                        var ID = Data.menus[ActualMenu];
-
-                        if(ID.options.length === 0 && OptionsCount === null) {
-                            OptionsCount = -1;
-                            NewOptionsCount = -1;
-                        }
-
-                        if(OptionsCount > NewOptionsCount) {
-                            OptionsCount = NewOptionsCount;
-                        }
-
-                        for(i = OptionsCount; i == NewOptionsCount++; i++) {
-                            Option("new", Data.menus[ActualMenu], OptionsCount);
-                        }
-                    });
-
-                    $('#addcondition').click(function() {
-                        var NewCondition = $('#newcondition').val();
-                        var Source;
-                        var NewCondMenu = data.menus[Menu].id;
-                        var NewCondOption = 0;
-                        var NewCondID;
-                        if (NewCondition >= 100) {
-                            NewCondID = 'Menu ' + NewCondition;
-                            Source = ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU;
-                        } else {
-                            NewCondID = 'Option ' + NewCondition;
-                            Source = ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION;
-                        }
-
-                        $.ajax({
-                            type: 'GET',
-                            data: 'source=' + Source + '&menu=' + NewCondMenu + '&option=' + NewCondition,
-                            url: 'setNewCondition.php',
-                            dataType: 'json',
-                            success:
-                                    function(response) {
-                                        console.log(response);
-                                        Condition("new", response, i);
-                                    },
-                            error:
-                                    function() {
-                                        alert('You are trying to duplicate an already existent condition.');
-                                    }
-                        });
-                    });
-
-                    $('#gossip_text').keyup(function() {
-                        var GossipLive = $(this).val();
-                        $('.gossip_text').html(GossipLive);
-                    });
-
-                    $('table').on('click', 'span.glyphicon-remove', function(e){
-                        var CondID = $(this).closest('td').siblings(':first-child').text();
-                        $(this).closest('tr').remove();
-                        $('#newcondition option[value="' + CondID + '"]').remove();
-                        $('#option_' + CondID).remove();
-                        $('#gossip_conditions td:first-child:contains("Option ' + CondID + '")').closest('tr').remove();
-                    });
-                }
-
-                //disable text input if no menu
-                if(data.menus.length == 1 && data.menus|first.id == 0)
-                    $("#gossip_text").prop("disabled", true);
-            }
-
-            function Condition(mode, data, i) {
-                debugger;
-                if(mode === "new") {
-                    if (!data.conditions) {
-                        data.conditions = [{}];
-
-                        if(data.source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU)
-                            data.conditions[i] = {id: data.id, source: ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU, type: "0", target: "0", reverse: "0", value1: "0", value2: "0", value3: "0"};
-                        if(data.source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION)
-                            data.conditions[i] = {id: data.id, source: ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION, type: "0", target: "0", reverse: "0", value1: "0", value2: "0", value3: "0"};
-                        else
-                            data.conditions[i] = {source: ConditionSourceType.CONDITION_SOURCE_TYPE_NONE, type: "0", target: "0", reverse: "0", value1: "0", value2: "0", value3: "0"};
-                    }
-                }
-
-                var NewCondID;
-                if (data.conditions[i].source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU) {
-                    NewCondID = 'Menu ' + data.id;
-                } else if (data.conditions[i].source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION) {
-                    NewCondID = 'Option ' + i;
-                }
-
-                if (data.source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU) {
-                    NewCondID = 'Menu ' + data.menu;
-                } else if (data.source == ConditionSourceType.CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION) {
-                    NewCondID = 'Option ' + data.option;
-                }
-
-                if (mode === "display" || mode === "new") {
-                    $('#gossip_conditions tbody').append('' +
-                            '<tr id="' + data.conditions[i].id + '">' +
-                            '   <td>' + NewCondID + '</td>' +
-                            '   <td>' +
-                            '       <select class="form-control" id="condition_' + data.conditions[i].id + '">' +
-                            '       	<option value="0">None</option>' +
-                            '       	<option value="8">Quest rewarded</option>' +
-                            '       	<option value="9">Quest taken</option>' +
-                            '       	<option value="28">Quest complete</option>' +
-                            '       	<option value="14">Quest none</option>' +
-                            '       	<option value="15">Class</option>' +
-                            '       	<option value="16">Race</option>' +
-                            '       	<option value="1">Aura</option>' +
-                            '       	<option value="2">Item</option>' +
-                            '       	<option value="3">Item equipped</option>' +
-                            '       	<option value="4">ZoneID</option>' +
-                            '       	<option value="5">Reputation rank</option>' +
-                            '       	<option value="6">Team</option>' +
-                            '       	<option value="7">Skill</option>' +
-                            '       	<option value="10">Drunken state</option>' +
-                            '       	<option value="11">World state</option>' +
-                            '       	<option value="12">Active event</option>' +
-                            '       	<option value="13">Instance info</option>' +
-                            '       	<option value="18">Title</option>' +
-                            '       	<option value="20">Gender</option>' +
-                            '       	<option value="22">MapID</option>' +
-                            '       	<option value="23">AreaID</option>' +
-                            '       	<option value="25">Spell</option>' +
-                            '       	<option value="27">Level</option>' +
-                            '       	<option value="29">Near creature</option>' +
-                            '       	<option value="30">Near gameobject</option>' +
-                            '       	<option value="37">HP Value</option>' +
-                            '			<option value="38">HP %</option>' +
-                            '       </select>' +
-                            '   </td>' +
-                            '	<td></td>' +
-                            '	<td></td>' +
-                            '	<td></td>' +
-                            '	<td>' +
-                            '		<select class="form-control">' +
-                            '       	<option value="0">No</option>' +
-                            '          	<option value="1">Yes</option>' +
-                            '       </select>' +
-                            '	</td>' +
-                            '	<td>' +
-                            '		<span class="glyphicon glyphicon-ok" onclick="saveCondition(' + data.conditions[i].id + ')"></span>' +
-                            '		<span class="glyphicon glyphicon-remove" onclick="deleteCondition(' + data.conditions[i].id + ')"></span>' +
-                            '	</td>' +
-                            '</tr>');
-
-                    var ConditionType = $('#condition_' + data.conditions[i].id);
-                    ConditionType.val(data.conditions[i].type);
-                    appendConditionInputForm(data.conditions[i], data.conditions[i].type);
-
-                    $('#condition_' + data.conditions[i].id).change(function() {
-                        var NewType = $(this).val();
-                        $(this).closest('td').getNextMenu('td').html('');
-                        $(this).closest('td').getNextMenu('td').getNextMenu('td').html('');
-                        $(this).closest('td').getNextMenu('td').getNextMenu('td').getNextMenu('td').html('');
-                        appendConditionInputForm(data.conditions[i], NewType);
-                    });
-                }
-            }
-
+            /**
+             * Return the File Name of the given Gossip Menu Icon
+             */
             function getIcon(data) {
                 switch(parseInt(data)) {
                     case 0: return "GossipGossipIcon";
@@ -806,7 +609,15 @@
                 }
             }
 
+            /**
+             * Save the Gossip Option in the Gossip Object
+             */
             function updateOption(Menu, id, Info, Value) {
+                if(Info == 'delete'){
+                    delete Gossip.menus[CurrentMenu].options[id];
+                    return displayOption(CurrentMenu);
+                }
+
                 if(Info == "text")
                     $('#option_' + id + ' span').html(Value);
                 else if (Info == "icon")
@@ -816,194 +627,80 @@
                 Gossip.menus[Menu].options[id][Info] = Value;
             }
 
-            function getNextMenu(id) {
-                if(id === 0 || id === null) {
+            /**
+             * Save the Gossip Condition in the given Gossip Object
+             */
+            function updateCondition(type, element, info, id){
+                if(type == 'menu') {
+                    Gossip.menus[CurrentMenu].conditions[id][info] = $('#'+info+'_'+id).val();
+
+                    $('#type_'+id).change(function(){
+                        appendConditionInputForm(Gossip.menus[CurrentMenu].conditions[id], $(this).val(), 'menu')
+                    });
+                }
+                else {
+                    Gossip.menus[CurrentMenu].options[element].conditions[id][info] = $('#'+info+'_'+id).val();
+
+                    $('#type_'+id).change(function(){
+                        appendConditionInputForm(Gossip.menus[CurrentMenu].options[element].conditions[id], $(this).val(), 'option')
+                    });
+                }
+            }
+
+            /**
+             * Delete the condition from the Gossip object.
+             */
+            function deleteCondition(type, element, id) {
+                if (type == 'menu')
+                    delete Gossip.menus[CurrentMenu].conditions[id];
+                else
+                    delete Gossip.menus[CurrentMenu].options[element].conditions[id];
+                displayCondition(CurrentMenu);
+            }
+
+            /**
+             * Display or not the Conditions Values depending on ConditionTypes
+             */
+            function appendConditionInputForm(data) {
+                var Condition = ConditionTypes[data.type];
+                if(data.type == 15) {
+                    $('#value1_' + data.id.match(/\d+/)[0]).closest('td').html('<select class="form-control" id="value1_' + data.id.match(/\d+/)[0] + '">' +
+                            '   <option value="1">Warrior</option>' +
+                            '   <option value="2">Paladin</option>' +
+                            '   <option value="3">Hunter</option>' +
+                            '   <option value="4">Rogue</option>' +
+                            '   <option value="5">Priest</option>' +
+                            '   <option value="7">Shaman</option>' +
+                            '   <option value="8">Mage</option>' +
+                            '   <option value="9">Warlock</option>' +
+                            '   <option value="11">Druid</option>' +
+                            '</select>').val(data['value1']);
+                    $('#value2_' + data.id).val(data['value2']).attr('disabled', true).hide().closest('td').find('.input-group-addon').html('').hide();
+                    $('#value3_' + data.id).val(data['value3']).attr('disabled', true).hide().closest('td').find('.input-group-addon').html('').hide();
+                    return;
+                } else if (data.type == 16) {
+                    $('#value1_' + data.id.match(/\d+/)[0]).closest('td').html('<select class="form-control" id="value1_' + data.id.match(/\d+/)[0] + '">' +
+                            '   <option value="1">Human</option>' +
+                            '   <option value="2">Orc</option>' +
+                            '   <option value="3">Dwarf</option>' +
+                            '   <option value="4">Night Elf</option>' +
+                            '   <option value="5">Undead</option>' +
+                            '   <option value="6">Tauren</option>' +
+                            '   <option value="7">Gnome</option>' +
+                            '   <option value="8">Troll</option>' +
+                            '   <option value="10">Blood Elf</option>' +
+                            '   <option value="11">Draenei</option>' +
+                            '</select>').val(data['value1']);
+                    $('#value2_' + data.id.match(/\d+/)[0]).val(data['value2']).attr('disabled', true).hide().closest('td').find('.input-group-addon').html('').hide();
+                    $('#value3_' + data.id.match(/\d+/)[0]).val(data['value3']).attr('disabled', true).hide().closest('td').find('.input-group-addon').html('').hide();
                     return;
                 }
-                MenusSelect.val(id);
-                displayMenu(id);
-            }
-
-            function deleteCondition(id) {
-                $.ajax({
-                    type : 'GET',
-                    data : 'condition=' + id,
-                    url  : 'deleteCondition.php'
-                });
-            }
-
-            function saveCondition(id) {
-                debugger;
-                var Type    = $('#' + id).find('td:nth-child(2)').find('select').val() || 0;
-                var Value1  = $('#' + id).find('td:nth-child(3)').find('input').val() || 0;
-                var Value2  = $('#' + id).find('td:nth-child(4)').find('input').val() || 0;
-                var Value3  = $('#' + id).find('td:nth-child(5)').find('input').val() || 0;
-                var Reverse = $('#' + id).find('td:nth-child(6)').find('select').val() || 0;
-
-                $.ajax({
-                    type : 'GET',
-                    data : 'condition=' + id + '&type=' + Type + '&reverse=' + Reverse + '&1=' + Value1 + '&2=' + Value2 + '&3=' + Value3,
-                    url  : 'setCondition.php'
-                });
-            }
-
-            function appendConditionInputForm(data, type) {
-                debugger;
-                var ConditionType = $('#condition_' + data.id);
-
-                switch(type) {
-                    case ConditionTypes.CONDITION_AURA: // Aura
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Spell ID" title="Spell ID" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Effect index" title="Effect index" value="' + data.value2 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_ITEM: // Item
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Item ID" title="Item ID" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Count" title="Count" value="' + data.value2 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').getNextMenu('td').append('<select class="form-control" id="bank_' + data.id + '">' +
-                                '	<option value="0">In Bank: No</option>' +
-                                '	<option value="1">In Bank: Yes</option>' +
-                                '</select>');
-                        $('#bank_' + data.id).val(data.value3);
-                        break;
-
-                    case ConditionTypes.CONDITION_ITEM_EQUIPPED: // Item equipped
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Item ID" title="Item ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_ZONEID: // ZoneID
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Zone ID" title="Zone ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_REPUTATION_RANK: // Faction ID
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Faction ID" title="Faction ID" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="rankMask" title="rankMask" value="' + data.value2 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_TEAM: // Team
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Player team" title="Player Team" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_SKILL: // Skill
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Skill ID" title="Skill ID" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Skill value" title="Skill value" value="' + data.value2 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_QUESTREWARDED: // Quest rewarded
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Quest ID" title="Quest ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_QUESTTAKEN: // Quest taken
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Quest ID" title="Quest ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_DRUNKENSTATE: // Drunken state
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Drunken state" title="Drunken state" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_WORLD_STATE: // World state
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Index" title="Index" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Value" title="Value" value="' + data.value2 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_ACTIVE_EVENT: // Active event
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Event ID" title="Event ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_INSTANCE_INFO: // Instance info
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Entry" title="Entry" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Data" title="Data" value="' + data.value2 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Type" title="Type" value="' + data.value3 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_QUEST_NONE: // Quest none
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Quest ID" title="Quest ID" value="' + data.value1 + '" />');
-                        break;
-
-                    case ConditionTypes.CONDITION_CLASS: // Class
-                        ConditionType.closest('td').getNextMenu('td').append('<select class="form-control" id="class_' + data.id + '">' +
-                                '	<option value="1">Warrior</option>' +
-                                '	<option value="2">Paladin</option>' +
-                                '	<option value="3">Hunter</option>' +
-                                '	<option value="4">Rogue</option>' +
-                                '	<option value="5">Priest</option>' +
-                                '	<option value="7">Shaman</option>' +
-                                '	<option value="8">Mage</option>' +
-                                '	<option value="9">Warlock</option>' +
-                                '	<option value="11">Druid</option>' +
-                                '</select>');
-                        $('#class_' + data.id).val(data.value1);
-                        break;
-
-                    case ConditionTypes.CONDITION_RACE: // Race
-                        ConditionType.closest('td').getNextMenu('td').append('<select class="form-control" id="race_' + data.id + '">' +
-                                '	<option value="1">Human</option>' +
-                                '	<option value="2">Orc</option>' +
-                                '	<option value="3">Dwarf</option>' +
-                                '	<option value="4">NightElf</option>' +
-                                '	<option value="5">Undead</option>' +
-                                '	<option value="6">Tauren</option>' +
-                                '	<option value="7">Gnome</option>' +
-                                '	<option value="8">Troll</option>' +
-                                '	<option value="10">Blood Elf</option>' +
-                                '	<option value="11">Draenei</option>' +
-                                '</select>');
-                        $('#race_' + data.id).val(data.value1);
-                        break;
-                    //case CONDITION_ACHIEVEMENT
-                    case ConditionTypes.CONDITION_TITLE: // Title
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Title ID" title="Title ID" value="' + data.value1 + '" />');
-                        break;
-                    //case CONDITION_SPAWNMASK
-                    case ConditionType.CONDITION_GENDER: // Gender
-                        ConditionType.closest('td').getNextMenu('td').append('<select class="form-control" id="gender_' + data.id + '" onchange="updateCondition(' + data.id + ', 1, this.value)">' +
-                                '	<option value="0">Male</option>' +
-                                '	<option value="1">Female</option>' +
-                                '</select>');
-                        $('#gender_' + data.id).val(data.value1);
-                        break;
-                    //case CONDITION_UNIT_STATE
-                    case ConditionTypes.CONDITION_MAPID: // Map ID
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Map ID" title="Map ID" value="' + data.value1 + '" />');
-                        break;
-                    case ConditionTypes.CONDITION_AREAID: // Area ID
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Area ID" title="Area ID" value="' + data.value1 + '" />');
-                        break;
-                    //case CONDITION_CREATURE_TYPE
-                    case ConditionTypes.CONDITION_SPELL: // Spell
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Spell ID learnt" title="Spell ID learnt" value="' + data.value1 + '" />');
-                        break;
-                    //case CONDITION_PHASEMASK
-                    case ConditionTypes.CONDITION_LEVEL: // Level
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Level" title="Level" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Comparison" title="Comparison" value="' + data.value1 + '" />');
-                        break;
-                    case ConditionTypes.CONDITION_QUEST_COMPLETE: // Quest complete
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Quest ID" title="Quest ID" value="' + data.value1 + '" />');
-                        break;
-                    case ConditionTypes.CONDITION_NEAR_CREATURE: // Near creature
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Entry" title="Entry" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Range" title="Range" value="' + data.value1 + '" />');
-                        break;
-                    case ConditionTypes.CONDITION_NEAR_GAMEOBJECT: // Near gameobject
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Entry" title="Entry" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Range" title="Range" value="' + data.value1 + '" />');
-                        break;
-                    //case CONDITION_OBJECT_ENTRY_GUID
-                    //...
-                    //case CONDITION_ALIVE
-                    case ConditionTypes.CONDITION_HP_VAL: // HP val
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="HP val" title="HP val" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Comparison" title="Comparison" value="' + data.value1 + '" />');
-                        break;
-                    case ConditionTypes.CONDITION_HP_PCT: // HP %
-                        ConditionType.closest('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="HP %" title="HP %" value="' + data.value1 + '" />');
-                        ConditionType.closest('td').getNextMenu('td').getNextMenu('td').append('<input type="text" class="form-control" placeholder="Comparison" title="Comparison" value="' + data.value1 + '" />');
-                        break;
-                    //case CONDITION_REALM_ACHIEVEMENT
-                    //case CONDITION_IN_WATER
-                    default:
-                        break;
+                for(i = 1; i < 4; i++) {
+                    var element = $('#value'+i+'_' + data.id.match(/\d+/)[0]);
+                    if(Condition['value'+i] != '')
+                        element.closest('td').html('<div class="input-group"><div class="input-group-addon">'+Condition['value'+i]+'</div><input type="text" class="form-control" id="value'+i+'_' + data.id.match(/\d+/)[0] + '" value="'+data['value'+i]+'"></div></div>');
+                    else
+                        element.closest('td').html('<div class="input-group" style="display: none"><div class="input-group-addon"></div><input type="text" class="form-control" id="value'+i+'_' + data.id.match(/\d+/)[0] + '" disabled></div></div>');
                 }
             }
         </script>

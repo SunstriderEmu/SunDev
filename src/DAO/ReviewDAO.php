@@ -17,7 +17,7 @@ class ReviewDAO extends DAO {
 		if(!isset($review->info3))
 			$review->info3 = 0;
 
-		return $this->tools->executeQuery('INSERT INTO smart_review (entryorguid, source_type, info1, info2, info3, user, date, validation_date, validation_user, state) VALUES (:entry, :source_type, :info1, :info2, :info3, :user, :date, null, null, :state)
+		return $this->getDb('tools')->executeQuery('INSERT INTO smart_review (entryorguid, source_type, info1, info2, info3, user, date, validation_date, validation_user, state) VALUES (:entry, :source_type, :info1, :info2, :info3, :user, :date, null, null, :state)
 										   ON DUPLICATE KEY UPDATE info1 = :info1, info2 = :info2, info3 = :info3, date = :date, user = :user, validation_date = null, validation_user = null, state = :state',
 				array(
 					"entry" 		=> intval($review->entryorguid),
@@ -38,7 +38,7 @@ class ReviewDAO extends DAO {
 	 * @return mixed
 	 */
 	public function updateReview($review) {
-		return $this->tools->executeQuery('UPDATE smart_review SET validation_date = ?, validation_user = ?, state = ? WHERE entryorguid = ? AND source_type = ?',
+		return $this->getDb('tools')->executeQuery('UPDATE smart_review SET validation_date = ?, validation_user = ?, state = ? WHERE entryorguid = ? AND source_type = ?',
 			   array(time(), intval($review->validation_user), intval($review->state), intval($review->entryorguid), intval($review->source_type)));
 	}
 
@@ -48,6 +48,6 @@ class ReviewDAO extends DAO {
 	 * @return mixed
 	 */
 	public function getReviews() {
-		return $this->tools->fetchAll('SELECT * FROM smart_review');
+		return $this->getDb('tools')->fetchAll('SELECT * FROM smart_review');
 	}
 } 

@@ -8,19 +8,19 @@ use Doctrine\DBAL\Connection;
 
 class CreatureDAO extends DAO {
     public function getCreature($entry) {
-        $creature = $this->test->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));
-        $minStats = $this->test->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['minlevel']));
-        $maxStats = $this->test->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['maxlevel']));
+        $creature = $this->getDb('test')->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));
+        $minStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['minlevel']));
+        $maxStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['maxlevel']));
 
         $creature['gender'] = $this->getGender($entry);
 
-        $total = $this->test->fetchAssoc('SELECT COUNT(*) as count, map from creature WHERE id = ?', array($entry));
+        $total = $this->getDb('test')->fetchAssoc('SELECT COUNT(*) as count, map from creature WHERE id = ?', array($entry));
         $creature['total'] = $total['count'];
 
-        $zone = $this->dbc->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($total['map']));
+        $zone = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($total['map']));
         $creature['zone'] = $zone['name'];
 
-        $creature['texts'] = $this->test->fetchAll('SELECT text, type FROM creature_text WHERE entry = ?', array($entry));
+        $creature['texts'] = $this->getDb('test')->fetchAll('SELECT text, type FROM creature_text WHERE entry = ?', array($entry));
 
         $creature['minhp'] = $creature['HealthModifier'] * $minStats["basehp{$creature['exp']}"];
         $creature['minmp'] = $creature['ManaModifier'] * $minStats["basemana"];
@@ -66,18 +66,18 @@ class CreatureDAO extends DAO {
     }
 
     public function getStats($class, $level) {
-        return $this->test->fetchAssoc('SELECT * FROM creature_classlevelstats WHERE level = ? AND class = ?', array($level, $class));
+        return $this->getDb('test')->fetchAssoc('SELECT * FROM creature_classlevelstats WHERE level = ? AND class = ?', array($level, $class));
     }
 
     public function getGender($entry) {
-        $models = $this->test->fetchAssoc('SELECT modelid1, modelid2, modelid3, modelid4 FROM creature_template WHERE entry = ?', array($entry));
+        $models = $this->getDb('test')->fetchAssoc('SELECT modelid1, modelid2, modelid3, modelid4 FROM creature_template WHERE entry = ?', array($entry));
         $modelId = [];
         for($i = 1 ; $i < 5 ; $i++) {
             if($models["modelid{$i}"] != 0)
                 array_push($modelId, $models["modelid{$i}"]);
         }
         $modelId = array_map("unserialize", array_unique(array_map("serialize", $modelId)));
-        $modelInfos = $this->test->fetchAll('SELECT modelid_other_gender, gender FROM creature_model_info WHERE modelid IN (?)', array($modelId), array(Connection::PARAM_INT_ARRAY));
+        $modelInfos = $this->getDb('test')->fetchAll('SELECT modelid_other_gender, gender FROM creature_model_info WHERE modelid IN (?)', array($modelId), array(Connection::PARAM_INT_ARRAY));
         $gender = 0;
         foreach($modelInfos as $model) {
             if(($model['gender'] == 0 && $model['modelid_other_gender'] > 0) || ($model['gender'] == 1 && $model['modelid_other_gender'] > 0))
@@ -94,54 +94,54 @@ class CreatureDAO extends DAO {
     }
 
     public function findCreatureEntryName(Creature $creature) {
-        $name = $this->test->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array($creature->getEntry()));
+        $name = $this->getDb('test')->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array($creature->getEntry()));
         $creature->setName($name['name']);
         return $creature;
     }
 
     public function findCreatureGuidName(Creature $creature) {
-        $name = $this->test->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE guid = ?', array($creature->getGuid()));
+        $name = $this->getDb('test')->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE guid = ?', array($creature->getGuid()));
         $creature->setName($name['name']);
         return $creature;
     }
 
     public function getImmunities($entry) {
-        $immunities = $this->test->fetchAssoc('SELECT mechanic_immune_mask as mask FROM creature_template WHERE entry = ?', array($entry));
+        $immunities = $this->getDb('test')->fetchAssoc('SELECT mechanic_immune_mask as mask FROM creature_template WHERE entry = ?', array($entry));
         return $immunities['mask'];
     }
 
     public function getNPCFlag($entry) {
-        $flag = $this->test->fetchAssoc('SELECT npcflag FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT npcflag FROM creature_template WHERE entry = ?', array($entry));
         return $flag['npcflag'];
     }
 
     public function getUnitFlag($entry) {
-        $flag = $this->test->fetchAssoc('SELECT unit_flags FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT unit_flags FROM creature_template WHERE entry = ?', array($entry));
         return $flag['unit_flags'];
     }
 
     public function getUnitFlag2($entry) {
-        $flag = $this->test->fetchAssoc('SELECT unit_flags2 FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT unit_flags2 FROM creature_template WHERE entry = ?', array($entry));
         return $flag['unit_flags2'];
     }
 
     public function getDynamicFlag($entry) {
-        $flag = $this->test->fetchAssoc('SELECT dynamicflags FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT dynamicflags FROM creature_template WHERE entry = ?', array($entry));
         return $flag['dynamicflags'];
     }
 
     public function getTypeFlag($entry) {
-        $flag = $this->test->fetchAssoc('SELECT type_flags FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT type_flags FROM creature_template WHERE entry = ?', array($entry));
         return $flag['type_flags'];
     }
 
     public function getFlagExtra($entry) {
-        $flag = $this->test->fetchAssoc('SELECT flags_extra FROM creature_template WHERE entry = ?', array($entry));
+        $flag = $this->getDb('test')->fetchAssoc('SELECT flags_extra FROM creature_template WHERE entry = ?', array($entry));
         return $flag['flags_extra'];
     }
 
     public function getCreatureText($entry) {
-        $all = $this->test->fetchAll('SELECT * FROM creature_text WHERE entry = ?', array($entry));
+        $all = $this->getDb('test')->fetchAll('SELECT * FROM creature_text WHERE entry = ?', array($entry));
         $texts = [];
         foreach($all as $text) {
             $texts[] = new Text($text);
@@ -153,18 +153,18 @@ class CreatureDAO extends DAO {
         if($entry == 0)
             return array("entry" => "0", "text_id" => "0", "text0_0" => "", "text0_1" => "");
 
-        return  $this->test->fetchAssoc('SELECT entry, text_id, text0_0, text0_1 FROM gossip_menu gm JOIN gossip_text gt ON gt.ID = gm.text_id WHERE gm.entry = ?', array(intval($entry)));
+        return  $this->getDb('test')->fetchAssoc('SELECT entry, text_id, text0_0, text0_1 FROM gossip_menu gm JOIN gossip_text gt ON gt.ID = gm.text_id WHERE gm.entry = ?', array(intval($entry)));
     }
 
     // Return the options of a menu in the form of an array of [ menu_id, id, option_icon, option_text, action_menu_id ]
     public function getMenuOptions($entry) {
-        return $this->test->fetchAll('SELECT menu_id, id, option_icon, option_text, action_menu_id FROM gossip_menu_option WHERE menu_id = ?', array(intval($entry)));
+        return $this->getDb('test')->fetchAll('SELECT menu_id, id, option_icon, option_text, action_menu_id, npc_option_npcflag FROM gossip_menu_option WHERE menu_id = ?', array(intval($entry)));
     }
 
 // Return the conditions of a menu in the form of an array of [ id, source, type, target, reverse, value1, value2, value3 ]
     public function getMenuConditions($entry, $textid)
     {
-        return $this->test->fetchAll('SELECT
+        return $this->getDb('test')->fetchAll('SELECT
                                         id, SourceTypeOrReferenceId as source, ConditionTypeOrReference as type,
 									    ConditionTarget as target, NegativeCondition as reverse,
 										ConditionValue1 as value1, ConditionValue2 as value2, ConditionValue3 as value3
@@ -175,7 +175,7 @@ class CreatureDAO extends DAO {
     // Return the conditions of a menu option in the form of an array of [ id, source, type, target, reverse, value1, value2, value3 ]
     public function getMenuOptionsConditions($entry)
     {
-        return $this->test->fetchAll('SELECT id, SourceTypeOrReferenceId as source, ConditionTypeOrReference as type,
+        return $this->getDb('test')->fetchAll('SELECT id, SourceTypeOrReferenceId as source, ConditionTypeOrReference as type,
 										 ConditionTarget as target, NegativeCondition as reverse,
 										 ConditionValue1 as value1, ConditionValue2 as value2, ConditionValue3 as value3
                                       FROM conditions
@@ -227,6 +227,7 @@ class CreatureDAO extends DAO {
                 "id"    		=> $option['id'],
                 "icon"  		=> $option['option_icon'],
                 "text"  		=> $option['option_text'],
+                "flag"  		=> $option['npc_option_npcflag'],
                 "next"  		=> $option['action_menu_id'],
                 "conditions"	=> [ ],
             ];
@@ -247,6 +248,7 @@ class CreatureDAO extends DAO {
             }
         }
         $array['menus'][$menu['id']] = $menu;
+        $array['main'] = $menu['id'];
 
         // If any option points to a menu, process it too
         foreach($menuOptionsDB as $key => $option) {
@@ -258,6 +260,6 @@ class CreatureDAO extends DAO {
     }
 
     public function getNewGossipMenu() {
-        return $this->test->fetchAssoc('SELECT (MAX(entry) + 1) as newMenu FROM gossip_menu');
+        return $this->getDb('test')->fetchAssoc('SELECT (MAX(entry) + 1) as newMenu FROM gossip_menu');
     }
 }

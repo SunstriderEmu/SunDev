@@ -9,13 +9,13 @@ use SUN\Domain\Zone;
 class SunQuestDAO extends DAO
 {
 	public function getQuests($zone) {
-		$getZoneID = $this->dbc->fetchAll('SELECT id, name FROM dbc_areatable WHERE id = ?', array($zone));
+		$getZoneID = $this->getDb('dbc')->fetchAll('SELECT id, name FROM dbc_areatable WHERE id = ?', array($zone));
 
 		if($getZoneID == null) {
 			return $this->app->redirect('/quests');
 		}
 
-		$fetch = $this->test->fetchAll("SELECT qt.entry, qt.Title as name, qt.RequiredRaces as race, it.entry as itemid, it.name as itemname,
+		$fetch = $this->getDb('test')->fetchAll("SELECT qt.entry, qt.Title as name, qt.RequiredRaces as race, it.entry as itemid, it.name as itemname,
 							  			ct.entry as idstarter, ct.name as starter, ct2.entry as idender, ct2.name as ender,
 							  			qtest.startTxt, qtest.progTxt, qtest.endTxt, qtest.txtEvent, qtest.pathEvent, qtest.timeEvent,
 							  			qtest.Exp, qtest.Stuff, qtest.Gold, qtest.emotNPC, qtest.spellNPC, qtest.placeNPC, qtest.workObj, qtest.baObj,
@@ -67,7 +67,7 @@ class SunQuestDAO extends DAO
 			case 14: $columnDB = "baObj"; break;
 			default: return;
 		}
-		$this->tools->executeQuery("INSERT INTO quest_test (questid, {$columnDB}) VALUES (:questID, :value) ON DUPLICATE KEY UPDATE {$columnDB} = :value", array("questID" => $quest->id, "value" => $quest->status));
+		$this->getDb('tools')->executeQuery("INSERT INTO quest_test (questid, {$columnDB}) VALUES (:questID, :value) ON DUPLICATE KEY UPDATE {$columnDB} = :value", array("questID" => $quest->id, "value" => $quest->status));
 	}
 
 	function getGlobalProgress() {
@@ -83,7 +83,7 @@ class SunQuestDAO extends DAO
 	}
 	public function globalCount($status) {
 
-		$countStatus = $this->tools->fetchAssoc('SELECT (SUM(CASE WHEN startTxt = :status THEN 1 ELSE 0 END) +
+		$countStatus = $this->getDb('tools')->fetchAssoc('SELECT (SUM(CASE WHEN startTxt = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN progTxt = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN endTxt = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN txtEvent = :status THEN 1 ELSE 0 END) +
@@ -103,7 +103,7 @@ class SunQuestDAO extends DAO
 	}
 
 	function countFields($status, $zoneID) {
-		$countStatus = $this->tools->fetchAssoc("SELECT (SUM(CASE WHEN startTxt = :status THEN 1 ELSE 0 END) +
+		$countStatus = $this->getDb('tools')->fetchAssoc("SELECT (SUM(CASE WHEN startTxt = :status THEN 1 ELSE 0 END) +
                                        SUM(CASE WHEN progTxt = :status THEN 1 ELSE 0 END) +
                                        SUM(CASE WHEN endTxt = :status THEN 1 ELSE 0 END) +
                                        SUM(CASE WHEN txtEvent = :status THEN 1 ELSE 0 END) +
@@ -125,22 +125,22 @@ class SunQuestDAO extends DAO
 	}
 
 	public function getZoneName($zoneID) {
-		$zoneName = $this->dbc->fetchAssoc('SELECT name FROM dbc_areatable WHERE id = ?', array($zoneID));
+		$zoneName = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE id = ?', array($zoneID));
 		return $zoneName['name'];
 	}
 
 	public function getQuestsCount($zoneID) {
-		$totalQuest = $this->world->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort = ? AND Title NOT LIKE "%BETA%"', array($zoneID));
+		$totalQuest = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort = ? AND Title NOT LIKE "%BETA%"', array($zoneID));
 		return $totalQuest['count'];
 	}
 
 	public function getGlobalQuestsCount() {
-		$total = $this->world->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort IN(3457, 3703, 3483, 3562, 3713, 3714, 3836, 3521, 3717, 3716, 3715, 3607, 3519, 3791, 3790, 3789, 3792, 3518, 3522, 3923, 3523, 3847, 3849, 3848, 3845, 3520, 3959, 2367, 2366, 3606) AND Title NOT LIKE "%BETA%"');
+		$total = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort IN(3457, 3703, 3483, 3562, 3713, 3714, 3836, 3521, 3717, 3716, 3715, 3607, 3519, 3791, 3790, 3789, 3792, 3518, 3522, 3923, 3523, 3847, 3849, 3848, 3845, 3520, 3959, 2367, 2366, 3606) AND Title NOT LIKE "%BETA%"');
 		return $total['count'];
 	}
 
 	public function getQuestsTested($zoneID) {
-		$testedQuest = $this->tools->fetchAssoc("SELECT count(*) as count
+		$testedQuest = $this->getDb('tools')->fetchAssoc("SELECT count(*) as count
                                          		 FROM quest_test qtest
                                          		 LEFT JOIN {$this->app['dbs.options']['test_world']['dbname']}.quest_template qt ON qtest.questid = qt.entry
                                          		 WHERE ZoneOrSort = ?
@@ -151,7 +151,7 @@ class SunQuestDAO extends DAO
 	}
 
 	public function getGlobalTested() {
-		$testedQuest = $this->tools->fetchAssoc('SELECT COUNT(*) as count FROM quest_test');
+		$testedQuest = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM quest_test');
 		return $testedQuest['count'];
 	}
 

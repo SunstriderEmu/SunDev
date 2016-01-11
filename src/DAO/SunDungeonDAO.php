@@ -8,7 +8,7 @@ use Doctrine\DBAL\Connection;
 
 class SunDungeonDAO extends DAO {
 	public function getCreatures($dungeon) {
-		$fetch = $this->tools->fetchAll("SELECT ct.entry, ct.difficulty_entry_1 as heroic, ct.name, c.map,
+		$fetch = $this->getDb('tools')->fetchAll("SELECT ct.entry, ct.difficulty_entry_1 as heroic, ct.name, c.map,
 											    n_stats, n_resistances, n_immunities, n_respawn,
 											    h_stats, h_resistances, h_immunities, h_respawn,
 											    equipment, gossip, emote, smartai, comment, tester
@@ -47,22 +47,22 @@ class SunDungeonDAO extends DAO {
 			$columnDB = "n_{$columnDB}";
 		if($creature->type == "heroic") {
 			$columnDB = "h_{$columnDB}";
-			$getEntry = $this->test->fetchAssoc('SELECT entry FROM creature_template WHERE difficulty_entry_1 = ?', array(intval($creature->entry)));
+			$getEntry = $this->getDb('test')->fetchAssoc('SELECT entry FROM creature_template WHERE difficulty_entry_1 = ?', array(intval($creature->entry)));
 			$creature->entry = $getEntry['entry'];
 		}
 
 
-		$this->tools->executeQuery("INSERT INTO dungeons_test (entry, map, {$columnDB}) VALUE (:entry, :map, :value) ON DUPLICATE KEY UPDATE {$columnDB} = :value",
+		$this->getDb('tools')->executeQuery("INSERT INTO dungeons_test (entry, map, {$columnDB}) VALUE (:entry, :map, :value) ON DUPLICATE KEY UPDATE {$columnDB} = :value",
 									array("entry" => $creature->entry, "map" => $creature->map, "value" => $creature->status));
 	}
 
 	public function setTester($creature) {
-		$this->tools->executeQuery('INSERT INTO dungeons_test (entry, map, tester) VALUE (:entry, map, :value) ON DUPLICATE KEY UPDATE tester = :value',
+		$this->getDb('tools')->executeQuery('INSERT INTO dungeons_test (entry, map, tester) VALUE (:entry, map, :value) ON DUPLICATE KEY UPDATE tester = :value',
 									array("entry" => $creature->entry, "map" => $creature->map, "value" => $creature->tester));
 	}
 
 	public function setComment($creature) {
-		$this->tools->executeQuery('INSERT INTO dungeons_test (entry, comment) VALUE (:entry, :comment) ON DUPLICATE KEY UPDATE comment = :comment',
+		$this->getDb('tools')->executeQuery('INSERT INTO dungeons_test (entry, comment) VALUE (:entry, :comment) ON DUPLICATE KEY UPDATE comment = :comment',
 									array("entry" => $creature->entry, "comment" => $creature->comment));
 	}
 
@@ -78,7 +78,7 @@ class SunDungeonDAO extends DAO {
 		]);
 	}
 	public function globalCount($status) {
-		$countStatus = $this->tools->fetchAssoc('SELECT (SUM(CASE WHEN n_stats = :status THEN 1 ELSE 0 END) +
+		$countStatus = $this->getDb('tools')->fetchAssoc('SELECT (SUM(CASE WHEN n_stats = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN h_stats = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN n_resistances = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN h_resistances = :status THEN 1 ELSE 0 END) +
@@ -96,7 +96,7 @@ class SunDungeonDAO extends DAO {
 	}
 
 	function countFields($status, $map) {
-		$countStatus = $this->tools->fetchAssoc('SELECT (SUM(CASE WHEN n_stats = :status THEN 1 ELSE 0 END) +
+		$countStatus = $this->getDb('tools')->fetchAssoc('SELECT (SUM(CASE WHEN n_stats = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN h_stats = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN n_resistances = :status THEN 1 ELSE 0 END) +
                                        			 SUM(CASE WHEN h_resistances = :status THEN 1 ELSE 0 END) +
@@ -114,27 +114,27 @@ class SunDungeonDAO extends DAO {
 	}
 
 	public function getMapName($map) {
-		$map = $this->dbc->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($map));
+		$map = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($map));
 		return $map['name'];
 	}
 
 	public function getCreaturesCount($map) {
-		return $this->test->executeQuery('SELECT count(*) as count FROM creature WHERE map = ? GROUP BY id', array($map))->rowCount();
+		return $this->getDb('test')->executeQuery('SELECT count(*) as count FROM creature WHERE map = ? GROUP BY id', array($map))->rowCount();
 	}
 
 	public function getGlobalCreaturesCount() {
-		return $this->test->executeQuery('SELECT count(*) as count FROM creature WHERE map IN (540, 542, 543, 545, 546, 547, 552, 553, 554, 555, 556, 557, 558, 560, 269) GROUP BY id')->rowCount();
+		return $this->getDb('test')->executeQuery('SELECT count(*) as count FROM creature WHERE map IN (540, 542, 543, 545, 546, 547, 552, 553, 554, 555, 556, 557, 558, 560, 269) GROUP BY id')->rowCount();
 	}
 
 	public function getCreaturesTested($map) {
-		return $this->tools->executeQuery('SELECT map FROM dungeons_test WHERE map = ?
+		return $this->getDb('tools')->executeQuery('SELECT map FROM dungeons_test WHERE map = ?
                                              AND n_stats != 0 AND n_resistances != 0 AND n_immunities != 0 AND n_respawn != 0
                                              AND h_stats != 0 AND h_resistances != 0 AND h_immunities != 0 AND h_respawn != 0
                                              AND equipment != 0 AND gossip != 0 AND emote != 0 AND smartai != 0', array($map))->rowCount();
 	}
 
 	public function getGlobalTested() {
-		return $this->tools->executeQuery('SELECT map FROM dungeons_test')->rowCount();
+		return $this->getDb('tools')->executeQuery('SELECT map FROM dungeons_test')->rowCount();
 	}
 
 	function getMap($id) {

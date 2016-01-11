@@ -16,7 +16,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 * @throws \Exception
 	 */
 	public function find($id) {
-		$row = $this->tools->fetchAssoc('SELECT * FROM user WHERE id = ?', array($id));
+		$row = $this->getDb('tools')->fetchAssoc('SELECT * FROM user WHERE id = ?', array($id));
 		if ($row)
 			return $this->buildDomainObject($row);
 		else
@@ -28,7 +28,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 */
 	public function loadUserByUsername($username)
 	{
-		$row = $this->tools->fetchAssoc('SELECT * FROM user WHERE name = ?', array($username));
+		$row = $this->getDb('tools')->fetchAssoc('SELECT * FROM user WHERE name = ?', array($username));
 		if ($row)
 			return $this->buildDomainObject($row);
 		else
@@ -85,12 +85,12 @@ class UserDAO extends DAO implements UserProviderInterface
 
 		if ($user->getId()) {
 			// The user has already been saved : update it
-			$this->tools->update('user', $userData, array('id' => $user->getId()));
+			$this->getDb('tools')->update('user', $userData, array('id' => $user->getId()));
 		} else {
 			// The user has never been saved : insert it
-			$this->tools->insert('user', $userData);
+			$this->getDb('tools')->insert('user', $userData);
 			// Get the id of the newly created user and set it on the entity.
-			$id = $this->tools->lastInsertId();
+			$id = $this->getDb('tools')->lastInsertId();
 			$user->setId($id);
 		}
 	}
@@ -102,7 +102,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 */
 	public function delete($id) {
 		// Delete the user
-		$this->tools->delete('user', array('id' => $id));
+		$this->getDb('tools')->delete('user', array('id' => $id));
 	}
 
 	/**
@@ -111,7 +111,7 @@ class UserDAO extends DAO implements UserProviderInterface
 	 * @return array A list of all users.
 	 */
 	public function findAll() {
-		$result = $this->tools->fetchAll('SELECT * FROM user ORDER BY id');
+		$result = $this->getDb('tools')->fetchAll('SELECT * FROM user ORDER BY id');
 
 		// Convert query result to an array of domain objects
 		$entities = array();

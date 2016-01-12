@@ -1501,21 +1501,18 @@ DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(88) COLLATE utf8_unicode_ci NOT NULL,
   `salt` varchar(23) COLLATE utf8_unicode_ci NOT NULL,
-  `role` varchar(50) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `roles` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `password`, `salt`, `role`) VALUES
-(1, 'admin', '363wO7Ws/z/kmtrIrwXcZvnG8AllOfSpNh4sDmctYat+MPj8t9Zq3EGXwlrkW07W99TzsaY8WGccHbCShey9TQ==', 'f396b0a4cea4b22f8a77b13', 'ROLE_ADMIN'),
-(2, 'full', 'g4e38Xl94pa9C7a1cWQxJyyjH6fmYoTRyMfuBL03EbVoNfSWsAGEoLd9rtHz0w96EXX2jhLwXNoJmdTtt7n8AA==', '4e2ce7180d13f71a4c93659', 'ROLE_FULL'),
-(3, 'dev', '7hv5uIc85KKDXxam/esWiuzoXwyHOPjRIPUrBacceSg89ynFvKDqDJpEZy9zwAJ8Sv5X4BYhgM/0xq1g31FUlQ==', '75171d248c310b1a8a71c28', 'ROLE_DEV'),
-(4, 'test', '7QUpn2bLiA1nK5Km0lEHJp+a83bH7btHK5Eg/+8FuR1x9pIczvwCHB6i67MQR1HlxM2TFNm6w1oT+OBM1MD3ug==', '2618719cdb6e429bb990adb', 'ROLE_TESTER');
+(1, 'admin', '363wO7Ws/z/kmtrIrwXcZvnG8AllOfSpNh4sDmctYat+MPj8t9Zq3EGXwlrkW07W99TzsaY8WGccHbCShey9TQ==', 'f396b0a4cea4b22f8a77b13', 'YToxOntpOjA7czoxMDoiUk9MRV9BRE1JTiI7fQ==');
 
 --
 -- Indexes for dumped tables

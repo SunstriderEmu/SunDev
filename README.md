@@ -27,14 +27,11 @@ SunDev is developed with the micro-framework Silex.
 # Usage
 ## Access
 Just go into the address you put into your host file, such as `dev.sunstrider.com`  
-The following dummy users are already created in the database included (user:password):
+The following admin user is already created in the database (user:password):
     - admin:admin
-    - full:full
-    - dev:dev
-    - tester:tester
 
 ## Creating a user
-    `dev.sunstrider.com/admin/user/add`
+    `/user/add`
 
 # Development
 * SmartAI:
@@ -57,14 +54,11 @@ The following dummy users are already created in the database included (user:pas
   Checklist of points to check for every classes including talents and spells.
 
 # Roles
-| Role  		| Access      							|
-|---------------|---------------------------------------|
-| ROLE_ADMIN    | Validate the code in review           |
-| ROLE_FULL     | Access Development and Testing parts  |
-| ROLE_DEV      | Access Development part               |
-| ROLE_TESTER   | Access Testing part                   |
+A role = a fonctionnality access.
+They are listed in `app/app.php`.
 
 # To Do
 Implement:
 * SunGossip: work in progress
 * SunWorld
+* Roles.md wiki

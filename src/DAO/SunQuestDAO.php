@@ -32,7 +32,7 @@ class SunQuestDAO extends DAO
 							  			LEFT JOIN gameobject_template objt ON objstart.id = objt.entry
 							  			LEFT JOIN gameobject_template objt2 ON objend.id = objt2.entry
 							  			LEFT JOIN item_template it ON qt.entry = it.startquest
-							  			LEFT JOIN {$this->app['dbs.options']['suntools']['dbname']}.quest_test qtest ON qt.entry = qtest.questid
+							  			LEFT JOIN {$this->app['dbs.options']['tools']['dbname']}.quest_test qtest ON qt.entry = qtest.questid
 							  			WHERE ZoneOrSort = ? AND qt.Title NOT LIKE '%BETA%'
 							  			GROUP BY qt.entry", array($zone));
 		$quests = [];
@@ -119,7 +119,7 @@ class SunQuestDAO extends DAO
                                        SUM(CASE WHEN baObj = :status THEN 1 ELSE 0 END)
                                        ) AS TotalCount
                                 FROM quest_test qtest
-                                JOIN {$this->app['dbs.options']['test_world']['dbname']}.quest_template qt ON qtest.questid = qt.entry
+                                JOIN {$this->app['dbs.options']['test']['dbname']}.quest_template qt ON qtest.questid = qt.entry
                                 WHERE ZoneOrSort = :zoneID", array("status" => $status, "zoneID" => $zoneID));
 		return $countStatus['TotalCount'];
 	}
@@ -142,7 +142,7 @@ class SunQuestDAO extends DAO
 	public function getQuestsTested($zoneID) {
 		$testedQuest = $this->getDb('tools')->fetchAssoc("SELECT count(*) as count
                                          		 FROM quest_test qtest
-                                         		 LEFT JOIN {$this->app['dbs.options']['test_world']['dbname']}.quest_template qt ON qtest.questid = qt.entry
+                                         		 LEFT JOIN {$this->app['dbs.options']['test']['dbname']}.quest_template qt ON qtest.questid = qt.entry
                                          		 WHERE ZoneOrSort = ?
                                                	 AND questid != 0 AND startTxt != 0 AND progTxt != 0 AND endTxt != 0 AND pathEvent != 0
                                                	 AND timeEvent != 0 AND Exp != 0 AND Stuff != 0 AND Gold != 0

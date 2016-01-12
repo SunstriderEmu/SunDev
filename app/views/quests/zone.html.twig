@@ -183,7 +183,7 @@
                     <td status="{% if quest.placeNPC != null %}{{ quest.placeNPC }}{% else %}0{% endif %}" id="{{ quest.entry }}_12" onclick='testQuest({{ quest.entry }}, 12)' class="test border"></td>
                     <td status="{% if quest.workObj != null %}{{ quest.workObj }}{% else %}0{% endif %}" id="{{ quest.entry }}_13" onclick='testQuest({{ quest.entry }}, 13)' class="test"></td>
                     <td status="{% if quest.baObj != null %}{{ quest.baObj }}{% else %}0{% endif %}" id="{{ quest.entry }}_14" onclick='testQuest({{ quest.entry }}, 14)' class="test border"></td>
-                    <td id="{{ quest.entry }}_15" ><textarea id="{{ quest.entry }}">{{ quest.comment }}</textarea></td>
+                    <td id="{{ quest.entry }}_15" >{% if is_granted('ROLE_QUESTS_WRITE') %}<textarea id="{{ quest.entry }}">{% endif %}{{ quest.comment }}{% if is_granted('ROLE_QUESTS_WRITE') %}</textarea>{% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -199,18 +199,12 @@
                 "paging":         false,
                 "order": [[ 2, "asc" ]]
             } );
-
             //set the cells visuals based on their status
             $('tbody td').each(function(lol, element) {
                 var status = $(element).attr("status");
                 if(status !== undefined) { //jQuery attr() returns undefined on no result
                     setElementColorByStatus(element, status);
                 }
-            });
-
-            //set the cells visuals based on their status
-            $('.testeur').click(function() {
-                $(this).toggleClass('name').siblings().removeClass('name');
             });
 
             $('.testeur').each(function(lol, element) {
@@ -246,6 +240,12 @@
                 case 1:	$(element).toggleClass('name',true);	break;
             }
         }
+
+        {% if is_granted('ROLE_QUESTS_WRITE') %}
+        //set the cells visuals based on their status
+        $('.testeur').click(function() {
+            $(this).toggleClass('name').siblings().removeClass('name');
+        });
 
         function testQuest(questId, column) {
             var element = $('#'+questId+"_"+column);
@@ -311,5 +311,6 @@
                 }
             });
         });
+        {% endif %}
     </script>
     {% endblock %}

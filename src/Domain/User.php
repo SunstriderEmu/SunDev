@@ -49,6 +49,33 @@ class User implements UserInterface
 	 */
 	private $roles;
 
+	/**
+	 * @param array $data
+	 */
+	public function __construct($data = null)
+	{
+		$this->hydrate($data);
+	}
+
+	/**
+	 * @param array $data
+	 */
+	public function hydrate($data)
+	{
+		if($data != null)
+		{
+
+			foreach($data as $key => $value) {
+				$method = 'set' . ucfirst($key);
+				$method = implode('_', array_map('ucfirst', explode('_', $method)));
+				$method = str_replace("_", "", $method);
+
+				if(method_exists($this, $method))
+					$this->$method($value);
+			}
+		}
+	}
+
 	public function getId() {
 		return $this->id;
 	}
@@ -92,16 +119,9 @@ class User implements UserInterface
 		$this->salt = $salt;
 	}
 
-	public function getRole() {
-		return $this->role;
-	}
-
-	public function setRole($role) {
-		$this->role = $role;
-	}
-
-	public function setRoles($roles) {
-		$this->roles[] = $roles;
+	public function setRoles($roles)
+    {
+		$this->roles = (array) $roles;
 	}
 
 	/**
@@ -117,5 +137,10 @@ class User implements UserInterface
 	 */
 	public function eraseCredentials() {
 		// Nothing to do here
+	}
+
+	public function isGranted($role)
+	{
+		return in_array($role, $this->getRoles());
 	}
 }

@@ -1,5 +1,4 @@
 {% extends 'layout.html.twig' %}
-{% set adminMenu = true %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -50,13 +49,14 @@
             </div>
         </div>
         <div class="form-group">
-            {{ form_label(userForm.role, null, { 'label_attr':  {
+            {{ form_label(userForm.roles, null, { 'label_attr':  {
             'class': 'col-sm-5 control-label'
             }}) }}
             <div class="col-sm-4">
-                {{ form_errors(userForm.role) }}
-                {{ form_widget(userForm.role, { 'attr':  {
-                'class': 'form-control'
+                {{ form_errors(userForm.roles) }}
+                {{ form_widget(userForm.roles, { 'attr':  {
+                'class': 'form-control',
+                'style': 'height: 300px'
                 }}) }}
             </div>
         </div>

@@ -92,7 +92,7 @@ class SUNExtension extends \Twig_Extension
 	}
 
 	public function getUsername($user) {
-		$user = $this->getDb('tools')->fetchAssoc('SELECT name FROM user WHERE id = ?', array($user));
+		$user = $this->getDb('tools')->fetchAssoc('SELECT username FROM user WHERE id = ?', array($user));
 		return $user['name'];
 	}
 

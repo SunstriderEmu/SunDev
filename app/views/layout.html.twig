@@ -27,28 +27,115 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                {% if is_granted('ROLE_DEV') %}
+                {% if is_granted('ROLE_USER_LIST')
+                   or is_granted('ROLE_USER_ADD')
+                   or is_granted('ROLE_USER_EDIT')
+                   or is_granted('ROLE_USER_REMOVE') %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-briefcase"></span> Manager <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% if is_granted('ROLE_USER_LIST') %}
+                        <li><a href="{{ app.request.basepath }}/user">All users</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_USER_ADD') %}
+                        <li><a href="{{ app.request.basepath }}/user/add">Add an user</a></li>
+                        {% endif %}
+                        {% if (is_granted('ROLE_USER_LIST') or is_granted('ROLE_USER_ADD')) and (is_granted('ROLE_ACCOUNT_LIST') or is_granted('ROLE_ACCOUNT_ADD')) %}
+                        <li role="separator" class="divider"></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ACCOUNT_LIST') %}
+                            <li><a href="{{ app.request.basepath }}/account">All accounts</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ACCOUNT_ADD') %}
+                            <li><a href="{{ app.request.basepath }}/account/add">Add an account</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if is_granted('ROLE_CREATURE_SMARTAI')
+                   or is_granted('ROLE_CREATURE_STATS')
+                   or is_granted('ROLE_CREATURE_LOOT')
+                   or is_granted('ROLE_CREATURE_EQUIP')
+                   or is_granted('ROLE_CREATURE_TEXT')
+                   or is_granted('ROLE_CREATURE_IMMUNE')
+                   or is_granted('ROLE_CREATURE_GOSSIP')
+                   or is_granted('ROLE_CREATURE_FLAG_DYN')
+                   or is_granted('ROLE_CREATURE_FLAG_EXTRA')
+                   or is_granted('ROLE_CREATURE_FLAG_NPC')
+                   or is_granted('ROLE_CREATURE_FLAG_TYPE')
+                   or is_granted('ROLE_CREATURE_FLAG_UNIT')
+                   or is_granted('ROLE_LOOT_DISENCHANT')
+                   or is_granted('ROLE_LOOT_FISHING')
+                   or is_granted('ROLE_LOOT_GAMEOBJECT')
+                   or is_granted('ROLE_LOOT_ITEM')
+                   or is_granted('ROLE_LOOT_PICKPOCKET')
+                   or is_granted('ROLE_LOOT_PROSPECT')
+                   or is_granted('ROLE_LOOT_QUESTMAIL')
+                   or is_granted('ROLE_LOOT_REFERENCE')
+                   or is_granted('ROLE_LOOT_SKINNING')
+                   or is_granted('ROLE_DUNGEONS_READ')
+                   or is_granted('ROLE_DUNGEONS_WRITE')
+                   or is_granted('ROLE_WAYPOINTS') %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span> Development <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ app.request.basepath }}/smartai">SmartAI</a></li>
+                    {% if is_granted('ROLE_CREATURE_SMARTAI')
+                       or is_granted('ROLE_CREATURE_STATS')
+                       or is_granted('ROLE_CREATURE_LOOT')
+                       or is_granted('ROLE_CREATURE_EQUIP')
+                       or is_granted('ROLE_CREATURE_TEXT')
+                       or is_granted('ROLE_CREATURE_IMMUNE')
+                       or is_granted('ROLE_CREATURE_GOSSIP')
+                       or is_granted('ROLE_CREATURE_FLAG_DYN')
+                       or is_granted('ROLE_CREATURE_FLAG_EXTRA')
+                       or is_granted('ROLE_CREATURE_FLAG_NPC')
+                       or is_granted('ROLE_CREATURE_FLAG_TYPE')
+                       or is_granted('ROLE_CREATURE_FLAG_UNIT') %}
+                        <li><a href="{{ app.request.basepath }}/creature">SunCreature</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_DUNGEONS_READ')
+                       or is_granted('ROLE_DUNGEONS_WRITE') %}
                         <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
-                        <li><a href="{{ app.request.basepath }}/equip">SunEquip</a></li>
-                        <li><a href="{{ app.request.basepath }}/loot">SunLoot</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_WAYPOINTS') %}
                         <li><a href="{{ app.request.basepath }}/waypoints">SunWaypoints</a></li>
+                    {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if is_granted('ROLE_TESTER') %}
+                {% if is_granted('ROLE_QUESTS_READ')
+                   or is_granted('ROLE_QUESTS_WRITE')
+                   or is_granted('ROLE_CLASSES_DRUID')
+                   or is_granted('ROLE_CLASSES_HUNTER')
+                   or is_granted('ROLE_CLASSES_MAGE')
+                   or is_granted('ROLE_CLASSES_PALADIN')
+                   or is_granted('ROLE_CLASSES_PRIEST')
+                   or is_granted('ROLE_CLASSES_ROGUE')
+                   or is_granted('ROLE_CLASSES_SHAMAN')
+                   or is_granted('ROLE_CLASSES_WARLOCK')
+                   or is_granted('ROLE_CLASSES_WARRIOR') %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-eye-open"></span> Testing <span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                        {% if is_granted('ROLE_CLASSES_DRUID')
+                           or is_granted('ROLE_CLASSES_HUNTER')
+                           or is_granted('ROLE_CLASSES_MAGE')
+                           or is_granted('ROLE_CLASSES_PALADIN')
+                           or is_granted('ROLE_CLASSES_PRIEST')
+                           or is_granted('ROLE_CLASSES_ROGUE')
+                           or is_granted('ROLE_CLASSES_SHAMAN')
+                           or is_granted('ROLE_CLASSES_WARLOCK')
+                           or is_granted('ROLE_CLASSES_WARRIOR') %}
                         <li><a href="{{ app.request.basepath }}/classes">SunClasses</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_QUESTS_READ')
+                           or is_granted('ROLE_QUESTS_WRITE') %}
                         <li><a href="{{ app.request.basepath }}/quests">SunQuests</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                <li><a href="http://wiki.sunstrider.cf"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
+                <li><a href="http://wiki.sunstrider.tk"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}

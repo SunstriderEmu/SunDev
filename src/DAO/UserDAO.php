@@ -17,8 +17,15 @@ class UserDAO extends DAO implements UserProviderInterface
 	 */
 	public function find($id) {
 		$row = $this->getDb('tools')->fetchAssoc('SELECT * FROM user WHERE id = ?', array($id));
-		if ($row)
-			return $this->buildDomainObject($row);
+		if ($row){
+			$user = new User();
+			$user->setId($row['id']);
+			$user->setUsername($row['username']);
+			$user->setPassword($row['password']);
+			$user->setSalt($row['salt']);
+			$user->setRoles(unserialize(base64_decode($row['roles'])));
+			return $user;
+		}
 		else
 			throw new \Exception("No user matching id " . $id);
 	}
@@ -28,9 +35,16 @@ class UserDAO extends DAO implements UserProviderInterface
 	 */
 	public function loadUserByUsername($username)
 	{
-		$row = $this->getDb('tools')->fetchAssoc('SELECT * FROM user WHERE name = ?', array($username));
-		if ($row)
-			return $this->buildDomainObject($row);
+		$row = $this->getDb('tools')->fetchAssoc('SELECT * FROM user WHERE username = ?', array($username));
+		if ($row){
+			$user = new User();
+			$user->setId($row['id']);
+			$user->setUsername($row['username']);
+			$user->setPassword($row['password']);
+			$user->setSalt($row['salt']);
+			$user->setRoles(unserialize(base64_decode($row['roles'])));
+			return $user;
+		}
 		else
 			throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
 	}
@@ -56,31 +70,16 @@ class UserDAO extends DAO implements UserProviderInterface
 	}
 
 	/**
-	 * Creates a User object based on a DB row.
-	 *
-	 * @param array $row The DB row containing User data.
-	 * @return \SUN\Domain\User
-	 */
-	protected function buildDomainObject($row) {
-		$user = new User();
-		$user->setId($row['id']);
-		$user->setUsername($row['name']);
-		$user->setPassword($row['password']);
-		$user->setSalt($row['salt']);
-		$user->setRoles($row['role']);
-		return $user;
-	}
-	/**
 	 * Saves a user into the database.
 	 *
 	 * @param \SUN\Domain\User $user The user to save
 	 */
 	public function save(User $user) {
 		$userData = array(
-			'name' => $user->getUsername(),
-			'salt' => $user->getSalt(),
-			'password' => $user->getPassword(),
-			'role' => $user->getRole()
+			'username' 	=> $user->getUsername(),
+			'salt' 		=> $user->getSalt(),
+			'password' 	=> $user->getPassword(),
+			'roles' 	=> base64_encode(serialize($user->getRoles()))
 		);
 
 		if ($user->getId()) {
@@ -117,7 +116,13 @@ class UserDAO extends DAO implements UserProviderInterface
 		$entities = array();
 		foreach ($result as $row) {
 			$id = $row['id'];
-			$entities[$id] = $this->buildDomainObject($row);
+			$user = new User();
+			$user->setId($row['id']);
+			$user->setUsername($row['username']);
+			$user->setPassword($row['password']);
+			$user->setSalt($row['salt']);
+			$user->setRoles(unserialize(base64_decode($row['roles'])));
+			$entities[$id] = $user;
 		}
 		return $entities;
 	}

@@ -36,20 +36,87 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		),
 	),
 	'security.role_hierarchy' => array(
-		'ROLE_ADMIN' => array('ROLE_FULL'),
-		'ROLE_FULL' => array('ROLE_DEV', 'ROLE_TESTER'),
-		'ROLE_DEV' => array(),
-		'ROLE_TESTER' => array(),
+		'ROLE_ADMIN' 		=> array('ROLE_FULL', 'ROLE_SUPERUSER', 'ROLE_ACCOUNT', 'ROLE_REVIEW'),
+		'ROLE_REVIEW'		=> array('ROLE_REVIEW_ADD', 'ROLE_REVIEW_ADD', 'ROLE_REVIEW_VALIDATE', 'ROLE_REVIEW_REFUSE'),
+		'ROLE_SUPERUSER'	=> array('ROLE_USER_LIST', 'ROLE_USER_ADD', 'ROLE_USER_EDIT', 'ROLE_USER_REMOVE'),
+		'ROLE_ACCOUNT'		=> array('ROLE_ACCOUNT_LIST', 'ROLE_ACCOUNT_ADD', 'ROLE_ACCOUNT_EDIT', 'ROLE_ACCOUNT_REMOVE'),
+		'ROLE_FULL'			=> array('ROLE_DEV', 'ROLE_TESTER'),
+		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS'),
+		'ROLE_TESTER' 		=> array('ROLE_QUESTS_WRITE', 'ROLE_CLASSES', 'ROLE_DUNGEONS_WRITE'),
+		'ROLE_CREATURE' 	=> array('ROLE_CREATURE_SMARTAI', 'ROLE_CREATURE_STATS', 'ROLE_CREATURE_LOOT', 'ROLE_CREATURE_EQUIP', 'ROLE_CREATURE_TEXT', 'ROLE_CREATURE_IMMUNE', 'ROLE_CREATURE_GOSSIP', 'ROLE_CREATURE_FLAG_DYN', 'ROLE_CREATURE_FLAG_EXTRA', 'ROLE_CREATURE_FLAG_NPC', 'ROLE_CREATURE_FLAG_TYPE', 'ROLE_CREATURE_FLAG_UNIT'),
+		'ROLE_CLASSES' 		=> array('ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR'),
+		'ROLE_LOOT' 		=> array('ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_LOOT_GAMEOBJECT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING'),
 	),
 	'security.access_rules' => array(
+		// Admin
 		array('^/admin', 'ROLE_ADMIN'),
-		array('^/classes', 'ROLE_TESTER'),
-		array('^/dungeon', array('ROLE_DEV', 'ROLE_TESTER')),
-		array('^/gossip', 'ROLE_DEV'),
-		array('^/quests', 'ROLE_TESTER'),
-		array('^/smartai', 'ROLE_DEV'),
-		array('^/smartai/review/validate', 'ROLE_ADMIN'),
-		array('^/waypoints', 'ROLE_DEV'),
+
+		// User
+		array('^/user$', 				'ROLE_USER_LIST'),
+		array('^/user/add', 			'ROLE_USER_ADD'),
+		array('^/user/[0-9]+/edit$', 	'ROLE_USER_EDIT'),
+		array('^/user/[0-9]+/delete$', 	'ROLE_USER_REMOVE'),
+
+		// Account
+		array('^/account$', 				'ROLE_ACCOUNT_LIST'),
+		array('^/account/add', 				'ROLE_ACCOUNT_ADD'),
+		array('^/account/[0-9]+/edit$', 	'ROLE_ACCOUNT_EDIT'),
+		array('^/account/[0-9]+/remove$', 	'ROLE_ACCOUNT_REMOVE'),
+
+		// SunClasses
+		array('^/classes$', 		array('ROLE_CLASSES', 'ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR')),
+		array('^/classes/druid', 	'ROLE_CLASSES_DRUID'),
+		array('^/classes/hunter', 	'ROLE_CLASSES_HUNTER'),
+		array('^/classes/mage', 	'ROLE_CLASSES_MAGE'),
+		array('^/classes/paladin', 	'ROLE_CLASSES_PALADIN'),
+		array('^/classes/priest', 	'ROLE_CLASSES_PRIEST'),
+		array('^/classes/rogue', 	'ROLE_CLASSES_ROGUE'),
+		array('^/classes/shaman', 	'ROLE_CLASSES_SHAMAN'),
+		array('^/classes/warlock', 	'ROLE_CLASSES_WARLOCK'),
+		array('^/classes/warrior', 	'ROLE_CLASSES_WARRIOR'),
+
+		// SunCreature
+		array('^/creature/entry/[0-9]+$', 				array('ROLE_CREATURE', 'ROLE_CREATURE_READ')),
+		array('^/creature/entry/[0-9]+/smartai$', 		array('ROLE_CREATURE_SMARTAI')),
+		array('^/creature/entry/[0-9]+/stats$', 		array('ROLE_CREATURE_STATS')),
+		array('^/creature/entry/[0-9]+/loot$', 			array('ROLE_CREATURE_LOOT')),
+		array('^/creature/entry/[0-9]+/equip$', 		array('ROLE_CREATURE_EQUIP')),
+		array('^/creature/entry/[0-9]+/text$', 			array('ROLE_CREATURE_TEXT')),
+		array('^/creature/entry/[0-9]+/immune$', 		array('ROLE_CREATURE_IMMUNE')),
+		array('^/creature/entry/[0-9]+/gossip$', 		array('ROLE_CREATURE_GOSSIP')),
+		array('^/creature/entry/[0-9]+/dynamicflag$', 	array('ROLE_CREATURE_FLAG_DYN')),
+		array('^/creature/entry/[0-9]+/extraflag$', 	array('ROLE_CREATURE_FLAG_EXTRA')),
+		array('^/creature/entry/[0-9]+/npcflag$', 		array('ROLE_CREATURE_FLAG_NPC')),
+		array('^/creature/entry/[0-9]+/typeflag$', 		array('ROLE_CREATURE_FLAG_TYPE')),
+		array('^/creature/entry/[0-9]+/unitflag$', 		array('ROLE_CREATURE_FLAG_UNIT')),
+
+		array('^/gossip', 	'ROLE_DEV'),
+
+		// SunQuests
+		array('^/quests', 	array('ROLE_QUESTS_WRITE', 'ROLE_QUESTS_READ')),
+
+		// SunDungeons
+		array('^/dungeons', array('ROLE_DUNGEONS_WRITE', 'ROLE_DUNGEONS_READ')),
+
+		// Waypoints
+		array('^/waypoints','ROLE_WAYPOINTS'),
+
+		// SunLoots
+		array('^/loot$', 					array('ROLE_LOOT', 'ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_LOOT_GAMEOBJECT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING')),
+		array('^/loot/disenchant/[0-9]+$', 	'ROLE_LOOT_DISENCHANT'),
+		array('^/loot/fishing/[0-9]+$', 	'ROLE_LOOT_FISHING'),
+		array('^/loot/gameobject/[0-9]+$', 	'ROLE_LOOT_GAMEOBJECT'),
+		array('^/loot/item/[0-9]+$', 		'ROLE_LOOT_ITEM'),
+		array('^/loot/pickpocket/[0-9]+$', 	'ROLE_LOOT_PICKPOCKET'),
+		array('^/loot/prospect/[0-9]+$', 	'ROLE_LOOT_PROSPECT'),
+		array('^/loot/questmail/[0-9]+$', 	'ROLE_LOOT_QUESTMAIL'),
+		array('^/loot/reference/[0-9]+$', 	'ROLE_LOOT_REFERENCE'),
+		array('^/loot/skinning/[0-9]+$', 	'ROLE_LOOT_SKINNING'),
+
+		// Review
+		array('^/dev', 			'ROLE_REVIEW_ADD', 		'POST'),
+		array('^/dev/validate', 'ROLE_REVIEW_VALIDATE', 'POST'),
+		array('^/dev/refuse', 	'ROLE_REVIEW_REFUSE', 	'POST'),
 	),
 ));
 $app->register(new Silex\Provider\RememberMeServiceProvider());
@@ -97,4 +164,5 @@ require_once __DIR__.'/controllers/SunEquip.php';
 require_once __DIR__.'/controllers/SunLoot.php';
 require_once __DIR__.'/controllers/SunQuest.php';
 require_once __DIR__.'/controllers/User.php';
+require_once __DIR__.'/controllers/Account.php';
 require_once __DIR__.'/controllers/Waypoints.php';

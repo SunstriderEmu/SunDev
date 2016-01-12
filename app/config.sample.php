@@ -4,16 +4,24 @@
  * DEBUG
  */
 $app['debug']= false;
-$app['monolog.level'] = 'WARNING';
 
 /**
  * DATABASE
  */
 $app['dbs.options'] = [
+    'auth' => [
+        'driver'    => 'pdo_mysql',
+        'host'      => '127.0.0.1',
+        'dbname'    => 'sun_auth',
+        'user'      => 'root',
+        'password'  => '',
+        'charset'   => 'utf8',
+        'port'		=> '',
+    ],
     'dbc' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
-        'dbname'    => 'dbc',
+        'dbname'    => 'sun_dbc',
         'user'      => 'root',
         'password'  => '',
         'charset'   => 'utf8',
@@ -22,7 +30,7 @@ $app['dbs.options'] = [
     'suntools' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
-        'dbname'    => 'suntools',
+        'dbname'    => 'sun_tools',
         'user'      => 'root',
         'password'  => '',
         'charset'   => 'utf8',
@@ -31,7 +39,7 @@ $app['dbs.options'] = [
     'world' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
-        'dbname'    => 'world',
+        'dbname'    => 'sun_world',
         'user'      => 'root',
         'password'  => '',
         'charset'   => 'utf8',
@@ -40,7 +48,7 @@ $app['dbs.options'] = [
     'test_world' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
-        'dbname'    => 'world',
+        'dbname'    => 'sun_world',
         'user'      => 'root',
         'password'  => '',
         'charset'   => 'utf8',

@@ -1,0 +1,32 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Home - {{ parent() }}{% endblock %}
+    {% block content %}
+        <div class="col-md-4 col-md-offset-4">
+            <h1 class="text-center">Users</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="20%">Name</th>
+                        <th width="70%">Role</th>
+                        <th width="10%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td style="vertical-align: middle!important;"><strong>{{ user.username }}</strong></td>
+                        <td>{% for role in user.roles %}{{ role }}<br />{% endfor %}</td>
+                        <td class="text-right">
+                            {% if not is_granted('ROLE_ADMIN') and user.granted('ROLE_ADMIN') %}
+                            {% else %}
+                            {% if is_granted('ROLE_USER_EDIT') %}<a href="{{ app.request.baseurl }}/user/{{ user.id }}/edit"><span class="glyphicon glyphicon-edit"></span></a>{% endif %}
+                            {% if is_granted('ROLE_USER_REMOVE') %}<a href="{{ app.request.baseurl }}/user/{{ user.id }}/delete"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if is_granted('ROLE_USER_ADD') %}<a href="{{ app.request.baseurl }}/user/add"><button class="btn btn-primary">Add user</button></a>{% endif %}
+        </div>
+    {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Home - {{ parent() }}{% endblock %}
+    {% block content %}
+        <div class="col-md-4 col-md-offset-4">
+            <h1 class="text-center">Users</h1>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="50%">Name</th>
+                    <th width="40%">Rank access</th>
+                    <th width="10%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td style="vertical-align: middle!important;"><strong>{{ account.username }}</strong></td>
+                        <td>{{ account.gmlevel }}</td>
+                        <td class="text-right">
+                            {% if not is_granted('ROLE_ADMIN') %}
+                            {% else %}
+                                {% if is_granted('ROLE_USER_ADD') %}<a href="{{ app.request.baseurl }}/account/{{ account.id }}/edit"><span class="glyphicon glyphicon-edit"></span></a>{% endif %}
+                                {% if is_granted('ROLE_USER_EDIT') %}<a href="{{ app.request.baseurl }}/account/{{ account.id }}/delete"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% if is_granted('ROLE_ACCOUNT_ADD') %}<a href="{{ app.request.baseurl }}/account/add"><button class="btn btn-primary">Add account</button></a>{% endif %}
+        </div>
+    {% endblock %}

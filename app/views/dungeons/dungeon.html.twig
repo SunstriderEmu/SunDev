@@ -137,7 +137,7 @@
                         <td rowspan="2" status="{% if creature.gossip != null %}{{ creature.gossip }}{% else %}0{% endif %}" id="{{ creature.entry }}_6" onclick='testCreature({{ creature.entry }}, "all", 6)' oncontextmenu="getService({{ creature.entry }}, 6)" class="test"></td>
                         <td rowspan="2" status="{% if creature.emote != null %}{{ creature.emote }}{% else %}0{% endif %}" id="{{ creature.entry }}_7" onclick='testCreature({{ creature.entry }}, "all", 7)' oncontextmenu="getService({{ creature.entry }}, 7)" class="test"></td>
                         <td rowspan="2" status="{% if creature.smartai != null %}{{ creature.smartai }}{% else %}0{% endif %}" id="{{ creature.entry }}_8" onclick='testCreature({{ creature.entry }}, "all", 8)' oncontextmenu="getService({{ creature.entry }}, 8)" class="test"></td>
-                        <td rowspan="2" width="20%" id="{{ creature.entry }}_9" ><textarea id="{{ creature.entry }}">{{ creature.comment }}</textarea></td>
+                        <td rowspan="2" width="20%" id="{{ creature.entry }}_9" >{% if is_granted('ROLE_DUNGEONS_WRITE') %}<textarea id="{{ creature.entry }}">{{ creature.comment }}</textarea>{% endif %}</td>
                     </tr>
                     <tr>
                         <td status="{% if creature.hstats != null %}{{ creature.hstats }}{% else %}0{% endif %}" id="{{ creature.heroic }}_1" onclick='testCreature({{ creature.heroic }}, "heroic", 1)' oncontextmenu="getService({{ creature.heroic }}, 1)" class="test"></td>
@@ -166,11 +166,6 @@
                     if(status !== undefined) { //jQuery attr() returns undefined on no result
                         setElementColorByStatus(element, status);
                     }
-                });
-
-                //set the cells visuals based on their status
-                $('.testeur').click(function() {
-                    $(this).toggleClass('name').siblings().removeClass('name');
                 });
 
                 $('.testeur').each(function(lol, element) {
@@ -237,6 +232,11 @@
                 }
 
             }
+            {% if is_granted('ROLE_DUNGEONS_WRITE') %}
+            //set the cells visuals based on their status
+            $('.testeur').click(function() {
+                $(this).toggleClass('name').siblings().removeClass('name');
+            });
 
             function testCreature(creature, type, column) {
                 var element = $('#'+creature+"_"+column);
@@ -302,5 +302,6 @@
                     }
                 });
             });
+            {% endif %}
         </script>
     {% endblock %}

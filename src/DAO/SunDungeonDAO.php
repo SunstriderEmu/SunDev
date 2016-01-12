@@ -12,8 +12,8 @@ class SunDungeonDAO extends DAO {
 											    n_stats, n_resistances, n_immunities, n_respawn,
 											    h_stats, h_resistances, h_immunities, h_respawn,
 											    equipment, gossip, emote, smartai, comment, tester
-										  FROM {$this->app['dbs.options']['test_world']['dbname']}.creature c
-										  JOIN {$this->app['dbs.options']['test_world']['dbname']}.creature_template ct ON ct.entry = c.id
+										  FROM {$this->app['dbs.options']['test']['dbname']}.creature c
+										  JOIN {$this->app['dbs.options']['test']['dbname']}.creature_template ct ON ct.entry = c.id
 										  LEFT JOIN dungeons_test dt ON ct.entry = dt.entry
 										  WHERE c.map = ? GROUP BY c.id", array($dungeon));
 		$creatures = [];

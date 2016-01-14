@@ -25,11 +25,11 @@ class AccountAdd extends AbstractType
             ->add('access', ChoiceType::class, array(
                 'choices' => [
                     'Player'    => 0,
-                    'Rank 1'    => 1,
-                    'Rank 2'    => 2,
-                    'Rank 3'    => 3,
-                    'Rank 4'    => 4,
-                    'Rank 5'    => 5
+                    'GM Rank 1'    => 1,
+                    'GM Rank 2'    => 2,
+                    'GM Rank 3'    => 3,
+                    'GM Rank 4'    => 4,
+                    'GM Rank 5'    => 5
                 ],
                 'choices_as_values' => true
             ))

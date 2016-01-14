@@ -38,17 +38,19 @@
                     <thead>
                     <tr class="top">
                         <th>Command</th>
-                        <th>Rank 1</th>
-                        <th>Rank 2</th>
-                        <th>Rank 3</th>
-                        <th>Rank 4</th>
-                        <th>Rank 5</th>
+                        <th>Player</th>
+                        <th>GM Rank 1</th>
+                        <th>GM Rank 2</th>
+                        <th>GM Rank 3</th>
+                        <th>GM Rank 4</th>
+                        <th>GM Rank 5</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for command in commands %}
                         <tr>
                             <td><strong>{{ command.name }}</strong></td>
+                            <td{% if command.security == 0 %} class="ok"{% endif %} onclick='updateCommand("{{ command.name }}", 0)' data-rank="0"></td>
                             <td{% if command.security <= 1 %} class="ok"{% endif %} onclick='updateCommand("{{ command.name }}", 1)' data-rank="1"></td>
                             <td{% if command.security <= 2 %} class="ok"{% endif %} onclick='updateCommand("{{ command.name }}", 2)' data-rank="2"></td>
                             <td{% if command.security <= 3 %} class="ok"{% endif %} onclick='updateCommand("{{ command.name }}", 3)' data-rank="3"></td>

@@ -79,20 +79,23 @@
                     $(this).removeClass('ok').siblings().removeClass('ok');
                     switch(parseInt(rank))
                     {
+                        case 0:
+                            $(this).closest('tr').find(':nth-child(2)').addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok');
+                            break;
                         case 1:
-                            $(this).closest('tr').find(':nth-child(2)').addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok');
+                            $(this).closest('tr').find(':nth-child(3)').addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok');
                             break;
                         case 2:
-                            $(this).closest('tr').find(':nth-child(3)').addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok');
+                            $(this).closest('tr').find(':nth-child(4)').addClass('ok').next().addClass('ok').next().addClass('ok').next().addClass('ok');
                             break;
                         case 3:
-                            $(this).closest('tr').find(':nth-child(4)').addClass('ok').next().addClass('ok').next().addClass('ok');
+                            $(this).closest('tr').find(':nth-child(5)').addClass('ok').next().addClass('ok').next().addClass('ok');
                             break;
                         case 4:
-                            $(this).closest('tr').find(':nth-child(5)').addClass('ok').next().addClass('ok');
+                            $(this).closest('tr').find(':nth-child(6)').addClass('ok').next().addClass('ok');
                             break;
                         case 5:
-                            $(this).closest('tr').find(':nth-child(6)').addClass('ok');
+                            $(this).closest('tr').find(':nth-child(7)').addClass('ok');
                             break;
                         default: return;
                     }

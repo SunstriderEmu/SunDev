@@ -24,6 +24,7 @@ class AccountAdd extends AbstractType
             ))
             ->add('access', ChoiceType::class, array(
                 'choices' => [
+                    'Player'    => 0,
                     'Rank 1'    => 1,
                     'Rank 2'    => 2,
                     'Rank 3'    => 3,

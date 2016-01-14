@@ -65,3 +65,19 @@ $app->get('/account/{id}/delete', function($id) use ($app) {
     $app['session']->getFlashBag()->add('success', 'The user was succesfully removed.');
     return $app->redirect('/account');
 });
+
+// Edit rank access commands
+$app->get('/account/commands', function() use ($app) {
+    $commands = $app['dbs']['test']->fetchAll('SELECT * FROM command');
+    return $app['twig']->render('account/commands.html.twig', array(
+        'commands' => $commands,
+    ));
+});
+
+// Edit rank access commands
+$app->post('/account/commands', function() use ($app) {
+    $data = json_decode($_POST['data']);
+    $command = base64_decode($data->command);
+    $app['dbs']['test']->update('command', array('security' => $data->rank), array('name' => base64_decode($data->command)));
+    return "Update {$command} to security rank {$data->rank}";
+});

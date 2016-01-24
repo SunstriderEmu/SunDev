@@ -6050,7 +6050,7 @@ ZamModelViewer.WebGL.prototype = {
             self.bgImg.onerror = function() {
                 self.bgImg = null
             };
-            self.bgImg.src = self.options.contentPath + self.options.background
+            self.bgImg.src = '/img/background.png';
         } else if (self.bgImg.loaded) {
             if (!self.vb) initVb();
             updateVb()

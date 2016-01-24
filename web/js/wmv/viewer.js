@@ -2046,6 +2046,7 @@
             z0 = eyex - centerx;
             z1 = eyey - centery;
             z2 = eyez - centerz;
+
             len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
             z0 *= len;
             z1 *= len;
@@ -4024,6 +4025,7 @@
                                 last_bits = here_bits;
                                 last_op = here_op;
                                 last_val = here_val;
+
                                 for (;;) {
                                     here = state.distcode[last_val + ((hold & (1 << last_bits + last_op) - 1) >> last_bits)];
                                     here_bits = here >>> 24;
@@ -5489,7 +5491,11 @@ ZamModelViewer.prototype = {
         if (typeof window["Uint8Array"] !== undefined && typeof window["DataView"] !== undefined) {
             try {
                 var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+                var ctx = canvas.getContext("webgl", {
+                        alpha: false
+                    }) || canvas.getContext("experimental-webgl", {
+                        alpha: false
+                    });
                 if (ctx) glSupport = true
             } catch (e) {}
         }
@@ -5693,7 +5699,8 @@ ZamModelViewer.WebGL.prototype = {
             self.canvas.detach();
             self.progressBg.detach();
             self.progressBar.detach();
-            self.canvas.off("mousedown touchstart", self.onMouseDown).off("DOMMouseScroll", self.onMouseScroll).off("mousewheel", self.onMouseWheel).off("contextmenu", self.onContextMenu);
+            self.canvas.off("mousedown touchstart", self.onMouseDown).off("DOMMouseScroll", self.onMouseScroll).off("mousewheel", self.onMouseWheel).off("dblclick", self.onDoubleClick).off("contextmenu", self.onContextMenu);
+            $(window).off("resize", self.onFullscreen);
             $(document).off("mouseup touchend", self.onMouseUp).off("mousemove touchmove", self.onMouseMove);
             self.canvas = self.progressBg = self.progressBar = null
         }
@@ -5752,12 +5759,14 @@ ZamModelViewer.WebGL.prototype = {
             gl.disable(gl.CULL_FACE);
             gl.blendFunc(gl.ONE, gl.ZERO);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             gl.enable(gl.CULL_FACE);
             gl.depthMask(true);
             gl.disableVertexAttribArray(self.aPosition);
             gl.disableVertexAttribArray(self.aTexCoord)
         }
-        for (i = 0; i < self.models.length; ++i) self.models[i].draw()
+        for (i = 0; i < self.models.length; ++i) self.models[i].draw();
+
     },
     updateCamera: function() {
         var self = this;
@@ -5833,7 +5842,11 @@ ZamModelViewer.WebGL.prototype = {
                 height: height
             });
             self.viewer.container.append(self.canvas);
-            self.context = self.canvas[0].getContext("webgl") || self.canvas[0].getContext("experimental-webgl");
+            self.context = self.canvas[0].getContext("webgl", {
+                    alpha: false
+                }) || self.canvas[0].getContext("experimental-webgl", {
+                    alpha: false
+                });
             self.progressBg = $("<div/>", {
                 css: {
                     display: "none",
@@ -6037,7 +6050,7 @@ ZamModelViewer.WebGL.prototype = {
             self.bgImg.onerror = function() {
                 self.bgImg = null
             };
-            self.bgImg.src = self.options.background;
+            self.bgImg.src = self.options.contentPath + self.options.background
         } else if (self.bgImg.loaded) {
             if (!self.vb) initVb();
             updateVb()
@@ -6119,7 +6132,7 @@ ZamModelViewer.Flash.prototype = {
             allowfullscreen: true,
             menu: false,
             bgcolor: "#181818",
-            wmode: "transparent"
+            wmode: "direct"
         };
         if (opts.background) flashVars.background = opts.background;
         if (opts.cls !== undefined) flashVars.cls = opts.cls;
@@ -6180,6 +6193,9 @@ ZamModelViewer.Wow.Model = function(renderer, viewer, model, index, skipLoad) {
     self.faceIndex = 0;
     self.faceFeatureIndex = 0;
     self.faceColorIndex = 0;
+    self.HornsIndex = 0;
+    self.EyePatchIndex = 0;
+    self.TattoosIndex = 0;
     self.hairVis = true;
     self.faceVis = true;
     self.hairMesh = null;
@@ -6193,7 +6209,9 @@ ZamModelViewer.Wow.Model = function(renderer, viewer, model, index, skipLoad) {
     self.specialTextures = {};
     self.bakedTextures = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
     self.isHD = false;
-    self.numGeosets = 21;
+    self.sheathMain = -1;
+    self.sheathOff = -1;
+    self.numGeosets = 26;
     self.geosets = new Array(self.numGeosets);
     self.time = 0;
     self.frame = 0;
@@ -6278,7 +6296,7 @@ ZamModelViewer.Wow.Model.prototype = {
         },
         setAnimation: function(name) {
             var model = this.mount ? this.mount : this;
-            model.setAnimation(name);
+            model.setAnimation(name)
         },
         resetAnimation: function() {
             var model = this.mount ? this.mount : this;
@@ -6290,25 +6308,47 @@ ZamModelViewer.Wow.Model.prototype = {
             for (var i = 0; i < equip.length; i += 2) {
                 items.push([equip[i], equip[i + 1]])
             }
+            for (var i in items) {
+                var item = [parseInt(items[i][0]), parseInt(items[i][1])];
+                this.opts.items.push(item)
+            }
             this.loadItems(items);
             this.needsCompositing = true;
+            if (this.dhmodel) {
+                this.dhmodel.destroy();
+                this.dhloaded = 0;
+                this.loadDH(this.meta.DHGeosetsHDModel)
+            }
             this.setup()
         },
         clearSlots: function(list) {
             var slots = list.split(",");
             for (var i = 0; i < slots.length; ++i) {
-                this.removeSlot(slots[i])
+                this.removeSlot(slots[i]);
+                var items = [];
+                for (var i in this.opts.items) {
+                    if (this.opts.items[i].indexOf(parseInt(slots[i])) != 0) items.push(this.opts.items[i])
+                }
+                this.opts.items = items
             }
             this.needsCompositing = true;
+            if (this.dhmodel) {
+                this.dhmodel.destroy();
+                this.dhloaded = 0;
+                this.loadDH(this.meta.DHGeosetsHDModel)
+            }
             this.setup()
         },
-        setAppearance: function(hairStyle, hairColor, faceType, skinColor, features, featuresColor) {
+        setAppearance: function(hairStyle, hairColor, faceType, skinColor, features, featuresColor, horns, eyepatch, tattoos, sheathMain, sheathOff) {
             this.skinIndex = skinColor;
             this.hairIndex = hairStyle;
             this.hairColorIndex = hairColor;
             this.faceIndex = faceType;
             this.faceFeatureIndex = features;
             this.faceColorIndex = featuresColor;
+            this.HornsIndex = horns;
+            this.EyePatchIndex = eyepatch;
+            this.TattoosIndex = tattoos;
             var Region = ZamModelViewer.Wow.Regions;
             var destroyTexture = function(array, key) {
                 array[key].destroy();
@@ -6325,7 +6365,16 @@ ZamModelViewer.Wow.Model.prototype = {
             if (this.bakedTextures[Region.FaceUpper][2]) destroyTexture(this.bakedTextures[Region.FaceUpper], 2);
             if (this.bakedTextures[Region.FaceLower][3]) destroyTexture(this.bakedTextures[Region.FaceLower], 3);
             if (this.bakedTextures[Region.FaceUpper][3]) destroyTexture(this.bakedTextures[Region.FaceUpper], 3);
+            if (this.bakedTextures[Region.Base][1]) destroyTexture(this.bakedTextures[Region.Base], 1);
+            this.sheathMain = sheathMain;
+            this.sheathOff = sheathOff;
+            this.updateSlotMap();
             this.needsCompositing = true;
+            if (this.dhmodel) {
+                this.dhmodel.destroy();
+                this.dhloaded = 0;
+                this.loadDH(this.meta.DHGeosetsHDModel)
+            }
             this.setup()
         },
         isLoaded: function() {
@@ -6344,7 +6393,8 @@ ZamModelViewer.Wow.Model.prototype = {
         if (extra) mat4.multiply(self.matrix, self.matrix, extra)
     },
     setAnimation: function(name) {
-        var self = this, anim, Wow = ZamModelViewer.Wow;
+        var self = this,
+            anim, Wow = ZamModelViewer.Wow;
         self.animationList = [];
         for (var i = 0; i < self.animations.length; ++i) {
             anim = self.animations[i];
@@ -6440,7 +6490,7 @@ ZamModelViewer.Wow.Model.prototype = {
         vec3.subtract(self.boundsSize, max, min);
         vec3.scaleAndAdd(self.boundsCenter, min, self.boundsSize, .5);
         var hSize = self.boundsSize[2],
-            wSize, dSize, scale = self.meta.Scale ? self.meta.Scale : 1;
+            wSize, dSize, scale = self.meta ? self.meta.Scale : 1;
         if (self.model.type != Wow.Types.ITEM) {
             wSize = self.boundsSize[1];
             dSize = self.boundsSize[0]
@@ -6466,10 +6516,10 @@ ZamModelViewer.Wow.Model.prototype = {
         return true
     },
     disabledMeshes: {
-        "item/objectcomponents/weapon/knife_1h_outlandraid_d_01.mo3": {
+        146273: {
             1: true
         },
-        "creature/cat/spectralcat.mo3": {
+        319730: {
             1: true
         }
     },
@@ -6478,7 +6528,41 @@ ZamModelViewer.Wow.Model.prototype = {
             i, Wow = ZamModelViewer.Wow;
         if (self.model.type != Wow.Types.CHARACTER && self.model.type != Wow.Types.NPC && self.model.type != Wow.Types.HUMANOIDNPC || self.race < 1) {
             if (self.texUnits) {
-                if (self.modelPath == "creature/saberon/saberon.mo3") {
+                if (self.modelPath == 1276975 || self.modelPath == 1276976 || self.modelPath == 1276977 || self.modelPath == 1276978) {
+                    if (self.parent.dhloaded == 0) {
+                        self.slot = 6;
+                        var HASPANTS = false;
+                        for (var i in self.parent.opts.items) {
+                            if (self.parent.opts.items[i].indexOf(7) == 0) HASPANTS = true
+                        }
+                        for (i = 0; i < self.texUnits.length; ++i) {
+                            if (self.texUnits[i].meshId == 1401 && !HASPANTS) self.texUnits[i].show = true;
+                            else self.texUnits[i].show = false
+                        }
+                    }
+                    if (self.parent.dhloaded == 1) {
+                        self.slot = 1;
+                        for (i = 0; i < self.texUnits.length; ++i) {
+                            if (self.parent.HornsIndex > 0 && self.texUnits[i].meshId == 2400 + self.parent.HornsIndex) self.texUnits[i].show = true;
+                            else self.texUnits[i].show = false
+                        }
+                    }
+                    if (self.parent.dhloaded == 2) {
+                        self.slot = 1;
+                        for (i = 0; i < self.texUnits.length; ++i) {
+                            if (self.parent.EyePatchIndex > 0 && self.texUnits[i].meshId == 2500 + self.parent.EyePatchIndex) self.texUnits[i].show = true;
+                            else self.texUnits[i].show = false
+                        }
+                    }
+                    if (self.parent.dhloaded == 3) {
+                        self.slot = 25;
+                        for (i = 0; i < self.texUnits.length; ++i) {
+                            if (self.texUnits[i].meshId == 2301) self.texUnits[i].show = true;
+                            else self.texUnits[i].show = false
+                        }
+                    }
+                    self.parent.dhloaded = self.parent.dhloaded + 1
+                } else if (self.modelPath == 982557) {
                     for (i = 0; i < self.texUnits.length; ++i) {
                         self.texUnits[i].show = self.texUnits[i].meshId == 0
                     }
@@ -6502,8 +6586,9 @@ ZamModelViewer.Wow.Model.prototype = {
             self.faceFeatureIndex = 3
         }
         var skin, face, features, featureTexture, hair, hairTexture, dk = self.class == Wow.Classes.DEATHKNIGHT;
-        var skins = Wow.Skin.GetSkins(self.skins, true, dk),
-            faces, textures;
+        var skins, faces, textures, tattoo;
+        if (self.class == Wow.Classes.DEMONHUNTER) skins = self.skins;
+        else skins = Wow.Skin.GetSkins(self.skins, true, dk);
         if (skins) {
             if (self.skinIndex >= skins.length) self.skinIndex = 0;
             if (self.skinIndex < skins.length) skin = skins[self.skinIndex];
@@ -6515,17 +6600,18 @@ ZamModelViewer.Wow.Model.prototype = {
                 } else if (self.faceIndex < skins.length) {
                     faces = Wow.Skin.GetFaces(skins[self.faceIndex].faces, true, dk, 0);
                     var index = self.skinIndex;
-                    if (index >= faces.length) index = 0;
+                    if (index >= faces.length) index = faces.length - 1;
                     if (index < faces.length) face = faces[index]
                 }
             }
         }
         if (self.faces) {
-            if (self.faceFeatureIndex >= self.faces.length) self.faceFeatureIndex = 0;
+            if (self.faceFeatureIndex >= self.faces.length) self.faceFeatureIndex = faces.length - 1;
             if (self.faceFeatureIndex < self.faces.length) features = self.faces[self.faceFeatureIndex];
             if (features) {
-                textures = Wow.Face.GetTextures(features.textures, true, dk);
-                if (self.faceColorIndex >= textures.length) self.faceColorIndex = 0;
+                if (self.class == Wow.Classes.DEMONHUNTER) textures = features.textures;
+                else textures = Wow.Face.GetTextures(features.textures, true, dk);
+                if (self.faceColorIndex >= textures.length) self.faceColorIndex = textures.length - 1;
                 if (self.faceColorIndex < textures.length) featureTexture = textures[self.faceColorIndex]
             }
         }
@@ -6533,10 +6619,15 @@ ZamModelViewer.Wow.Model.prototype = {
             if (self.hairIndex >= self.hairs.length) self.hairIndex = 0;
             if (self.hairIndex < self.hairs.length) hair = self.hairs[self.hairIndex];
             if (hair) {
-                textures = Wow.Hair.GetTextures(hair.textures, true, dk);
+                if (self.class == Wow.Classes.DEMONHUNTER) textures = hair.textures;
+                else textures = Wow.Hair.GetTextures(hair.textures, true, dk);
                 if (self.hairColorIndex >= textures.length) self.hairColorIndex = 0;
                 if (self.hairColorIndex < textures.length) hairTexture = textures[self.hairColorIndex]
             }
+        }
+        if (self.tattoos && self.class == Wow.Classes.DEMONHUNTER) {
+            if (self.TattoosIndex >= self.tattoos.length) self.TattoosIndex = 0;
+            if (self.TattoosIndex < self.tattoos.length) tattoo = self.tattoos[self.TattoosIndex]
         }
         var Region = ZamModelViewer.Wow.Regions;
         if (!self.npcTexture) {
@@ -6544,7 +6635,10 @@ ZamModelViewer.Wow.Model.prototype = {
             if (skin) {
                 if (skin.base && !self.specialTextures[1]) self.specialTextures[1] = new self.Texture(self, 1, skin.base);
                 if (skin.panties && !self.bakedTextures[Region.LegUpper][1]) self.bakedTextures[Region.LegUpper][1] = new self.Texture(self, Region.LegUpper, skin.panties);
-                if (skin.bra && !self.bakedTextures[Region.TorsoUpper][1]) self.bakedTextures[Region.TorsoUpper][1] = new self.Texture(self, Region.TorsoUpper, skin.bra)
+                if (skin.bra && !self.bakedTextures[Region.TorsoUpper][1]) self.bakedTextures[Region.TorsoUpper][1] = new self.Texture(self, Region.TorsoUpper, skin.bra);
+                if (tattoo && !self.bakedTextures[Region.Base][1] && tattoo.texture != 0) {
+                    self.bakedTextures[Region.Base][1] = new self.Texture(self, Region.FaceLower, tattoo.texture)
+                }
             }
             if (face) {
                 if (face.lower && !self.bakedTextures[Region.FaceLower][1]) self.bakedTextures[Region.FaceLower][1] = new self.Texture(self, Region.FaceLower, face.lower);
@@ -6625,7 +6719,7 @@ ZamModelViewer.Wow.Model.prototype = {
         } else {
             showHair = self.hairVis
         }
-        if (self.hairs && self.hairIndex < self.hairs.length) {
+        if (showHair && self.hairs && self.hairIndex < self.hairs.length) {
             self.hairMesh = null;
             var hair = self.hairs[self.hairIndex];
             for (i = 0; i < self.texUnits.length; ++i) {
@@ -6672,8 +6766,32 @@ ZamModelViewer.Wow.Model.prototype = {
             } else if (self.race == Races.NIGHTELF) {
                 if (self.class != Wow.Classes.DEATHKNIGHT && u.meshId == 1702) u.show = true
             }
+            if (self.race == Races.BLOODELF || self.race == Races.NIGHTELF) {
+                if (u.meshId == 2301) u.show = true
+            }
             if (self.class == Wow.Classes.DEATHKNIGHT) {
                 if (u.meshId == 1703) u.show = true
+            }
+        }
+        var attach;
+        if (self.dhmodel) {
+            var dhmodel = self.dhmodel;
+            if (dhmodel.models) {
+                for (i = 0; i < dhmodel.models.length; ++i) {
+                    if (self.slotAttachments[dhmodel.models[i].model.slot]) {
+                        attach = self.attachments[self.slotAttachments[dhmodel.models[i].model.slot]];
+                        var newattach = JSON.parse(JSON.stringify(attach));
+                        dhmodel.models[i].bone = newattach.bone;
+                        dhmodel.models[i].attachment = newattach;
+                        if (self.gender == Genders.MALE && self.race == Races.NIGHTELF && self.isHD) dhmodel.models[i].attachment.position = [.012, 0, .018];
+                        else {
+                            if (dhmodel.models[i].model.slot == 6 && self.gender == Genders.FEMALE && self.race == Races.BLOODELF) dhmodel.models[i].attachment.position = [-.032, 0, -.65];
+                            else if (dhmodel.models[i].model.slot == 6 && self.gender == Genders.MALE && self.race == Races.NIGHTELF && !self.isHD) dhmodel.models[i].attachment.position = [-.015, 0, -.18];
+                            else if (dhmodel.models[i].model.slot == 6) dhmodel.models[i].attachment.position = [-.032, 0, -.4];
+                            else dhmodel.models[i].attachment.position = [0, 0, 0]
+                        }
+                    }
+                }
             }
         }
         var attach;
@@ -6693,6 +6811,7 @@ ZamModelViewer.Wow.Model.prototype = {
     compositeTextures: function() {
         var self = this,
             i, j, Region = ZamModelViewer.Wow.Regions,
+            Classes = ZamModelViewer.Wow.Classes,
             Slots = ZamModelViewer.Wow.Slots,
             Races = ZamModelViewer.Wow.Races,
             item, t;
@@ -6711,14 +6830,16 @@ ZamModelViewer.Wow.Model.prototype = {
                 }
             }
         }
-        if (!self.specialTextures[1] || !self.specialTextures[1].ready()) return;
+        for (var i in self.specialTextures) {
+            if (self.specialTextures[i] && !self.specialTextures[i].ready()) return
+        }
         if (!self.compositeImage) {
             self.compositeImage = document.createElement("canvas");
-            self.compositeImage.width = self.specialTextures[1].img.width;
-            self.compositeImage.height = self.specialTextures[1].img.height
+            self.compositeImage.width = self.specialTextures[1].mergedImg.width;
+            self.compositeImage.height = self.specialTextures[1].mergedImg.height
         }
         var ctx = self.compositeImage.getContext("2d");
-        ctx.drawImage(self.specialTextures[1].img, 0, 0, self.compositeImage.width, self.compositeImage.height);
+        ctx.drawImage(self.specialTextures[1].mergedImg, 0, 0, self.compositeImage.width, self.compositeImage.height);
         var w = self.compositeImage.width,
             h = self.compositeImage.height,
             regions = Region.old,
@@ -6726,12 +6847,12 @@ ZamModelViewer.Wow.Model.prototype = {
         if (w != h) regions = Region.new;
         for (i = 1; i <= 3; ++i) {
             if (self.bakedTextures[Region.FaceLower][i]) {
-                if (!self.bakedTextures[Region.FaceLower][i].mergeImages()) return;
+                if (!self.bakedTextures[Region.FaceLower][i].ready()) return;
                 r = regions[Region.FaceLower];
                 ctx.drawImage(self.bakedTextures[Region.FaceLower][i].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
             }
             if (self.bakedTextures[Region.FaceUpper][i]) {
-                if (!self.bakedTextures[Region.FaceUpper][i].mergeImages()) return;
+                if (!self.bakedTextures[Region.FaceUpper][i].ready()) return;
                 r = regions[Region.FaceUpper];
                 ctx.drawImage(self.bakedTextures[Region.FaceUpper][i].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
             }
@@ -6739,9 +6860,9 @@ ZamModelViewer.Wow.Model.prototype = {
         if (self.isHD) {
             for (i = 2; i <= 3; ++i) {
                 if (self.bakedTextures[Region.FaceLower][i]) {
-                    if (!self.bakedTextures[Region.FaceLower][i].mergeImages()) return;
+                    if (!self.bakedTextures[Region.FaceLower][i].ready()) return;
                     r = regions[Region.FaceLower2];
-                    ctx.drawImage(self.bakedTextures[Region.FaceLower][i].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
+                    if (r) ctx.drawImage(self.bakedTextures[Region.FaceLower][i].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
                 }
             }
         }
@@ -6750,23 +6871,32 @@ ZamModelViewer.Wow.Model.prototype = {
             uniqueSlot;
         for (i in self.items) {
             uniqueSlot = self.items[i].uniqueSlot;
+
             if (uniqueSlot == Slots.SHIRT || uniqueSlot == Slots.CHEST || uniqueSlot == Slots.TABARD) drawBra = false;
-            if (self.items[i].slot == Slots.ROBE || uniqueSlot == Slots.PANTS) drawPanties = false
+            if (uniqueSlot == Slots.PANTS) drawPanties = false
         }
         if (drawBra && self.bakedTextures[Region.TorsoUpper][1]) {
-            if (!self.bakedTextures[Region.TorsoUpper][1].mergeImages()) return;
+            if (!self.bakedTextures[Region.TorsoUpper][1].ready()) return;
             r = regions[Region.TorsoUpper];
             ctx.drawImage(self.bakedTextures[Region.TorsoUpper][1].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
         }
         if (drawPanties && self.bakedTextures[Region.LegUpper][1]) {
-            if (!self.bakedTextures[Region.LegUpper][1].mergeImages()) return;
+            if (!self.bakedTextures[Region.LegUpper][1].ready()) return;
             r = regions[Region.LegUpper];
             ctx.drawImage(self.bakedTextures[Region.LegUpper][1].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
+        }
+        if (self.TattoosIndex > 0 && self.class == Classes.DEMONHUNTER) {
+            if (self.bakedTextures[Region.Base][1]) {
+                if (!self.bakedTextures[Region.Base][1].ready()) return;
+                r = regions[Region.Base];
+                ctx.drawImage(self.bakedTextures[Region.Base][1].mergedImg, w * r.x, h * r.y, w * r.w, h * r.h)
+            }
         }
         var items = [];
         for (i in self.items) {
             items.push(self.items[i])
         }
+        if (self.dhmodel) items.push(self.dhmodel);
         items.sort(function(a, b) {
             return a.sortValue - b.sortValue
         });
@@ -6775,7 +6905,7 @@ ZamModelViewer.Wow.Model.prototype = {
             if (!item.textures) continue;
             for (j = 0; j < item.textures.length; ++j) {
                 t = item.textures[j];
-                if (t.gender != self.gender || !t.texture || !t.texture.mergeImages()) continue;
+                if (t.gender != self.gender || !t.texture || !t.texture.ready()) continue;
                 if (t.region > 0) {
                     if ((self.race == Races.TAUREN || self.race == Races.TROLL || self.race == Races.DRAENEI || self.race == Races.BROKEN || self.race == Races.WORGEN) && t.region == Region.Foot) continue;
                     r = regions[t.region];
@@ -6803,6 +6933,12 @@ ZamModelViewer.Wow.Model.prototype = {
             }
         }
     },
+    loadDH: function(model) {
+        var self = this,
+            Wow = ZamModelViewer.Wow;
+        self.dhloaded = 0;
+        self.dhmodel = new Wow.HornModel(self, 23, model, self.race, self.gender)
+    },
     addItem: function(slot, id) {
         var self = this,
             Wow = ZamModelViewer.Wow;
@@ -6828,17 +6964,10 @@ ZamModelViewer.Wow.Model.prototype = {
             delete self.items[slot]
         }
     },
-    onLoaded: function() {
+    updateSlotMap: function() {
         var self = this,
             i;
-        if (self.texUnits) {
-            for (i = 0; i < self.texUnits.length; ++i) self.texUnits[i].setup(self);
-            self.sortedTexUnits = self.texUnits.concat();
-            self.sortedTexUnits.sort(function(a, b) {
-                if (a.meshId == b.meshId) return a.meshIndex - b.meshIndex;
-                else return a.meshId - b.meshId
-            })
-        }
+        self.slotAttachments = {};
         if (self.attachments && self.attachmentLookup) {
             var slotMap = {
                 1: [11],
@@ -6854,28 +6983,81 @@ ZamModelViewer.Wow.Model.prototype = {
                 6: [53],
                 26: [1]
             };
-            var mountOverrides = {
+            var sheathStandardOverrides = {
                 21: 26,
                 22: 27,
-                17: 26,
                 15: 28,
+                17: 26,
                 25: 32,
                 13: 32,
                 23: 33,
                 14: 28,
                 26: 26
             };
+            var SheathWeaponOverrides = {
+                0: {
+                    21: 26,
+                    22: 27
+                },
+                1: {
+                    21: 26,
+                    22: 27
+                },
+                2: {
+                    21: 30,
+                    22: 31
+                },
+                3: {
+                    21: 33,
+                    22: 32
+                },
+                4: {
+                    21: 26,
+                    22: 27,
+                    15: 28
+                },
+                5: {
+                    21: 26
+                },
+                6: {
+                    21: 26,
+                    22: 27
+                },
+                7: {
+                    21: 26,
+                    22: 27
+                },
+                8: {
+                    21: 26,
+                    22: 27
+                }
+            };
             for (var slot in slotMap) {
                 for (i = 0; i < slotMap[slot].length; ++i) {
                     var att = slotMap[slot][i];
-                    if (self.mount && mountOverrides[slot]) att = mountOverrides[slot];
+                    if ((self.sheathMain >= 0 || self.sheathOff >= 0 || self.mount) && sheathStandardOverrides[slot]) att = sheathStandardOverrides[slot];
+                    if (self.sheathMain >= 0 && slot == 21 && SheathWeaponOverrides[self.sheathMain][slot]) att = SheathWeaponOverrides[self.sheathMain][slot];
+                    if (self.sheathOff >= 0 && slot == 22 && SheathWeaponOverrides[self.sheathOff][slot]) att = SheathWeaponOverrides[self.sheathOff][slot];
                     if (att >= self.attachmentLookup.length || self.attachmentLookup[att] == -1) continue;
                     if (!self.slotAttachments[slot]) self.slotAttachments[slot] = [];
                     self.slotAttachments[slot].push(self.attachmentLookup[att])
                 }
             }
         }
-        if (self.modelPath == "creature/saberon/saberon.mo3") {
+    },
+    onLoaded: function() {
+        var self = this,
+            i;
+        if (self.texUnits) {
+            for (i = 0; i < self.texUnits.length; ++i) self.texUnits[i].setup(self);
+            self.sortedTexUnits = self.texUnits.concat();
+            self.sortedTexUnits.sort(function(a, b) {
+                if (a.meshId == b.meshId) return a.meshIndex - b.meshIndex;
+                else return a.meshId - b.meshId
+            })
+        }
+        self.updateSlotMap();
+        if (self.modelPath == 982557) {
             self.setAnimation("StealthStand")
         } else if (self.mount) {
             if (ZamModelViewer.Wow.StandingMounts[self.mount.model.id]) {
@@ -6898,8 +7080,12 @@ ZamModelViewer.Wow.Model.prototype = {
         }
     }
 };
+ZamModelViewer.Wow.ReversedModels = {
+    147259: true
+};
 ZamModelViewer.Wow.ReversedItems = {
-    139260: true
+    139260: true,
+    45146: true
 };
 ZamModelViewer.Wow.StandingMounts = {
     28060: true,
@@ -6932,7 +7118,8 @@ ZamModelViewer.Wow.Classes = {
     MAGE: 8,
     WARLOCK: 9,
     MONK: 10,
-    DRUID: 11
+    DRUID: 11,
+    DEMONHUNTER: 12
 };
 ZamModelViewer.Wow.Genders = {
     MALE: 0,
@@ -7091,7 +7278,7 @@ ZamModelViewer.Wow.Regions = {
     "new": [{
         x: 0,
         y: 0,
-        w: 1,
+        w: .5,
         h: 1
     }, {
         x: 0,
@@ -7175,7 +7362,8 @@ ZamModelViewer.Wow.Model.prototype._load = function(type, id) {
         })(type)
     } else if (type == Type.PATH) {
         self.modelPath = id;
-        url = self.opts.contentPath + "mo3/" + id;
+        if (!self.meta) self.meta = {};
+        url = self.opts.contentPath + "mo3/" + id + ".mo3";
         $.ajax({
             url: url,
             type: "GET",
@@ -7204,6 +7392,8 @@ ZamModelViewer.Wow.Model.prototype.loadMeta = function(meta, type) {
             model = meta.HDModel;
             self.isHD = true
         }
+        if (self.opts.sheathMain) self.sheathMain = self.opts.sheathMain;
+        if (self.opts.sheathOff) self.sheathOff = self.opts.sheathOff;
         if (self.isHD && self.meta.HDTexture) {
             self.npcTexture = new self.Texture(self, -1, self.meta.HDTexture)
         } else if (self.meta.Texture) {
@@ -7212,6 +7402,10 @@ ZamModelViewer.Wow.Model.prototype.loadMeta = function(meta, type) {
         self.race = meta.Race;
         self.gender = meta.Gender;
         self._load(Type.PATH, model);
+        if (self.opts.cls) self.class = parseInt(self.opts.cls);
+        if (self.meta.DHGeosetsHDModel && self.class == 12) {
+            self.loadDH(self.meta.DHGeosetsHDModel)
+        }
         if (self.meta.Equipment) {
             self.loadItems(self.meta.Equipment)
         }
@@ -7224,16 +7418,21 @@ ZamModelViewer.Wow.Model.prototype.loadMeta = function(meta, type) {
             self.hairColorIndex = parseInt(self.meta.HairColor);
             self.faceIndex = parseInt(self.meta.FaceType);
             self.faceFeatureIndex = parseInt(self.meta.FacialHair);
-            self.faceColorIndex = self.hairColorIndex
+            self.faceColorIndex = self.hairColorIndex;
+            self.HornsIndex = 0;
+            self.EyePatchIndex = 0;
+            self.TattoosIndex = 0
         } else {
             if (self.opts.sk) self.skinIndex = parseInt(self.opts.sk);
             if (self.opts.ha) self.hairIndex = parseInt(self.opts.ha);
             if (self.opts.hc) self.hairColorIndex = parseInt(self.opts.hc);
             if (self.opts.fa) self.faceIndex = parseInt(self.opts.fa);
             if (self.opts.fh) self.faceFeatureIndex = parseInt(self.opts.fh);
-            if (self.opts.fc) self.faceColorIndex = parseInt(self.opts.fc)
+            if (self.opts.fc) self.faceColorIndex = parseInt(self.opts.fc);
+            if (self.opts.ho) self.HornsIndex = parseInt(self.opts.ho);
+            if (self.opts.ep) self.EyePatchIndex = parseInt(self.opts.ep);
+            if (self.opts.ta) self.TattoosIndex = parseInt(self.opts.ta)
         }
-        if (self.opts.cls) self.class = parseInt(self.opts.cls)
     } else if (type == Type.HELM) {
         var race = 1;
         var gender = 0;
@@ -7334,12 +7533,17 @@ ZamModelViewer.Wow.Model.prototype.loadMo3 = function(buffer) {
     var ofsAlphaLookup = r.getUint32();
     var ofsParticleEmitters = r.getUint32();
     var ofsRibbonEmitters = r.getUint32();
+    var hasCharData = r.getBool();
     var ofsSkinColors = r.getUint32();
     var ofsFaceTypes = r.getUint32();
     var ofsFacialStyles = r.getUint32();
     var ofsFacialColors = r.getUint32();
     var ofsHairStyles = r.getUint32();
     var ofsHairColors = r.getUint32();
+    var ofsHornStyles = r.getUint32();
+    var ofsBlindfolds = r.getUint32();
+    var ofsColoredHands = r.getUint32();
+    var ofsTattoos = r.getUint32();
     var uncompressedSize = r.getUint32();
     var compressedData = new Uint8Array(buffer, r.position);
     var data = null;
@@ -7538,40 +7742,74 @@ ZamModelViewer.Wow.Model.prototype.loadMo3 = function(buffer) {
             self.ribbonEmitters[i] = new Wow.RibbonEmitter(self, r)
         }
     }
-    r.position = ofsSkinColors;
-    var numSkinColors = r.getInt32();
-    if (numSkinColors > 0) {
-        self.skins = new Array(numSkinColors);
-        for (i = 0; i < numSkinColors; ++i) {
-            self.skins[i] = new Wow.Skin(r, version)
+    if (hasCharData) {
+        r.position = ofsSkinColors;
+        var numSkinColors = r.getInt32();
+        if (numSkinColors > 0) {
+            self.skins = new Array(numSkinColors);
+            for (i = 0; i < numSkinColors; ++i) {
+                self.skins[i] = new Wow.Skin(r, version)
+            }
+            r.position = ofsFaceTypes;
+            for (i = 0; i < numSkinColors; ++i) {
+                self.skins[i].readFaces(r, version)
+            }
         }
-        r.position = ofsFaceTypes;
-        for (i = 0; i < numSkinColors; ++i) {
-            self.skins[i].readFaces(r, version)
+        r.position = ofsFacialStyles;
+        var numFaceStyles = r.getInt32();
+        if (numFaceStyles > 0) {
+            self.faces = new Array(numFaceStyles);
+            for (i = 0; i < numFaceStyles; ++i) {
+                self.faces[i] = new Wow.Face(r)
+            }
+            data.position = ofsFacialColors;
+            for (i = 0; i < numFaceStyles; ++i) {
+                self.faces[i].readTextures(r, version)
+            }
         }
-    }
-    r.position = ofsFacialStyles;
-    var numFaceStyles = r.getInt32();
-    if (numFaceStyles > 0) {
-        self.faces = new Array(numFaceStyles);
-        for (i = 0; i < numFaceStyles; ++i) {
-            self.faces[i] = new Wow.Face(r)
+        r.position = ofsHairStyles;
+        var numHairStyles = r.getInt32();
+        if (numHairStyles > 0) {
+            self.hairs = new Array(numHairStyles);
+            for (i = 0; i < numHairStyles; ++i) {
+                self.hairs[i] = new Wow.Hair(r)
+            }
+            data.position = ofsHairColors;
+            for (i = 0; i < numHairStyles; ++i) {
+                self.hairs[i].readTextures(r, version)
+            }
         }
-        data.position = ofsFacialColors;
-        for (i = 0; i < numFaceStyles; ++i) {
-            self.faces[i].readTextures(r, version)
+        r.position = ofsHornStyles;
+        var numHorns = r.getInt32();
+        if (numHorns > 0) {
+            self.horns = new Array(numHorns);
+            for (i = 0; i < numHorns; ++i) {
+                self.horns[i] = new Wow.Horns(r)
+            }
         }
-    }
-    r.position = ofsHairStyles;
-    var numHairStyles = r.getInt32();
-    if (numHairStyles > 0) {
-        self.hairs = new Array(numHairStyles);
-        for (i = 0; i < numHairStyles; ++i) {
-            self.hairs[i] = new Wow.Hair(r)
+        r.position = ofsBlindfolds;
+        var numBlindfolds = r.getInt32();
+        if (numBlindfolds > 0) {
+            self.blindFolds = new Array(numBlindfolds);
+            for (i = 0; i < numBlindfolds; ++i) {
+                self.blindFolds[i] = new Wow.Blindfolds(r)
+            }
         }
-        data.position = ofsHairColors;
-        for (i = 0; i < numHairStyles; ++i) {
-            self.hairs[i].readTextures(r, version)
+        r.position = ofsColoredHands;
+        var numColoredHands = r.getInt32();
+        if (numColoredHands > 0) {
+            self.coloredHands = new Array(numColoredHands);
+            for (i = 0; i < numColoredHands; ++i) {
+                self.coloredHands[i] = new Wow.ColoredHands(r)
+            }
+        }
+        r.position = ofsTattoos;
+        var numTattoos = r.getInt32();
+        if (numTattoos > 0) {
+            self.tattoos = new Array(numTattoos);
+            for (i = 0; i < numTattoos; ++i) {
+                self.tattoos[i] = new Wow.Tattoos(r)
+            }
         }
     }
     self.onLoaded()
@@ -7646,7 +7884,9 @@ ZamModelViewer.Wow.Model.prototype.update = function() {
 ZamModelViewer.Wow.Model.prototype.draw = function(flipWinding) {
     var self = this,
         gl = self.renderer.context,
-        i, Wow = ZamModelViewer.Wow;
+        i, Wow = ZamModelViewer.Wow,
+        Races = Wow.Races,
+        Genders = Wow.Genders;
     if (self.mount) {
         self.mount.draw();
         if (self.mount.loaded) {
@@ -7657,6 +7897,19 @@ ZamModelViewer.Wow.Model.prototype.draw = function(flipWinding) {
             mat4.scale(self.tmpMat, self.tmpMat, self.tmpVec);
             self.setMatrix(self.mount.matrix, self.mount.bones[attach.bone].matrix, attach.position, self.tmpMat)
         }
+    }
+    var upsideDown = Wow.ReversedModels[self.model.id];
+    if (upsideDown && !self.parent) {
+        mat4.identity(self.matrix);
+        vec3.set(self.tmpVec, 1, 1, -1);
+        mat4.scale(self.matrix, self.matrix, self.tmpVec);
+        flipWinding = true
+    }
+    if (self.meta && self.meta.ItemClass == 2 && (self.meta.ItemSubClass == 13 || self.meta.ItemSubClass == 9) && !self.parent) {
+        mat4.identity(self.matrix);
+        vec3.set(self.tmpVec, 1, -1, 1);
+        mat4.scale(self.matrix, self.matrix, self.tmpVec);
+        flipWinding = true
     }
     if (!self.loaded || !self.texUnits) return;
     self.update();
@@ -7687,6 +7940,36 @@ ZamModelViewer.Wow.Model.prototype.draw = function(flipWinding) {
         self.sortedTexUnits[i].draw()
     }
     if (flipWinding) gl.frontFace(gl.CCW);
+    if (self.dhmodel) {
+        var item = self.dhmodel;
+        if (item.models) {
+            for (var j = 0; j < item.models.length; ++j) {
+                if (item.models[j].model && item.models[j].bone > -1 && item.models[j].bone < self.bones.length) {
+                    var winding = false,
+                        reversed = item.models[j].model.model.type == Wow.Types.ITEM && Wow.ReversedItems[item.models[j].model.model.id];
+                    if (reversed && item.slot != Wow.Slots.LEFTHAND || !reversed && item.slot == Wow.Slots.LEFTHAND) {
+                        mat4.identity(self.tmpMat);
+                        vec3.set(self.tmpVec, 1, -1, 1);
+                        mat4.scale(self.tmpMat, self.tmpMat, self.tmpVec);
+                        winding = true
+                    } else {
+                        mat4.identity(self.tmpMat)
+                    }
+                    if (self.dhmodel.models[j].model.slot == 6 && !(self.gender == Genders.MALE && self.race == Races.NIGHTELF && self.isHD)) {
+                        mat4.identity(self.tmpMat);
+                        if (self.gender == Genders.FEMALE && self.race == Races.NIGHTELF) vec3.set(self.tmpVec, 1.3, 1.3, 1.3);
+                        if (self.gender == Genders.FEMALE && self.race == Races.BLOODELF) vec3.set(self.tmpVec, 1.55, 1.55, 1.55);
+                        if (self.gender == Genders.MALE && self.race == Races.BLOODELF) vec3.set(self.tmpVec, 1.3, 1.3, 1.3);
+                        if (self.gender == Genders.MALE && self.race == Races.NIGHTELF) vec3.set(self.tmpVec, 1.15, 1.15, 1.15);
+                        mat4.scale(self.tmpMat, self.tmpMat, self.tmpVec)
+                    }
+                    item.models[j].model.setMatrix(self.matrix, self.bones[item.models[j].bone].matrix, item.models[j].attachment.position, self.tmpMat);
+                    item.models[j].model.update();
+                    item.models[j].model.draw(winding)
+                }
+            }
+        }
+    }
     for (i in self.items) {
         var item = self.items[i];
         if (!item.models) continue;
@@ -7694,7 +7977,13 @@ ZamModelViewer.Wow.Model.prototype.draw = function(flipWinding) {
             if (item.models[j].model && item.models[j].bone > -1 && item.models[j].bone < self.bones.length) {
                 var winding = false,
                     reversed = item.models[j].model.model.type == Wow.Types.ITEM && Wow.ReversedItems[item.models[j].model.model.id];
-                if (reversed && item.slot != Wow.Slots.LEFTHAND || !reversed && item.slot == Wow.Slots.LEFTHAND) {
+                var upsideDown = Wow.ReversedModels[item.models[j].model.model.id];
+                if (upsideDown) {
+                    mat4.identity(self.tmpMat);
+                    vec3.set(self.tmpVec, 1, 1, -1);
+                    mat4.scale(self.tmpMat, self.tmpMat, self.tmpVec);
+                    winding = true
+                } else if (reversed && item.slot != Wow.Slots.LEFTHAND || !reversed && item.slot == Wow.Slots.LEFTHAND) {
                     mat4.identity(self.tmpMat);
                     vec3.set(self.tmpVec, 1, -1, 1);
                     mat4.scale(self.tmpMat, self.tmpMat, self.tmpVec);
@@ -7786,7 +8075,7 @@ ZamModelViewer.Wow.Model.prototype.initShader = function() {
     }
 };
 ZamModelViewer.Wow.Model.prototype.vertShader = "    attribute vec3 aPosition;    attribute vec3 aNormal;    attribute vec2 aTexCoord;        varying vec3 vNormal;    varying vec2 vTexCoord;        uniform mat4 uModelMatrix;    uniform mat4 uPanningMatrix;    uniform mat4 uViewMatrix;    uniform mat4 uProjMatrix;    uniform mat4 uTextureMatrix;    uniform vec3 uCameraPos;        void main(void) {        gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1);                vTexCoord = (uTextureMatrix * vec4(aTexCoord, 0, 1)).st;        vNormal = mat3(uViewMatrix * uModelMatrix) * aNormal;    }";
-ZamModelViewer.Wow.Model.prototype.fragShader = "    precision mediump float;        varying vec3 vNormal;    varying vec2 vTexCoord;        uniform bool uHasTexture;    uniform bool uHasAlpha;    uniform int uBlendMode;    uniform bool uUnlit;    uniform vec4 uColor;    uniform vec4 uAmbientColor;    uniform vec4 uPrimaryColor;    uniform vec4 uSecondaryColor;    uniform vec3 uLightDir1;    uniform vec3 uLightDir2;    uniform vec3 uLightDir3;    uniform sampler2D uTexture;    uniform sampler2D uAlpha;        void main(void) {        vec4 color = vec4(1, 1, 1, 1);        if (uHasTexture) {            color = texture2D(uTexture, vTexCoord.st);        } else {            color = vec4(vTexCoord.st, 0, 1);        }                if ((uBlendMode == 1 || uBlendMode == 2 || uBlendMode == 4) && uHasAlpha) {            color.a = texture2D(uAlpha, vTexCoord.st).r;        }                color *= uColor;                if (uBlendMode == 1) {            if (color.a < 0.7) {                discard;            }        }                if (!uUnlit) {            vec4 litColor = uAmbientColor;            vec3 normal = normalize(vNormal);                        float dp = max(0.0, dot(normal, uLightDir1));            litColor += uPrimaryColor * dp;                        dp = max(0.0, dot(normal, uLightDir2));            litColor += uSecondaryColor * dp;                        dp = max(0.0, dot(normal, uLightDir3));            litColor += uSecondaryColor * dp;                        litColor = clamp(litColor, vec4(0,0,0,0), vec4(1,1,1,1));            color *= litColor;        }                gl_FragColor = color;    }";
+ZamModelViewer.Wow.Model.prototype.fragShader = "    precision mediump float;        varying vec3 vNormal;    varying vec2 vTexCoord;        uniform bool uHasTexture;    uniform bool uHasAlpha;    uniform int uBlendMode;    uniform bool uUnlit;    uniform vec4 uColor;    uniform vec4 uAmbientColor;    uniform vec4 uPrimaryColor;    uniform vec4 uSecondaryColor;    uniform vec3 uLightDir1;    uniform vec3 uLightDir2;    uniform vec3 uLightDir3;    uniform sampler2D uTexture;    uniform sampler2D uAlpha;        void main(void) {        vec4 color = vec4(1, 1, 1, 1);        if (uHasTexture) {            color = texture2D(uTexture, vTexCoord.st);        } else {            color = vec4(vTexCoord.st, 0, 1);        }                if (uBlendMode == 7) {            vec4 color2 = vec4(4, 4, 4, 4);            color *= color2;        }        if ((uBlendMode == 1 || uBlendMode == 2 || uBlendMode == 4 || uBlendMode == 7) && uHasAlpha) {            color.a = texture2D(uAlpha, vTexCoord.st).a;        } else {            color.a = 1.0;        }                color *= uColor;                if (uBlendMode == 1) {            if (color.a < 0.7) {                discard;            }        }                if (!uUnlit) {            vec4 litColor = uAmbientColor;            vec3 normal = normalize(vNormal);                        float dp = max(0.0, dot(normal, uLightDir1));            litColor += uPrimaryColor * dp;                        dp = max(0.0, dot(normal, uLightDir2));            litColor += uSecondaryColor * dp;                        dp = max(0.0, dot(normal, uLightDir3));            litColor += uSecondaryColor * dp;                        litColor = clamp(litColor, vec4(0,0,0,0), vec4(1,1,1,1));            color *= litColor;        }                gl_FragColor = color;    }";
 ZamModelViewer.Wow.Model.prototype.destroy = function() {
     var self = this;
     if (!self.renderer) return;
@@ -7841,7 +8130,7 @@ ZamModelViewer.Wow.Model.prototype.destroy = function() {
         if (self[key]) {
             var arr = self[key];
             for (var i = 0; i < arr.length; ++i) {
-                arr[i].destroy();
+                if (arr[i] && arr[i].destroy) arr[i].destroy();
                 arr[i] = null
             }
             self[key] = null
@@ -7853,6 +8142,7 @@ ZamModelViewer.Wow.Model.prototype.destroy = function() {
     destroyArray("meshes");
     destroyArray("texUnits");
     destroyArray("materials");
+
     destroyArray("textureAnims");
     destroyArray("attachments");
     destroyArray("colors");
@@ -7867,6 +8157,10 @@ ZamModelViewer.Wow.Model.prototype.destroy = function() {
             self.items[i].destroy();
             self.items[i] = null
         }
+    }
+    if (self.dhmodel) {
+        self.dhmodel.destroy();
+        self.dhmodel = null
     }
     if (self.mount) self.mount.destroy();
     self.mount = null;
@@ -7902,7 +8196,8 @@ ZamModelViewer.Wow.Model.prototype.destroy = function() {
     ZamModelViewer.Wow.Animated.prototype = {
         destroy: function() {
             var self = this;
-            for (var i = 0; i < self.data.length; ++i) self.data[i] = null;
+            if (self.data)
+                for (var i = 0; i < self.data.length; ++i) self.data[i] = null;
             self.times = null;
             self.data = null;
             return null
@@ -8270,50 +8565,26 @@ ZamModelViewer.Wow.Texture = function(model, index, file) {
         gl = model.renderer.context;
     self.model = model;
     self.index = index;
-    self.url = model.opts.contentPath + "textures/" + file;
-    self.alphaUrl = self.url.replace(".png", ".alpha.png");
+    self.url = model.opts.contentPath + "textures/" + file + ".png";
     self.texture = null;
     self.alphaTexture = null;
-    self.mergedImg = null;
+    self.img = self.alphaImg = self.mergedImg = null;
+    self.loaded = false;
     (function(self, gl) {
-        self.img = new Image;
-        self.img.crossOrigin = "";
-        self.img.onload = function() {
-            self.img.loaded = true;
-            self.texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, self.texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.img);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        self.mergedImg = new Image;
+        self.mergedImg.crossOrigin = "";
+        self.mergedImg.onload = function() {
+            self.splitImages()
         };
-        self.img.onerror = function() {
-            self.img = null
+        self.mergedImg.onerror = function() {
+            self.mergedImg = null
         };
-        self.img.src = self.url;
-        self.alphaImg = new Image;
-        self.alphaImg.crossOrigin = "";
-        self.alphaImg.onload = function() {
-            if (self.alphaImg.width == 0 && self.alphaImg.height == 0) {
-                self.alphaImg = null
-            } else {
-                self.alphaImg.loaded = true;
-                self.alphaTexture = gl.createTexture();
-                gl.bindTexture(gl.TEXTURE_2D, self.alphaTexture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.alphaImg);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-            }
-        };
-        self.alphaImg.onerror = function() {
-            self.alphaImg = null
-        };
-        self.alphaImg.src = self.alphaUrl
+        self.mergedImg.src = self.url
     })(self, gl)
 };
 ZamModelViewer.Wow.Texture.prototype = {
     ready: function() {
-        var self = this;
-        if (self.img && !self.img.loaded) return false;
-        if (self.alphaImg && !self.alphaImg.loaded) return false;
-        return true
+        return this.loaded
     },
     destroy: function() {
         var self = this;
@@ -8326,35 +8597,35 @@ ZamModelViewer.Wow.Texture.prototype = {
         self.img = self.alphaImg = self.mergedImg = null;
         self.model = null
     },
-    mergeImages: function() {
+    splitImages: function() {
         var self = this,
-            i;
-        if (self.mergedImg) return true;
-        if (!self.ready()) return false;
-        if (!self.alphaImg) {
-            self.mergedImg = self.img;
-            return true
-        }
+            gl = self.model.renderer.context;
+        var width = self.mergedImg.width,
+            height = self.mergedImg.height;
         var canvas = document.createElement("canvas");
-        canvas.width = self.img.width;
-        canvas.height = self.img.height;
+        canvas.width = width;
+        canvas.height = height;
         var ctx = canvas.getContext("2d");
-        ctx.drawImage(self.img, 0, 0, self.img.width, self.img.height);
-        var acanvas = document.createElement("canvas");
-        acanvas.width = self.img.width;
-        acanvas.height = self.img.height;
-        var actx = acanvas.getContext("2d");
-        actx.drawImage(self.alphaImg, 0, 0, self.alphaImg.width, self.alphaImg.height, 0, 0, self.img.width, self.img.height);
-        var rgba = ctx.getImageData(0, 0, self.img.width, self.img.height),
+        ctx.drawImage(self.mergedImg, 0, 0, width, height);
+        var rgba = ctx.getImageData(0, 0, width, height),
             p = rgba.data;
-        var alpha = actx.getImageData(0, 0, self.img.width, self.img.height),
-            a = alpha.data;
+        var hasAlpha = false,
+            alphaVal, i;
         for (i = 0; i < p.length; i += 4) {
-            p[i + 3] = a[i]
+            alphaVal = p[i + 3];
+            if (!hasAlpha && alphaVal != 255) hasAlpha = true
         }
-        ctx.putImageData(rgba, 0, 0);
-        self.mergedImg = canvas;
-        return true
+        self.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, self.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.mergedImg);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        if (hasAlpha) {
+            self.alphaTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, self.alphaTexture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.mergedImg);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        }
+        self.loaded = true
     }
 };
 ZamModelViewer.Wow.Item = function(model, slot, id, race, gender) {
@@ -8451,13 +8722,13 @@ ZamModelViewer.Wow.Item.prototype = {
             self.textures = [];
             for (var g in meta.GenderTextures) {
                 var gender = parseInt(g);
-                if (g == self.model.gender && !self.model.npcTexture) {
+                if (g != self.model.gender && !self.model.npcTexture) {
                     var textures = meta.GenderTextures[g];
                     for (var r in textures) {
                         var region = parseInt(r);
                         var texture = {
                             region: region,
-                            gender: gender,
+                            gender: self.model.gender,
                             file: textures[r],
                             texture: null
                         };
@@ -8610,8 +8881,6 @@ ZamModelViewer.Wow.Bone.prototype = {
         }
         if (self.model.model.type == Wow.Types.CHARACTER && !self.model.isHD) {
             if (self.model.race == Wow.Races.HUMAN && self.model.gender == Wow.Genders.MALE && self.index == 24) {
-                self.hide()
-            } else if (self.model.race == Wow.Races.WORGEN && self.model.gender == Wow.Genders.FEMALE && self.model.boneLookup[58] == self.index) {
                 self.hide()
             }
         }
@@ -8830,7 +9099,8 @@ ZamModelViewer.Wow.TexUnit.prototype = {
         } else if (blend == 6) {
             gl.blendFunc(gl.DST_COLOR, gl.SRC_COLOR)
         } else {
-            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            self.noZWrite = false
         }
         if (self.cull) {
             gl.enable(gl.CULL_FACE)
@@ -8887,7 +9157,7 @@ ZamModelViewer.Wow.Material = function(model, index, r) {
     self.index = index;
     self.type = r.getInt32();
     self.flags = r.getUint32();
-    self.filename = r.getString();
+    self.filename = r.getUint32();
     self.texture = null;
     self.load()
 };
@@ -8900,7 +9170,7 @@ ZamModelViewer.Wow.Material.prototype = {
     },
     load: function() {
         var self = this;
-        if (self.filename.length == 0) return;
+        if (self.filename == 0) return;
         self.texture = new ZamModelViewer.Wow.Texture(self.model, 0, self.filename)
     }
 };
@@ -9050,18 +9320,25 @@ ZamModelViewer.Wow.ParticleEmitter = function(model, r) {
     self.model = model;
     self.id = r.getInt32();
     self.flags = r.getUint32();
-    self.flags2 = r.getUint16();
+    self.colorIndex = r.getUint16();
     self.position = [r.getFloat(), r.getFloat(), r.getFloat()];
     self.boneId = r.getInt16();
     self.textureId = r.getInt16();
+    if ((self.flags & 268435456) != 0) {
+        self.textureIds = [0, 0, 0];
+        self.textureIds[0] = self.textureId & 31;
+        self.textureIds[1] = self.textureId >> 5 & 31;
+        self.textureIds[2] = self.textureId >> 10 & 31
+    }
     self.blendMode = r.getUint8();
     self.emitterType = r.getUint8();
-    self.particleType = r.getUint8();
+    self.particleType = r.getUint8() & 3;
     self.headTail = r.getUint8();
     self.tileRotation = r.getUint16();
     self.tileRows = r.getUint16();
     self.tileColumns = r.getUint16();
     self.scale = [r.getFloat(), r.getFloat(), r.getFloat()];
+
     self.slowdown = r.getFloat();
     self.rotation = [r.getFloat(), r.getFloat(), r.getFloat()];
     self.modelRot1 = [r.getFloat(), r.getFloat(), r.getFloat()];
@@ -9238,10 +9515,24 @@ ZamModelViewer.Wow.ParticleEmitter.prototype = {
         if (self.numParticles == 0) return;
         if (!self.shaderReady) self.initShader();
         if (!self.program) return;
-        if (!self.texture && self.textureId > -1 && self.textureId < self.model.materials.length) {
-            var mat = self.model.materials[self.textureId];
-            if (mat.texture && mat.texture.texture && (!mat.texture.alphaImg || mat.texture.alphaTexture)) {
-                self.texture = mat.texture
+        if (!self.texture) {
+            if ((self.flags & 268435456) != 0) {
+                for (i = 0; i < self.textureIds.length; i++) {
+                    var textureId = self.textureIds[i];
+                    if (textureId > -1 && textureId < self.model.materials.length) {
+                        var mat = self.model.materials[textureId];
+                        if (mat && mat.texture && mat.texture.texture && (!mat.texture.alphaImg || mat.texture.alphaTexture)) {
+                            if (i == 0) self.texture = mat.texture;
+                            else if (i == 1) self.texture2 = mat.texture;
+                            else self.texture3 = mat.texture
+                        }
+                    }
+                }
+            } else if (self.textureId > -1 && self.textureId < self.model.materials.length) {
+                var mat = self.model.materials[self.textureId];
+                if (mat.texture && mat.texture.texture && (!mat.texture.alphaImg || mat.texture.alphaTexture)) {
+                    self.texture = mat.texture
+                }
             }
         }
         if (!self.texture) return;
@@ -9260,7 +9551,19 @@ ZamModelViewer.Wow.ParticleEmitter.prototype = {
             gl.bindTexture(gl.TEXTURE_2D, self.texture.alphaTexture);
             gl.uniform1i(self.uniforms.fAlpha, 1)
         }
+        if (self.texture2) {
+            gl.activeTexture(gl.TEXTURE2);
+            gl.bindTexture(gl.TEXTURE_2D, self.texture2.texture);
+            gl.uniform1i(self.uniforms.fTexture2, 2)
+        }
+        if (self.texture3) {
+            gl.activeTexture(gl.TEXTURE3);
+            gl.bindTexture(gl.TEXTURE_2D, self.texture3.texture);
+            gl.uniform1i(self.uniforms.fTexture3, 3)
+        }
         gl.uniform1i(self.uniforms.fHasTexture, self.texture ? 1 : 0);
+        gl.uniform1i(self.uniforms.fHasTexture2, self.texture2 ? 1 : 0);
+        gl.uniform1i(self.uniforms.fHasTexture3, self.texture3 ? 1 : 0);
         gl.uniform1i(self.uniforms.fHasAlpha, self.texture && self.texture.alphaTexture ? 1 : 0);
         var blend = self.blendMode;
         if (blend == 0 || blend == 1) {
@@ -9312,9 +9615,13 @@ ZamModelViewer.Wow.ParticleEmitter.prototype = {
             vViewMatrix: gl.getUniformLocation(program, "uViewMatrix"),
             vProjMatrix: gl.getUniformLocation(program, "uProjMatrix"),
             fHasTexture: gl.getUniformLocation(program, "uHasTexture"),
+            fHasTexture2: gl.getUniformLocation(program, "uHasTexture2"),
+            fHasTexture3: gl.getUniformLocation(program, "uHasTexture3"),
             fHasAlpha: gl.getUniformLocation(program, "uHasAlpha"),
             fBlendMode: gl.getUniformLocation(program, "uBlendMode"),
             fTexture: gl.getUniformLocation(program, "uTexture"),
+            fTexture2: gl.getUniformLocation(program, "uTexture2"),
+            fTexture3: gl.getUniformLocation(program, "uTexture3"),
             fAlpha: gl.getUniformLocation(program, "uAlpha")
         };
         self.attribs = {
@@ -9342,7 +9649,7 @@ ZamModelViewer.Wow.ParticleEmitter.prototype = {
         }
     },
     vertShader: "        attribute vec3 aPosition;        attribute vec4 aColor;        attribute vec4 aTexCoord;                varying vec4 vColor;        varying vec2 vTexCoord;                uniform mat4 uModelMatrix;        uniform mat4 uViewMatrix;        uniform mat4 uProjMatrix;                void main(void) {            vec4 pos = uViewMatrix * uModelMatrix * vec4(aPosition, 1);            pos.xy += aTexCoord.zw;            gl_Position = uProjMatrix * pos;                        vTexCoord = aTexCoord.xy;            vColor = aColor;        }    ",
-    fragShader: "        precision mediump float;                varying vec4 vColor;        varying vec2 vTexCoord;                uniform bool uHasTexture;        uniform bool uHasAlpha;        uniform int uBlendMode;        uniform sampler2D uTexture;        uniform sampler2D uAlpha;                void main(void) {            vec4 color = vec4(1, 1, 1, 1);            if (uHasTexture) {                color = texture2D(uTexture, vTexCoord.st);            }            if ((uBlendMode == 1 || uBlendMode == 2 || uBlendMode == 4) && uHasAlpha) {                color.a = texture2D(uAlpha, vTexCoord.st).r;            }                        color *= vColor;                        if (uBlendMode == 1) {                if (color.a < 0.7) { discard; }            }                        gl_FragColor = color;        }    ",
+    fragShader: "        precision mediump float;                varying vec4 vColor;        varying vec2 vTexCoord;                uniform bool uHasTexture;        uniform bool uHasTexture2;        uniform bool uHasTexture3;        uniform bool uHasAlpha;        uniform int uBlendMode;        uniform sampler2D uTexture;        uniform sampler2D uTexture2;        uniform sampler2D uTexture3;        uniform sampler2D uAlpha;                void main(void) {            vec4 color = vec4(1, 1, 1, 1);            if (uHasTexture) {                color = texture2D(uTexture, vTexCoord.st);            }            if (uHasTexture2) {                color *= texture2D(uTexture2, vTexCoord.st);            }            if (uHasTexture3) {                color *= texture2D(uTexture3, vTexCoord.st);            }            if (uBlendMode == 7) {                vec4 color2 = vec4(4, 4, 4, 4);                color *= color2;            }            if ((uBlendMode == 1 || uBlendMode == 2 || uBlendMode == 4 || uBlendMode == 7) && uHasAlpha) {                color.a = texture2D(uAlpha, vTexCoord.st).a;            }            color *= vColor;                        if (uBlendMode == 1) {                if (color.a < 0.7) { discard; }            }                        gl_FragColor = color;        }    ",
     update: function(anim, time, delta) {
         var self = this,
             Wow = ZamModelViewer.Wow;
@@ -9861,7 +10168,7 @@ ZamModelViewer.Wow.RibbonEmitter.prototype = {
         }
     },
     vertShader: "        attribute vec3 aPosition;        attribute vec2 aTexCoord;                varying vec2 vTexCoord;                uniform mat4 uModelMatrix;        uniform mat4 uViewMatrix;        uniform mat4 uProjMatrix;                void main(void) {            gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1);                        vTexCoord = aTexCoord;        }    ",
-    fragShader: "        precision mediump float;                varying vec2 vTexCoord;                uniform bool uHasTexture;        uniform bool uHasAlpha;        uniform sampler2D uTexture;        uniform sampler2D uAlpha;        uniform vec4 uColor;                void main(void) {            vec4 color = vec4(1, 1, 1, 1);            if (uHasTexture) {                color = texture2D(uTexture, vTexCoord.st);            }            if (uHasAlpha) {                color.a = texture2D(uAlpha, vTexCoord.st).r;            }                        gl_FragColor = color * uColor;        }    ",
+    fragShader: "        precision mediump float;                varying vec2 vTexCoord;                uniform bool uHasTexture;        uniform bool uHasAlpha;        uniform sampler2D uTexture;        uniform sampler2D uAlpha;        uniform vec4 uColor;                void main(void) {            vec4 color = vec4(1, 1, 1, 1);            if (uHasTexture) {                color = texture2D(uTexture, vTexCoord.st);            }            if (uHasAlpha) {                color.a = texture2D(uAlpha, vTexCoord.st).a;            }                        gl_FragColor = color * uColor;        }    ",
     update: function(anim, time) {
         var self = this,
             Wow = ZamModelViewer.Wow,
@@ -9930,11 +10237,11 @@ ZamModelViewer.Wow.RibbonEmitter.prototype = {
 ZamModelViewer.Wow.Skin = function(r, version) {
     var self = this;
     self.skinFlags = version > 2e3 ? r.getUint32() : 0;
-    self.base = r.getString();
-    self.fur = r.getString();
+    self.base = r.getUint32();
+    self.fur = r.getUint32();
     self.underwearFlags = version > 2e3 ? r.getUint32() : 0;
-    self.panties = r.getString();
-    self.bra = r.getString();
+    self.panties = r.getUint32();
+    self.bra = r.getUint32();
     self.faces = null
 };
 ZamModelViewer.Wow.Skin._lastFaces = null;
@@ -9988,8 +10295,8 @@ ZamModelViewer.Wow.Skin.prototype = {
             for (var i = 0; i < count; ++i) {
                 self.faces[i] = {
                     flags: version > 2e3 ? r.getUint32() : 0,
-                    lower: r.getString(),
-                    upper: r.getString()
+                    lower: r.getUint32(),
+                    upper: r.getUint32()
                 };
                 ZamModelViewer.Wow.Skin._lastFaces = self.faces[i]
             }
@@ -10035,8 +10342,8 @@ ZamModelViewer.Wow.Face.prototype = {
             for (var i = 0; i < count; ++i) {
                 self.textures[i] = {
                     flags: version > 2e3 ? r.getUint32() : 0,
-                    lower: r.getString(),
-                    upper: r.getString()
+                    lower: r.getUint32(),
+                    upper: r.getUint32()
                 }
             }
         }
@@ -10044,22 +10351,23 @@ ZamModelViewer.Wow.Face.prototype = {
 };
 ZamModelViewer.Wow.Hair = function(r) {
     var self = this;
-    self.geoset = r.getInt32();
-    self.index = r.getInt32();
+    self.geoset = r.getUint8();
     self.textures = null
 };
 ZamModelViewer.Wow.Hair.GetTextures = function(textures, playerOnly, dk) {
     if (!textures) return [];
     var list = [];
     for (var i = 0; i < textures.length; ++i) {
-        if (playerOnly && (textures[i].flags & 3) > 0) {
-            if ((textures[i].flags & 4) > 0) {
-                if (dk) list.push(textures[i])
-            } else {
+        if (textures[i].flags != 0) {
+            if (playerOnly && (textures[i].flags & 3) > 0) {
+                if ((textures[i].flags & 4) > 0) {
+                    if (dk) list.push(textures[i])
+                } else {
+                    list.push(textures[i])
+                }
+            } else if (!playerOnly || textures[i].flags == 0) {
                 list.push(textures[i])
             }
-        } else if (!playerOnly || textures[i].flags == 0) {
-            list.push(textures[i])
         }
     }
     return list
@@ -10080,11 +10388,122 @@ ZamModelViewer.Wow.Hair.prototype = {
             for (var i = 0; i < count; ++i) {
                 self.textures[i] = {
                     flags: version > 2e3 ? r.getUint32() : 0,
-                    texture: r.getString(),
-                    lower: r.getString(),
-                    upper: r.getString()
+                    texture: r.getUint32(),
+                    lower: r.getUint32(),
+                    upper: r.getUint32()
+                };
+                if (self.textures[i].upper > 0 && self.textures[i].lower > 0) {
+                    var str = ""
                 }
             }
+        }
+    }
+};
+ZamModelViewer.Wow.Horns = function(r) {
+    this.geoset = r.getUint8()
+};
+ZamModelViewer.Wow.Horns.prototype = {
+    destroy: function() {
+        this.geoset = null
+    }
+};
+ZamModelViewer.Wow.Blindfolds = function(r) {
+    this.geoset = r.getUint8()
+};
+ZamModelViewer.Wow.Blindfolds.prototype = {
+    destroy: function() {
+        this.geoset = null
+    }
+};
+ZamModelViewer.Wow.ColoredHands = function(r) {
+    this.colorIndex = r.getUint8()
+};
+ZamModelViewer.Wow.ColoredHands.prototype = {
+    destroy: function() {
+        this.colorIndex = null
+    }
+};
+ZamModelViewer.Wow.Tattoos = function(r) {
+    this.texture = r.getInt32()
+};
+ZamModelViewer.Wow.Tattoos.prototype = {
+    destroy: function() {
+        this.texture = null
+    }
+};
+ZamModelViewer.Wow.HornModel = function(model, slot, id, race, gender) {
+    var self = this;
+    self.model = model;
+    self.slot = slot;
+    self.uniqueSlot = ZamModelViewer.Wow.UniqueSlots[slot];
+    self.sortValue = ZamModelViewer.Wow.SlotOrder[slot];
+    self.models = null;
+    self.geosets = null;
+    self.textures = null;
+    self.geoA = 0;
+    self.geoB = 0;
+    self.geoC = 0;
+    self.loaded = false;
+    if (id) {
+        self.load(id, race, gender)
+    }
+};
+ZamModelViewer.Wow.HornModel.prototype = {
+    destroy: function() {
+        var self = this,
+            i;
+        self.model = null;
+        if (self.models) {
+            for (i = 0; i < self.models.length; ++i) {
+                if (self.models[i].model) self.models[i].model.destroy();
+                self.models[i].model = null;
+                self.models[i].attachment = null;
+                self.models[i] = null;
+
+            }
+            self.models = null
+        }
+        if (self.textures) {
+            for (i = 0; i < self.textures; ++i) {
+                if (self.textures[i].texture) self.textures[i].texture.destroy();
+                self.textures[i].texture = null;
+                self.textures[i] = null
+            }
+            self.textures = null
+        }
+        self.geosets = null
+    },
+    load: function(id, race, gender) {
+        var self = this,
+            Wow = ZamModelViewer.Wow;
+        self.id = id;
+        self.meta = {};
+        self.models = new Array(3);
+        var slotMap = {
+            0: 6,
+            1: 1,
+            2: 1,
+            3: 10
+        };
+        if (self.models) {
+            for (var i = 0; i < self.models.length; ++i) {
+                self.models[i] = {
+                    race: race,
+                    gender: gender,
+                    bone: -1,
+                    attachment: null,
+                    model: null
+                };
+                var modelInfo = {
+                    type: 256,
+                    id: self.id,
+                    parent: self.model
+                };
+                modelInfo.shoulder = i + 1;
+                self.models[i].model = new Wow.Model(self.model.renderer, self.model.viewer, modelInfo, i);
+                self.models[i].slot = slotMap[i]
+            }
+            self.loaded = true
         }
     }
 };
@@ -11115,6 +11534,7 @@ ZamModelViewer.Destiny.VertexBuffer.prototype = {
         var self = this,
             obj = {},
             e, i;
+
         for (i = 0; i < self.elements.length; ++i) {
             e = self.elements[i];
             if (e.discard) continue;
@@ -11366,7 +11786,9 @@ ZamModelViewer.Lol.Model.prototype = {
             }
         },
         setAnimation: function(name) {
-            this.setAnimation(name)
+            for (i = 0; i < this.renderer.models.length; ++i) {
+                this.renderer.models[i].setAnimation(name)
+            }
         },
         isLoaded: function() {
             return this.loaded && this.animsLoaded
@@ -12119,6 +12541,13 @@ ZamModelViewer.Lol.Model.HiddenBones = {
             }
         }
     },
+    201: {
+        3: {
+            all: {
+                poro: true
+            }
+        }
+    },
     254: {
         0: {
             all: {
@@ -12133,6 +12562,12 @@ ZamModelViewer.Lol.Model.HiddenBones = {
             taunt2: {}
         },
         3: {
+            all: {
+                teacup: true
+            },
+            taunt2: {}
+        },
+        4: {
             all: {
                 teacup: true
             },
@@ -12183,6 +12618,18 @@ ZamModelViewer.Lol.Model.HiddenBones = {
                 coin7: true,
                 treasure_chest: true,
                 treasure_chest_cover: true
+            }
+        }
+    },
+    420: {
+        0: {
+            all: {
+                c_tentacle1: true
+            }
+        },
+        1: {
+            all: {
+                c_tentacle1: true
             }
         }
     }
@@ -12315,6 +12762,7 @@ ZamModelViewer.Heroes.Model.prototype = {
                             }
                             if (animBone.scale.animId == animData.animIds[j]) {
                                 var scaleData = animData.translations[animData.animIndices[j].animIndex];
+
                                 scaleData.getValue(self.animTime, self.tmpVec2);
                                 hasScale = true
                             }
@@ -13670,6 +14118,7 @@ ZamModelViewer.Heroes.Texture.prototype = {
         (function(self, gl) {
             self.img = new Image;
             self.img.crossOrigin = "";
+
             self.img.onload = function() {
                 self.img.loaded = true;
                 self.texture = gl.createTexture();

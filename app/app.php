@@ -22,6 +22,9 @@ $app->register(new Silex\Provider\ValidatorServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 	'security.firewalls' => array(
+		'api' => array(
+			'pattern' => '^/api$',
+		),
 		'login' => array(
 			'pattern' => '^/login$',
 		),
@@ -124,6 +127,18 @@ $app->register(new Silex\Provider\RememberMeServiceProvider());
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app['dao.user'] = $app->share(function ($app) {
 	return new SUN\DAO\UserDAO($app);
+});
+
+$app['dao.classes'] = $app->share(function ($app) {
+	return new SUN\DAO\ClassesDAO($app);
+});
+
+$app['dao.quests'] = $app->share(function ($app) {
+	return new SUN\DAO\SunQuestDAO($app);
+});
+
+$app['dao.dungeons'] = $app->share(function ($app) {
+	return new SUN\DAO\SunDungeonDAO($app);
 });
 
 

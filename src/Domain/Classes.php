@@ -2,7 +2,9 @@
 
 namespace SUN\Domain;
 
-class Classes {
+class Classes implements \JsonSerializable {
+	use jsonSerializer;
+
 	protected $index;
 	protected $name;
 	protected $total;

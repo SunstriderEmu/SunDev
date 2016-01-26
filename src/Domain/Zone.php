@@ -2,8 +2,10 @@
 
 namespace SUN\Domain;
 
-class Zone
+class Zone implements \JsonSerializable
 {
+	use jsonSerializer;
+
 	protected $id;
 	protected $total;
 	protected $tested = 0;

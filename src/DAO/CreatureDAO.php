@@ -262,4 +262,8 @@ class CreatureDAO extends DAO {
     public function getNewGossipMenu() {
         return $this->getDb('test')->fetchAssoc('SELECT (MAX(entry) + 1) as newMenu FROM gossip_menu');
     }
+
+    public function search($name) {
+        return $this->getDb('test')->fetchAll("SELECT entry, difficulty_entry_1 as heroic, name FROM creature_template WHERE name LIKE '%{$name}%'");
+    }
 }

@@ -1,0 +1,245 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ creature.name }}({{ creature.entry }}) - {{ parent() }}{% endblock %}
+    {% block head %}
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/viewer.js"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/basic.js"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/dataitem-scaling.js" charset="utf8"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/dataspell-scaling.js" charset="utf8"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/global.js"></script>
+    <script type="text/javascript" src="{{ app.request.basepath }}/js/wmv/npcmodel.js"></script>
+    <style type="text/css">
+        .well > .table {
+            margin-bottom: 0;
+        }
+    </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>{{ creature.name }}{% if creature.subname != null %}, <small>{{ creature.subname }}</small>{% endif %}</h2>
+            <div class="col-md-3">
+                <div id="infobox-sticky-model">
+                    <div id="npc-model-container"></div>
+                </div>
+            </div>
+            <div class="well col-md-2" style="margin-right: 15px">
+                <strong>INFORMATION</strong>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Entry</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}><a href="https://wowhead.com/npc={{ creature.entry }}">{{ creature.entry }}</a></td>
+                        </tr>
+                        {% if creature.difficulty_entry_1 != 0 %}
+                        <tr>
+                            <td><strong>Heroic</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}><a href="{{ app.request.basepath }}/creature/entry/{{ creature.difficulty_entry_1 }}">{{ creature.difficulty_entry_1 }}</a></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td><strong>Script</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{% if creature.AIName == null and creature.ScriptName != null %}<abbr title="{{ creature.ScriptName }}">C++</abbr>{% elseif creature.AIName == "TotemAI" %}{{ creature.AIName }} - <a href="https://wowhead.com/spell={{ creature.spell1 }}">{{ creature.spell1 }}</a>{% elseif creature.AIName == "SmartAI" %}<a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/smartai">{{ creature.AIName }}</a>{% elseif creature.ScriptName == null and creature.AIName == null %}None{% else %}{{ creature.AIName }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rank</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.rank|getRank }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.type|getType }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Family</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.family|getFamily }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Class</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.unit_class|getUnitClass }}</td>
+                        </tr>
+                        {% if creature.mingold == creature.maxgold %}
+                        <tr>
+                            <td><strong>Gold</strong></td>
+                            <td>{{ creature.mingold|getGold }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td><strong>Gold</strong></td>
+                            <td>{{ creature.mingold|getGold }}</td>
+                            <td>{{ creature.maxgold|getGold }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td><strong>Inhabit Type</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.InhabitType|getInhabitType }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.total }}</td>
+                        </tr>
+                        {% if creature.total != 0 %}
+                        <tr>
+                            <td><strong>Zone</strong></td>
+                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.zone }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="well col-md-6" style="margin-right: 15px">
+                <div class="col-md-6">
+                    <strong>STATISTICS</strong>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Health</th>
+                                <th>Mana</th>
+                                <th>Armor</th>
+                                <th>Attack Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Level {{ creature.minlevel }}</strong></td>
+                                <td>{{ creature.minhp|number_format(0, '.', ',') }}</td>
+                                <td>{{ creature.minmp|number_format(0, '.', ',') }}</td>
+                                <td>{{ creature.minarmor|number_format(0, '.', ',') }}</td>
+                                <td{% if creature.minlevel != creature.maxlevel %} rowspan="2" style="vertical-align: middle;"{% endif %}>{{ (creature.BaseAttackTime / 1000)|number_format(2, '.', ',') }}</td>
+                            </tr>
+                            {% if creature.minlevel != creature.maxlevel %}
+                            <tr>
+                                <td><strong>Level {{ creature.maxlevel }}</strong></td>
+                                <td>{{ creature.maxhp|number_format(0, '.', ',') }}</td>
+                                <td>{{ creature.maxmp|number_format(0, '.', ',') }}</td>
+                                <td>{{ creature.maxarmor|number_format(0, '.', ',') }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <strong>RESISTANCES</strong>
+                    <table class="table col-md-6">
+                        <thead>
+                            <tr>
+                                <th>Holy</th>
+                                <th>Fire</th>
+                                <th>Nature</th>
+                                <th>Frost</th>
+                                <th>Shadow</th>
+                                <th>Arcane</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ creature.resistance1 }}</td>
+                                <td>{{ creature.resistance2 }}</td>
+                                <td>{{ creature.resistance3 }}</td>
+                                <td>{{ creature.resistance4 }}</td>
+                                <td>{{ creature.resistance5 }}</td>
+                                <td>{{ creature.resistance6 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                <strong>DAMAGES</strong>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                {% if creature.minlevel != creature.maxlevel %}<th></th>{% endif %}
+                                <th></th>
+                                <th>Base Damage</th>
+                                <th>Attack Power</th>
+                                <th>Min Damage</th>
+                                <th>Max Damage</th>
+                                <th>AVG DPS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% if creature.minlevel != creature.maxlevel %}<td rowspan="2" style="vertical-align: middle;"><strong>Level {{ creature.minlevel }}</strong></td>{% endif %}
+                                <td>Melee</td>
+                                <td>{{ creature.melee.minlevel.base|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.minlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.minlevel.min|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.minlevel.max|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.minlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Ranged</td>
+                                <td>{{ creature.ranged.minlevel.base|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.minlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.minlevel.min|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.minlevel.max|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.minlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            {% if creature.minlevel != creature.maxlevel %}
+                            <tr>
+                                <td rowspan="2" style="vertical-align: middle;"><strong>Level {{ creature.maxlevel }}</strong></td>
+                                <td>Melee</td>
+                                <td>{{ creature.melee.maxlevel.base|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.maxlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.maxlevel.min|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.maxlevel.max|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.melee.maxlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Ranged</td>
+                                <td>{{ creature.ranged.maxlevel.base|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.maxlevel.ap|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.maxlevel.min|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.maxlevel.max|number_format(1, '.', ',') }}</td>
+                                <td>{{ creature.ranged.maxlevel.avg|number_format(1, '.', ',') }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a href="{{ app.request.requestUri }}/equip"><button class="btn btn-primary">Equipment</button></a>
+            <a href="{{ app.request.requestUri }}/immune"><button class="btn btn-primary">Immunities</button></a>
+            {% if creature.lootid != 0 %}
+                <a href="{{ app.request.basepath }}/creature/entry/{{ creature.lootid }}/loot"><button class="btn btn-primary">Loot Table</button></a>
+            {% else %}
+            <button class="btn btn-default">No loot table</button></a>
+            {% endif %}
+            {% if creature.AIName == "SmartAI" and creature.rank != 3 %}
+                <a href="{{ app.request.requestUri }}/smartai"><button class="btn btn-primary">SmartAI</button></a>
+            {% endif %}
+            {% if creature.gossip_menu_id > 0 %}
+                <a href="{{ app.request.requestUri }}/gossip"><button class="btn btn-primary">Gossip</button></a>
+            {% endif %}
+        </div>
+        <div class="col-md-12">
+            {% if creature.ScriptName == null %}
+                <div class="well col-md-4" style="margin-right: 15px">
+                    <strong>TEXTS</strong><br/>
+                    {% for text in creature.texts %}
+                        {% if text.type == 0 %}{{ creature.name }} says: {{ text.text }}<br/>
+                        {% elseif text.type == 1 %}<span class="text-danger">{{ creature.name }} yells: {{ text.text }}</span><br/>
+                        {% elseif text.type == 2 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
+                        {% elseif text.type == 3 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
+                        {% elseif text.type == 4 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
+                        {% elseif text.type == 5 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
+                        {% endif %}
+                    {% endfor %}
+                    <br>
+                    <a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/text"><button class="btn btn-primary">Edit</button></a>
+                </div>
+            {% endif %}
+            <div class="well col-md-4">
+                <strong>FLAGS</strong><br />
+                <a href="{{ app.request.requestUri }}/dynamicflag"><button class="btn btn-primary">Dynamic Flag</button></a>
+                <a href="{{ app.request.requestUri }}/flagextra"><button class="btn btn-primary">Flag Extra</button></a>
+                <a href="{{ app.request.requestUri }}/npcflag"><button class="btn btn-primary">NPC Flag</button></a>
+                <a href="{{ app.request.requestUri }}/typeflag"><button class="btn btn-primary">Type Flag</button></a>
+                <a href="{{ app.request.requestUri }}/unitflag"><button class="btn btn-primary">Unit Flag</button></a>
+                <!--<a href="{{ app.request.requestUri }}/unitflag2"><button class="btn btn-primary">Unit Flag2</button></a>-->
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            NpcModel.ShowModel('infobox-sticky-model', {"displayId":"{{ creature.modelid1 }}"});
+        </script>
+    {% endblock %}

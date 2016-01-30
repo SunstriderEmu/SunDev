@@ -4,9 +4,14 @@ use SUN\DAO\CreatureDAO;
 use SUN\Domain\Creature;
 
 // Creature Summary
+$app->get('/creature', function() use($app) {
+    return $app['twig']->render('creature/index.html.twig');
+});
+
+// Creature Summary
 $app->get('/creature/entry/{entry}', function($entry) use($app) {
     $manager	= new CreatureDAO($app);
-    return $app['twig']->render('creature/index.html.twig', array(
+    return $app['twig']->render('creature/creature.html.twig', array(
         "creature"	=> $manager->getCreature($entry),
     ));
 })->assert('entry', '\d+');
@@ -186,3 +191,8 @@ $app->get('/gameobject/guid/{guid}/name', function($guid) use($app) {
     $manager	= new \SUN\DAO\SmartAIDAO($app);
     return $manager->findGOGuidName($gameobject)->getName();
 })->assert('guid', '\d+');
+
+// GET NAMES
+$app->get('/creature/{name}/search', function($name) use($app) {
+    return $app->json(json_encode($app['dao.creature']->search($name)));
+});

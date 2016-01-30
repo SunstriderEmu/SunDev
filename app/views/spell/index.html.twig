@@ -57,7 +57,7 @@
                         $('.table > tbody').html('');
                         var html = '';
                         $.each(JSON.parse(data), function(){
-                            html += '<tr><td><a href="http:/wowhead.com/spell='+this.entry+'">'+this.entry+'</a></td><td>'+this.spellName1+'</td>';
+                            html += '<tr><td><a href="http://wowhead.com/spell='+this.entry+'" target="_blank">'+this.entry+'</a></td><td>'+this.spellName1+'</td>';
                             if(this.rank3 != '')
                                 html += '<td>'+this.rank3.match(/\d+/)[0]+'</td></tr>';
                             else

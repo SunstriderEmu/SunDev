@@ -40,15 +40,8 @@
                 </form>
             </div>
             <div class="col-md-12 text-right">
-                {% if is_granted('ROLE_DEV') %}
-                    <button id="new" class="btn btn-info btn-xs">New ID</button>
-                    <button id="apply" class="btn btn-warning btn-xs">Apply</button>
-                    <button id="review" class="btn btn-success btn-xs">Review</button>
-                {% endif %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <button id="validate" class="btn btn-success btn-xs">Validate</button>
-                    <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
-                {% endif %}
+                <button id="new" class="btn btn-info btn-xs">New ID</button>
+                {% include 'review.html.twig' %}
             </div>
         </div>
         {% if equip.id is defined %}

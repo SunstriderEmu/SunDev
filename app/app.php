@@ -44,7 +44,7 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		'ROLE_SUPERUSER'	=> array('ROLE_USER_LIST', 'ROLE_USER_ADD', 'ROLE_USER_EDIT', 'ROLE_USER_REMOVE'),
 		'ROLE_ACCOUNT'		=> array('ROLE_ACCOUNT_LIST', 'ROLE_ACCOUNT_ADD', 'ROLE_ACCOUNT_EDIT', 'ROLE_ACCOUNT_REMOVE', 'ROLE_ACCOUNT_COMMANDS'),
 		'ROLE_FULL'			=> array('ROLE_DEV', 'ROLE_TESTER'),
-		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS'),
+		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS', 'ROLE_SPELL'),
 		'ROLE_TESTER' 		=> array('ROLE_QUESTS_WRITE', 'ROLE_CLASSES', 'ROLE_DUNGEONS_WRITE'),
 		'ROLE_CREATURE' 	=> array('ROLE_CREATURE_SMARTAI', 'ROLE_CREATURE_STATS', 'ROLE_CREATURE_LOOT', 'ROLE_CREATURE_EQUIP', 'ROLE_CREATURE_TEXT', 'ROLE_CREATURE_IMMUNE', 'ROLE_CREATURE_GOSSIP', 'ROLE_CREATURE_FLAG_DYN', 'ROLE_CREATURE_FLAG_EXTRA', 'ROLE_CREATURE_FLAG_NPC', 'ROLE_CREATURE_FLAG_TYPE', 'ROLE_CREATURE_FLAG_UNIT'),
 		'ROLE_CLASSES' 		=> array('ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR'),
@@ -96,6 +96,9 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 
 		array('^/gossip', 	'ROLE_DEV'),
 
+		// SunSpell
+		array('^/spell', 	'ROLE_SPELL'),
+
 		// SunQuests
 		array('^/quests', 	array('ROLE_QUESTS_WRITE', 'ROLE_QUESTS_READ')),
 
@@ -145,6 +148,9 @@ $app['dao.dungeons'] = $app->share(function ($app) {
 $app['dao.creature'] = $app->share(function ($app) {
 	return new SUN\DAO\CreatureDAO($app);
 });
+$app['dao.spell'] = $app->share(function ($app) {
+	return new SUN\DAO\SpellDAO($app);
+});
 
 
 require_once __DIR__.'/config.php';
@@ -184,6 +190,7 @@ require_once __DIR__.'/controllers/SunDungeon.php';
 require_once __DIR__.'/controllers/SunEquip.php';
 require_once __DIR__.'/controllers/SunLoot.php';
 require_once __DIR__.'/controllers/SunQuest.php';
+require_once __DIR__.'/controllers/Spell.php';
 require_once __DIR__.'/controllers/User.php';
 require_once __DIR__.'/controllers/Account.php';
 require_once __DIR__.'/controllers/Waypoints.php';

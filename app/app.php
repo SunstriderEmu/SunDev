@@ -142,6 +142,11 @@ $app['dao.dungeons'] = $app->share(function ($app) {
 });
 
 
+$app['dao.creature'] = $app->share(function ($app) {
+	return new SUN\DAO\CreatureDAO($app);
+});
+
+
 require_once __DIR__.'/config.php';
 
 $app->register(new Silex\Provider\HttpFragmentServiceProvider());

@@ -41,12 +41,7 @@
             {% endif %}
             <div class="text-right">
                 <button id="add" class="btn btn-info btn-xs">Add</button>
-                <button id="apply" class="btn btn-warning btn-xs">Apply</button>
-                <button id="review" class="btn btn-success btn-xs">Review</button>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <button id="validate" class="btn btn-success btn-xs">Validate</button>
-                    <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
-                {% endif %}
+                {% include 'review.html.twig' %}
             </div>
             <table class="table table-striped table-hover">
                 <thead>

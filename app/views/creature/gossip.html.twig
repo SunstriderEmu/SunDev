@@ -22,12 +22,7 @@
             </div>
         </div>
         <div class="col-md-3 text-right" style="margin-top: 30px">
-            <button id="apply" class="btn btn-warning btn-xs">Apply</button>
-            <button id="review" class="btn btn-success btn-xs">Review</button>
-            {% if is_granted('ROLE_ADMIN') %}
-                <button id="validate" class="btn btn-success btn-xs">Validate</button>
-                <button id="refuse" class="btn btn-danger btn-xs">Refuse</button>
-            {% endif %}
+            {% include 'review.html.twig' %}
         </div>
         <div class="col-md-4">
             <div class="gossip">

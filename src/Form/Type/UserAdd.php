@@ -85,6 +85,9 @@ class UserAdd extends AbstractType
 						'Write' 	=> 'ROLE_DUNGEONS_WRITE',
 						'Read' 		=> 'ROLE_DUNGEONS_READ',
 					],
+					'Spell' => [
+						'All' 		=> 'ROLE_SPELL',
+					],
 					'Loots' => [
 						'All' 			=> 'ROLE_LOOT',
 						'Creature' 		=> 'ROLE_CREATURE_LOOT',

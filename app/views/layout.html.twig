@@ -101,6 +101,9 @@
                        or is_granted('ROLE_DUNGEONS_WRITE') %}
                         <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
                     {% endif %}
+                    {% if is_granted('ROLE_SPELL') %}
+                        <li><a href="{{ app.request.basepath }}/spell">SunSpell</a></li>
+                    {% endif %}
                     {% if is_granted('ROLE_WAYPOINTS') %}
                         <li><a href="{{ app.request.basepath }}/waypoints">SunWaypoints</a></li>
                     {% endif %}

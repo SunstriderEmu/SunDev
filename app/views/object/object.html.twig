@@ -1,0 +1,64 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ object.name }}({{ object.entry }}) - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .well > .table {
+                margin-bottom: 0;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="row">
+            <div class="col-md-12">
+                <h2>{{ object.name }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <strong>INFORMATION</strong>
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td><strong>Entry</strong></td>
+                        <td>{{ object.entry }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Script</strong></td>
+                        <td>{% if object.AIName == null and object.ScriptName != null %}<abbr title="{{ object.ScriptName }}">C++</abbr>{% elseif object.AIName == "TotemAI" %}{{ object.AIName }} - <a href="https://wowhead.com/spell={{ object.spell1 }}">{{ object.spell1 }}</a>{% elseif object.AIName == "SmartAI" %}<a href="{{ app.request.basepath }}/creature/entry/{{ object.entry }}/smartai">{{ object.AIName }}</a>{% elseif object.ScriptName == null and object.AIName == null %}None{% else %}{{ object.AIName }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td>{{ object.type|getObjectType }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Display ID</strong></td>
+                        <td>{{ object.displayId }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cast Bar Caption</strong></td>
+                        <td>{{ object.castBarCaption }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Size</strong></td>
+                        <td>{{ object.Size }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <strong>DATA</strong>
+                <table class="table table-striped">
+                    <tbody>
+                    {% for i in 0..23 %}
+                        {% if object.type|getObjectDataName(i) is not null %}
+                            <tr>
+                                <td><strong>{{ object.type|getObjectDataName(i) }}</strong></td>
+                                <td>{{ attribute(object, "data#{i}") }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock %}

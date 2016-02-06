@@ -44,11 +44,12 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		'ROLE_SUPERUSER'	=> array('ROLE_USER_LIST', 'ROLE_USER_ADD', 'ROLE_USER_EDIT', 'ROLE_USER_REMOVE'),
 		'ROLE_ACCOUNT'		=> array('ROLE_ACCOUNT_LIST', 'ROLE_ACCOUNT_ADD', 'ROLE_ACCOUNT_EDIT', 'ROLE_ACCOUNT_REMOVE', 'ROLE_ACCOUNT_COMMANDS'),
 		'ROLE_FULL'			=> array('ROLE_DEV', 'ROLE_TESTER'),
-		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS', 'ROLE_SPELL'),
+		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_GO', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS', 'ROLE_SPELL'),
 		'ROLE_TESTER' 		=> array('ROLE_QUESTS_WRITE', 'ROLE_CLASSES', 'ROLE_DUNGEONS_WRITE'),
 		'ROLE_CREATURE' 	=> array('ROLE_CREATURE_SMARTAI', 'ROLE_CREATURE_STATS', 'ROLE_CREATURE_LOOT', 'ROLE_CREATURE_EQUIP', 'ROLE_CREATURE_TEXT', 'ROLE_CREATURE_IMMUNE', 'ROLE_CREATURE_GOSSIP', 'ROLE_CREATURE_FLAG_DYN', 'ROLE_CREATURE_FLAG_EXTRA', 'ROLE_CREATURE_FLAG_NPC', 'ROLE_CREATURE_FLAG_TYPE', 'ROLE_CREATURE_FLAG_UNIT'),
+		'ROLE_GO'			=> array('ROLE_GO_DATA', 'ROLE_GO_LOOT', 'ROLE_GO_SMARTAI'),
 		'ROLE_CLASSES' 		=> array('ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR'),
-		'ROLE_LOOT' 		=> array('ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_LOOT_GAMEOBJECT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING'),
+		'ROLE_LOOT' 		=> array('ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_GO_LOOT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING'),
 	),
 	'security.access_rules' => array(
 		// Admin
@@ -80,7 +81,7 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/classes/warrior', 	'ROLE_CLASSES_WARRIOR'),
 
 		// SunCreature
-		array('^/creature/entry/[0-9]+$', 				array('ROLE_CREATURE', 'ROLE_CREATURE_READ')),
+		array('^/creature/entry/[0-9]+$', 				array('ROLE_CREATURE')),
 		array('^/creature/entry/[0-9]+/smartai$', 		array('ROLE_CREATURE_SMARTAI')),
 		array('^/creature/entry/[0-9]+/stats$', 		array('ROLE_CREATURE_STATS')),
 		array('^/creature/entry/[0-9]+/loot$', 			array('ROLE_CREATURE_LOOT')),
@@ -94,7 +95,10 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/creature/entry/[0-9]+/typeflag$', 		array('ROLE_CREATURE_FLAG_TYPE')),
 		array('^/creature/entry/[0-9]+/unitflag$', 		array('ROLE_CREATURE_FLAG_UNIT')),
 
-		array('^/gossip', 	'ROLE_DEV'),
+		// GameObject
+		array('^/object/entry/[0-9]+$', 				array('ROLE_GO')),
+		array('^/object/entry/[0-9]+/data$', 			array('ROLE_GO_DATA')),
+		array('^/object/entry/[0-9]+/smartai$', 		array('ROLE_GO_SMARTAI')),
 
 		// SunSpell
 		array('^/spell', 	'ROLE_SPELL'),
@@ -112,7 +116,7 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/loot$', 					array('ROLE_LOOT', 'ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_LOOT_GAMEOBJECT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING')),
 		array('^/loot/disenchant/[0-9]+$', 	'ROLE_LOOT_DISENCHANT'),
 		array('^/loot/fishing/[0-9]+$', 	'ROLE_LOOT_FISHING'),
-		array('^/loot/gameobject/[0-9]+$', 	'ROLE_LOOT_GAMEOBJECT'),
+		array('^/loot/gameobject/[0-9]+$', 	'ROLE_GO_LOOT'),
 		array('^/loot/item/[0-9]+$', 		'ROLE_LOOT_ITEM'),
 		array('^/loot/pickpocket/[0-9]+$', 	'ROLE_LOOT_PICKPOCKET'),
 		array('^/loot/prospect/[0-9]+$', 	'ROLE_LOOT_PROSPECT'),

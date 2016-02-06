@@ -6,7 +6,7 @@ use Silex\Application;
 use SUN\Domain\Creature;
 use SUN\Domain\Gameobject;
 use SUN\DAO\CreatureDAO;
-use SUN\DAO\GameobjectDAO;
+use SUN\DAO\GameObjectDAO;
 
 class SUNExtension extends \Twig_Extension
 {
@@ -93,7 +93,7 @@ class SUNExtension extends \Twig_Extension
 
 	public function getUsername($user) {
 		$user = $this->getDb('tools')->fetchAssoc('SELECT username FROM user WHERE id = ?', array($user));
-		return $user['name'];
+		return $user['username'];
 	}
 
 	public function getStateName($state) {
@@ -288,7 +288,7 @@ class SUNExtension extends \Twig_Extension
 				echo "<a href=\"/creature/entry/{$script['entryorguid']}/flagextra\">{$this->getCreatureName($script['entryorguid'])} - Flag Extra</a>";
 				break;
 			case 26: // Creature Immunities
-				echo "<a href=\"/creature/entry/{$script['entryorguid']}/immunities\">{$this->getCreatureName($script['entryorguid'])} - Immunities</a>";
+				echo "<a href=\"/creature/entry/{$script['entryorguid']}/immune\">{$this->getCreatureName($script['entryorguid'])} - Immunities</a>";
 				break;
 
 			// Loot

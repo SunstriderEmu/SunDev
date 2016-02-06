@@ -132,6 +132,13 @@ $app['dao.user'] = $app->share(function ($app) {
 	return new SUN\DAO\UserDAO($app);
 });
 
+$app['dao'] = $app->share(function ($app) {
+	return new SUN\DAO\DAO($app);
+});
+$app['dao.review'] = $app->share(function ($app) {
+	return new SUN\DAO\ReviewDAO($app);
+});
+
 $app['dao.classes'] = $app->share(function ($app) {
 	return new SUN\DAO\ClassesDAO($app);
 });
@@ -144,9 +151,16 @@ $app['dao.dungeons'] = $app->share(function ($app) {
 	return new SUN\DAO\SunDungeonDAO($app);
 });
 
+$app['dao.smartai'] = $app->share(function ($app) {
+	return new SUN\DAO\SmartAIDAO($app);
+});
+
 
 $app['dao.creature'] = $app->share(function ($app) {
 	return new SUN\DAO\CreatureDAO($app);
+});
+$app['dao.object'] = $app->share(function ($app) {
+	return new SUN\DAO\GameObjectDAO($app);
 });
 $app['dao.spell'] = $app->share(function ($app) {
 	return new SUN\DAO\SpellDAO($app);

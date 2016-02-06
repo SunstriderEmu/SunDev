@@ -6,17 +6,20 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserAdd extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
-			->add('username', 'text', array(
+			->add('username', TextType::class, array(
 				'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 3, 'max' => 50)))
 			))
-			->add('password', 'repeated', array(
-				'type'            => 'password',
+			->add('password', RepeatedType::class, array(
+				'type'            => PasswordType::class,
 				'invalid_message' => 'The password fields must match.',
 				'options'         => array('required' => true),
 				'first_options'   => array('label' => 'Password'),

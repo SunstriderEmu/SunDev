@@ -24,7 +24,7 @@
             {% if is_granted('ROLE_DEV') %}
             <div class="col-md-12">
                 <hr>
-                <h3>My reviews</h3>
+                <h3>My commits</h3>
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -35,14 +35,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for script in scripts %}
+                    {% for script in wip %}
                         {% if script.user == app.user.id %}
-                            <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
-                                <td>{{ script.date|date("m-j-y G:i:s") }}</td>
-                                <td>{{ script|getReviewComment }}</td>
-                                <td>{{ script.state|getStateName }}</td>
-                                <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
-                            </tr>
+                        <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
+                            <td>{{ script.date|date("m-j-y G:i:s") }}</td>
+                            <td>{{ script|getReviewComment }}</td>
+                            <td>{{ script.state|getStateName }}</td>
+                            <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    {% for script in myreviews %}
+                        {% if script.user == app.user.id %}
+                        <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
+                            <td>{{ script.date|date("m-j-y G:i:s") }}</td>
+                            <td>{{ script|getReviewComment }}</td>
+                            <td>{{ script.state|getStateName }}</td>
+                            <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
+                        </tr>
                         {% endif %}
                     {% endfor %}
                     </tbody>
@@ -54,7 +64,7 @@
         <div class="col-md-6">
             <h2>Review</h2>
             <p>Code that needs to be validated before going on production.</p>
-            {% if scripts != null %}
+            {% if reviews != null %}
             <table class="table table-hover">
                 <thead>
                     <th width="17%">User</th>
@@ -63,7 +73,7 @@
                     <th width="8%"></th>
                 </thead>
                 <tbody>
-            {% for script in scripts %}
+            {% for script in reviews %}
                 {% if script.state == 0 %}
                     <tr>
                         <td>{{ script.user|getUsername }}</td>

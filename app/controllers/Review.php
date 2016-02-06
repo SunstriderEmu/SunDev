@@ -1,6 +1,24 @@
 <?php
 
 /**
+ * Reviews
+ */
+$app->get('/reviews', function() use($app) {
+	return $app['twig']->render('reviews/index.html.twig', array(
+		"reviews" 	=> $app['dao.review']->getWeeklyReviews(),
+	));
+})->bind('reviews');
+
+/**
+ * Reviews
+ */
+$app->get('/reviews/old', function() use($app) {
+	return $app['twig']->render('reviews/formatted.html.twig', array(
+		"reviews" 	=> $app['dao.review']->getWeeklyReviews(json_decode($_GET['start']), json_decode($_GET['end'])),
+	));
+});
+
+/**
  * Development: Apply on test realm
  */
 $app->post('/dev/apply', function() use($app) {
@@ -11,12 +29,11 @@ $app->post('/dev/apply', function() use($app) {
 	$data['script'] = json_decode($_POST['sql']);
 	$data['review'] = json_decode($_POST['info']);
 
-	$manager = new \SUN\DAO\DAO($app);
-	$manager->setScript($data, 'test');
-	$manager = new \SUN\DAO\ReviewDAO($app);
+	$app['dao']->setScript($data, 'test');
+	
 	$data['review']->state = -1;
 	$data['review']->user = $app['security.token_storage']->getToken()->getUser()->getId();
-	$manager->createReview($data['review']);
+	$app['dao.review']->createReview($data['review']);
 
 	return "Script applied on test";
 });
@@ -33,14 +50,11 @@ $app->post('/dev/review', function() use($app) {
 	$data['script'] = json_decode($_POST['sql']);
 	$data['review'] = json_decode($_POST['info']);
 
-	$manager = new \SUN\DAO\ReviewDAO($app);
 	$data['review']->state = 0;
 	$data['review']->user = $app['security.token_storage']->getToken()->getUser()->getId();
-	$manager->createReview($data['review']);
+	$app['dao.review']->createReview($data['review']);
 
-	$manager = new \SUN\DAO\DAO($app);
-
-	$manager->setScript($data, 'test');
+	$app['dao']->setScript($data, 'test');
 	return "New review sent";
 });
 
@@ -53,14 +67,13 @@ $app->post('/dev/validate', function() use($app) {
 
 	$data['script'] = json_decode($_POST['sql']);
 	$data['review'] = json_decode($_POST['info']);
-
-	$manager = new \SUN\DAO\DAO($app);
-	$manager->setScript($data, 'test');
-	$manager->setScript($data, 'world');
-	$manager = new \SUN\DAO\ReviewDAO($app);
+	
+	$app['dao']->setScript($data, 'test');
+	$app['dao']->setScript($data, 'world');
+	
 	$data['review']->state = 1;
 	$data['review']->validation_user = $app['security.token_storage']->getToken()->getUser()->getId();
-	$manager->updateReview($data['review']);
+	$app['dao.review']->updateReview($data['review']);
 
 	return "Review accepted";
 });
@@ -75,12 +88,11 @@ $app->post('/dev/refuse', function() use($app) {
 	$data['script'] = json_decode($_POST['sql']);
 	$data['review'] = json_decode($_POST['info']);
 
-	$manager = new \SUN\DAO\DAO($app);
-	$manager->setScript($data, 'test');
-	$manager = new \SUN\DAO\ReviewDAO($app);
+	$app['dao']->setScript($data, 'test');
+	
 	$data['review']->state = 2;
 	$data['review']->validation_user = $app['security.token_storage']->getToken()->getUser()->getId();
-	$manager->updateReview($data['review']);
+	$app['dao.review']->updateReview($data['review']);
 
 	return "Review refused";
 });

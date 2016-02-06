@@ -40,7 +40,7 @@ class SmartAIDAO extends DAO {
 	 * GET GAMEOBJECT ENTRY SCRIPT
 	 */
 	public function getGOEntryScript(Gameobject $go) {
-		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 1', $go->getEntry());
+		$all = $this->getDb('test')->fetchAll('SELECT * FROM smart_scripts WHERE entryorguid = ? AND source_type = 1', array($go->getEntry()));
 		$lines = [];
 		foreach($all as $line) {
 			$lines[$line['id']] = new Line($line);

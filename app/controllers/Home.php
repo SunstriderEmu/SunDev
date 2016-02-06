@@ -3,11 +3,10 @@
 use Symfony\Component\HttpFoundation\Request;
 
 $app->get('/', function() use($app) {
-	$manager	= new \SUN\DAO\ReviewDAO($app);
-	$scripts	= $manager->getReviews();
-
 	return $app['twig']->render('index.html.twig', array(
-		"scripts" => $scripts,
+		"myreviews" => $app['dao.review']->getUserReviews(0, 7),
+		"wip" 		=> $app['dao.review']->getWIP(),
+		"reviews" 	=> $app['dao.review']->getReviews(),
 	));
 });
 

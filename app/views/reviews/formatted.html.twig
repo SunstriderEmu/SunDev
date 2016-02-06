@@ -1,0 +1,45 @@
+{% for script in reviews.reviews %}
+    <tr {% if script.state == 1 %}class="ok" {% elseif script.state == 2 %}class="bug"{% else %}{% endif %}>
+        {% if app.request.attributes.get('_route') == 'reviews' %}
+        <td>{{ script.user_name }}</td>
+        {% endif %}
+        <td>{{ script.date|date("m-j-y G:i:s") }}</td>
+        <td>{{ script|getReviewComment }}</td>
+        {% if is_granted('ROLE_ADMIN') %}
+        <td>{{ script.user_validation_name }}</td>
+        {% endif %}
+        <td>{% if script.validation_date != null %}{{ script.validation_date|date("m-j-y G:i:s") }}{% endif %}</td>
+    </tr>
+{% endfor %}
+<script type="text/javascript">
+    google.charts.setOnLoadCallback(drawStacked);
+
+    function drawStacked() {
+          var data = google.visualization.arrayToDataTable([
+            ['User', 'Approved push', 'Rejected push'],
+            {% for script in reviews.stats %}
+            {% if script.ok == '0' and script.bug == '0' %}
+            {% else %}
+            ['{{ script.username }}', {{ script.ok }}, {{ script.bug }}],
+            {% endif %}
+            {% endfor %}
+          ]);
+
+          var options = {
+            title: 'Pushes of the week',
+            chartArea: {width: '50%'},
+            colors: ['#ABFF92', '#FF9595'],
+            isStacked: true,
+            hAxis: {
+              title: 'Pushes',
+              minValue: 0,
+              format: 'short',
+            },
+            vAxis: {
+              title: 'User'
+            }
+          };
+          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+          chart.draw(data, options);
+        }
+</script>

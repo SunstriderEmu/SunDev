@@ -528,6 +528,9 @@
                 case "103":
                     return "On Enter Phase " + EventParam1;
                     break;
+                case "104":
+                    return "On GO State Loot Changed";
+                    break;
             }
         }
         function generateActionComment(id) {
@@ -1507,6 +1510,37 @@
                     displayEventValDefault(3, id);
                     displayEventValDefault(4, id);
                     break;
+                case "70":
+                    EventParam1DIV.empty();
+                    $('<select class="form-control" id="event_param1_val">' +
+                    '   <option value="0">ACTIVE</option>' +
+                    '   <option value="1">READY (DEFAULT)</option>' +
+                    '   <option value="2">ACTIVE ALTERNATIVE (SPECIFIC)</option>' +
+                    '</select>').appendTo(EventParam1DIV);
+                    $('#event_param1_val').val(Lines[id].event_param1);
+                    displayEventValDefault(2, id);
+                    displayEventValDefault(3, id);
+                    displayEventValDefault(4, id);
+                    break;
+                case "104":
+                    EventParam1DIV.empty();
+                    $('<select multiple class="form-control spell_flags" id="event_param1_val">' +
+                    '   <option value="1">NOT READY</option>' +
+                    '   <option value="2">READY</option>' +
+                    '   <option value="4">ACTIVATED</option>' +
+                    '   <option value="8">JUST_DEACTIVATED</option>' +
+                    '</select>').appendTo(EventParam1DIV);
+                    $('#event_param1_val').val(Lines[id].event_param1);
+                    var NPCFlags = '#event_param1_val';
+                    var Binary = "0x" + Hex(Lines[id].event_param1);
+                    selectByte(NPCFlags, 0x1, Binary, 1);
+                    selectByte(NPCFlags, 0x2, Binary, 2);
+                    selectByte(NPCFlags, 0x4, Binary, 3);
+                    selectByte(NPCFlags, 0x8, Binary, 4);
+                    displayEventValDefault(2, id);
+                    displayEventValDefault(3, id);
+                    displayEventValDefault(4, id);
+                    break;
                 default:
                     displayEventValDefault(1, id);
                     displayEventValDefault(2, id);
@@ -1681,10 +1715,10 @@
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);
-                        selectByte(SelectFlags, 0x1, Binary, 1);
-                        selectByte(SelectFlags, 0x8, Binary, 2);
-                        selectByte(SelectFlags, 0x10, Binary, 3);
-                        selectByte(SelectFlags, 0x40, Binary, 4);
+                        selectByte(NPCFlags, 0x1, Binary, 1);
+                        selectByte(NPCFlags, 0x8, Binary, 2);
+                        selectByte(NPCFlags, 0x10, Binary, 3);
+                        selectByte(NPCFlags, 0x40, Binary, 4);
                     }
                     break;
                 case "20":
@@ -2337,7 +2371,20 @@
             var attr = 'event_param' + param;
             var value = $('#event_param' + param + '_val').val();
             var id = $('table > tbody > tr.active > td:first-child').text();
-            Lines[id][attr] = value;
+            
+            var total = 0;
+            switch(EventType.val()) {
+                case "104": //EVENT_GO_LOOT_STATE_CHANGED
+                    if (param == 1) {
+                        for (i = 0; i < value.length; i++) {
+                            total += value[i] << 0;
+                        }
+                        Lines[id][attr] = total;
+                    }
+                    break;
+                default:
+                    Lines[id][attr] = value;
+            }
         }
         function setActionParamValue(param) {
             var attr = 'action_param' + param;

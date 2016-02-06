@@ -12,7 +12,6 @@
 <body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
@@ -24,7 +23,6 @@
         </div>
 
         {% if app.security.token is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
-        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 {% if is_granted('ROLE_USER_LIST')
@@ -100,17 +98,22 @@
                        or is_granted('ROLE_CREATURE_FLAG_NPC')
                        or is_granted('ROLE_CREATURE_FLAG_TYPE')
                        or is_granted('ROLE_CREATURE_FLAG_UNIT') %}
-                        <li><a href="{{ app.request.basepath }}/creature">SunCreature</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature">Creature</a></li>
                     {% endif %}
                     {% if is_granted('ROLE_DUNGEONS_READ')
                        or is_granted('ROLE_DUNGEONS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/dungeon">SunDungeon</a></li>
+                        <li><a href="{{ app.request.basepath }}/dungeon">Dungeon</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_GO_SMARTAI')
+                       or is_granted('ROLE_GO_DATA')
+                       or is_granted('ROLE_GO_LOOT') %}
+                        <li><a href="{{ app.request.basepath }}/object">GameObject</a></li>
                     {% endif %}
                     {% if is_granted('ROLE_SPELL') %}
-                        <li><a href="{{ app.request.basepath }}/spell">SunSpell</a></li>
+                        <li><a href="{{ app.request.basepath }}/spell">Spell</a></li>
                     {% endif %}
                     {% if is_granted('ROLE_WAYPOINTS') %}
-                        <li><a href="{{ app.request.basepath }}/waypoints">SunWaypoints</a></li>
+                        <li><a href="{{ app.request.basepath }}/waypoints">Waypoints</a></li>
                     {% endif %}
                     </ul>
                 </li>
@@ -138,11 +141,11 @@
                            or is_granted('ROLE_CLASSES_SHAMAN')
                            or is_granted('ROLE_CLASSES_WARLOCK')
                            or is_granted('ROLE_CLASSES_WARRIOR') %}
-                        <li><a href="{{ app.request.basepath }}/classes">SunClasses</a></li>
+                        <li><a href="{{ app.request.basepath }}/classes">Classes</a></li>
                         {% endif %}
                         {% if is_granted('ROLE_QUESTS_READ')
                            or is_granted('ROLE_QUESTS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/quests">SunQuests</a></li>
+                        <li><a href="{{ app.request.basepath }}/quests">Quests</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -197,9 +200,9 @@
                     </li>
                 {% endif %}
             </ul>
-        </div><!-- /.navbar-collapse -->
+        </div>
         {% endif %}
-    </div><!-- /.container-fluid -->
+    </div>
 </nav>
 {% block content %}
 {% endblock %}

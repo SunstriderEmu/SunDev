@@ -71,6 +71,12 @@ class UserAdminEdit extends AbstractType
                         'TypeFlag' 	=> 'ROLE_CREATURE_FLAG_TYPE',
                         'UnitFlag' 	=> 'ROLE_CREATURE_FLAG_UNIT',
                     ],
+                    'GameObject' => [
+                        'All' 		=> 'ROLE_GO',
+                        'Data' 		=> 'ROLE_GO_DATA',
+                        'SmartAI' 	=> 'ROLE_GO_SMARTAI',
+                        'Loot' 		=> 'ROLE_GO_LOOT',
+                    ],
                     'Quests' => [
                         'Write' 	=> 'ROLE_QUESTS_WRITE',
                         'Read' 		=> 'ROLE_QUESTS_READ',

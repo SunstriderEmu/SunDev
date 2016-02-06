@@ -80,6 +80,12 @@ class UserAdd extends AbstractType
 						'TypeFlag' 	=> 'ROLE_CREATURE_FLAG_TYPE',
 						'UnitFlag' 	=> 'ROLE_CREATURE_FLAG_UNIT',
 					],
+					'GameObject' => [
+						'All' 		=> 'ROLE_GO',
+						'Data' 		=> 'ROLE_GO_DATA',
+						'SmartAI' 	=> 'ROLE_GO_SMARTAI',
+						'Loot' 		=> 'ROLE_GO_LOOT',
+					],
 					'Quests' => [
 						'Write' 	=> 'ROLE_QUESTS_WRITE',
 						'Read' 		=> 'ROLE_QUESTS_READ',
@@ -96,7 +102,7 @@ class UserAdd extends AbstractType
 						'Creature' 		=> 'ROLE_CREATURE_LOOT',
 						'Disenchant' 	=> 'ROLE_LOOT_DISENCHANT',
 						'Fishing' 		=> 'ROLE_LOOT_FISHING',
-						'Gameobject' 	=> 'ROLE_LOOT_GAMEOBJECT',
+						'Gameobject' 	=> 'ROLE_GO_LOOT',
 						'Item' 			=> 'ROLE_LOOT_ITEM',
 						'Pickpocket' 	=> 'ROLE_LOOT_PICKPOCKET',
 						'Prospect' 		=> 'ROLE_LOOT_PROSPECT',

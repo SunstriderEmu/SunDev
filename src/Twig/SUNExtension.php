@@ -130,7 +130,7 @@ class SUNExtension extends \Twig_Extension
 		}
 	}
 
-	public function getType($type) {
+	public function getCreatureType($type) {
 		switch($type) {
 			case 1: echo "Beast"; break;
 			case 2: echo "Dragonkin"; break;
@@ -213,7 +213,7 @@ class SUNExtension extends \Twig_Extension
 			case 4: echo "Flying"; break;
 			case 5: echo "Ground & Flying"; break;
 			case 6: echo "Water & Flying"; break;
-			case 76: echo "All"; break;
+			case 7: echo "All"; break;
 			default: echo "Error";
 		}
 	}

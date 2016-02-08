@@ -107,6 +107,14 @@ $app->get('/creature/entry/{entry}/flagextra', function($entry) use($app) {
     ));
 })->assert('entry', '\d+');
 
+// Equip
+$app->get('/creature/entry/{entry}/equip', function ($entry) use ($app) {
+	return $app['twig']->render('creature/equip.html.twig', [
+		"entry"	=> $entry,
+		"equip"	=> $app['dao.creature']->getEquipment($entry),
+	]);
+});
+
 // Gossip
 $app->get('/creature/entry/{entry}/gossip', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);

@@ -41,13 +41,13 @@
                 if(ID > 0) {
                     $.ajax({
                         type : 'GET',
-                        url : '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID + '/name',
+                        url : '{{ app.request.basepath }}/' + TYPE + '/entry/' + ID + '/name',
                         success:
                                 function(data) {
                                     $('#entryorguidname').html(data);
-                                    $('#go').attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID);
+                                    $('#go').attr('href', '{{ app.request.basepath }}/' + TYPE + '/entry/' + ID + '/smartai');
                                     if(TYPE == "creature") {
-                                        $('#text').show().attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/entry/' + ID + '/text');
+                                        $('#text').show().attr('href', '{{ app.request.basepath }}' + TYPE + '/entry/' + ID + '/text');
                                     }
                                 }
                     });
@@ -55,11 +55,11 @@
                     ID = Math.abs(ID);
                     $.ajax({
                         type : 'GET',
-                        url : '{{ app.request.basepath }}/smartai/' + TYPE + '/guid/' + ID + '/name',
+                        url : '{{ app.request.basepath }}' + TYPE + '/guid/' + ID + '/name',
                         success:
                                 function(data) {
                                     $('#entryorguidname').html(data);
-                                    $('#go').attr('href', '{{ app.request.basepath }}/smartai/' + TYPE + '/guid/' + ID);
+                                    $('#go').attr('href', '{{ app.request.basepath }}' + TYPE + '/guid/' + ID + '/smartai');
                                     $('#text').hide();
                                 }
                     });

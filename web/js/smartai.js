@@ -118,13 +118,11 @@
             $(Element).chosen().change(function () {
                 var Value = $(this).val() || [];
                 var ID = $('table > tbody > tr.active > td:first-child').text();
-                if (ID == "") {
-                    alert('Please choose a line.');
-                }
+                if (ID == "")
+                    alert('Please choose a line');
                 var total = 0;
-                for (var i = 0; i < Value.length; i++) {
+                for (var i = 0; i < Value.length; i++)
                     total += Value[i] << 0;
-                }
                 Lines[ID][attribute] = total;
                 $(this).trigger('chosen:updated');
             });
@@ -236,9 +234,8 @@
                 for (i = 1; i < Color.length - 1; i++)
                     PhaseColor = $.xcolor.average(PhaseColor, PHASE[Color[i]]).getHex();
                 return PhaseColor;
-            } else {
+            } else
                 return PHASE[Color[0]];
-            }
         }
         function generateEventComment(id) {
             var EventParam1 = Lines[id].event_param1;
@@ -262,11 +259,11 @@
                     return "On Aggro";
                     break;
                 case "5":
-                    if (EventParam3 == "0" && EventParam4 > "0") {
+                    if (EventParam3 == "0" && EventParam4 > "0")
                         return "On '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam4) + "</a>' Killed";
-                    } else if (EventParam3 == "1") {
+                    else if (EventParam3 == "1")
                         return "On Player Killed";
-                    } else {
+                    else {
                         return "On Killed Unit";
                     }
                     break;
@@ -322,21 +319,21 @@
                     return "On Received Emote " + EventParam1;
                     break;
                 case "23":
-                    if (EventParam2 > "0") {
+                    if (EventParam2 > "0")
                         return "On Has Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    } else if (EventParam2 == "0") {
+                    else if (EventParam2 == "0")
                         return "On Missing Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
                     }
                     break;
                 case "24":
-                    if (EventParam2 > "0") {
+                    if (EventParam2 > "0")
                         return "On Target Buffed With '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    } else if (EventParam2 == "0") {
+                    else if (EventParam2 == "0")
                         return "On Target Missing Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
                     }
@@ -456,9 +453,8 @@
                     }
                     // Looking for the id that has the line id in its Link column
                     var Event = $('td:nth-child(2)').filter(function() { return $.text([this]) == id; }).closest('tr').find('td:first-child').text();
-                    if (Event == "") {
+                    if (Event == "")
                         return "MISSING LINK";
-                    }
                     return generateEventComment(Event);
                     break;
                 case "62":
@@ -513,11 +509,11 @@
                     return "On Friendly Killed In " + EventParam1 + " Range";
                     break;
                 case "101":
-                    if (EventParam2 == "0") {
+                    if (EventParam2 == "0")
                         return "On Victim Not In LoS";
-                    } else if (EventParam2 == "1") {
+                    else if (EventParam2 == "1")
                         return "On Victim In LoS";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": 'Reverts' must be either 0 or 1.");
                         return "Error: Param2 is not 0 or 1.";
                     }
@@ -584,17 +580,17 @@
                     return "Activate GO";
                     break;
                 case "10":
-                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0")
                         return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + "&" + ActionParam6 + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0") {
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0")
                         return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "&" + ActionParam5 + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0")
                         return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "&" + ActionParam4 + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0")
                         return "Play Random Emote (" + ActionParam1 + "," + ActionParam2 + "&" + ActionParam3 + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0")
                         return "Play Random Emote (" + ActionParam1 + "&" + ActionParam2 + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                    else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Emote id 2' should not be 0.");
                         return "Error";
                     } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
@@ -622,11 +618,11 @@
                     }
                     break;
                 case "14":
-                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 == "0")
                         return "Increase All Threat By " + ActionParam1 + "%";
-                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                    else if (ActionParam1 == "0" && ActionParam2 != "0")
                         return "Decrease All Threat By " + ActionParam1 + "%";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -679,21 +675,21 @@
                     return replaceComma(Comment);
                     break;
                 case "20":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Stop Attacking";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Start Attacking";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "21":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Disable Combat Movement";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Enable Combat Movement";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -702,11 +698,11 @@
                     return "Set Event Phase " + ActionParam1;
                     break;
                 case "23":
-                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 == "0")
                         return "Increase Phase By " + ActionParam1;
-                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                    else if (ActionParam1 == "0" && ActionParam2 != "0")
                         return "Decrease Phase By " + ActionParam1;
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -730,17 +726,17 @@
                     return "Follow Target";
                     break;
                 case "30":
-                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
-                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + ", " + getPower(ActionParam4) + ", " + getPower(ActionParam5) + " and " + getPower(ActionParam6) + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0") {
-                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + ", " + getPower(ActionParam4) + " and " + getPower(ActionParam5) + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0") {
-                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + ", " + getPower(ActionParam3) + " and " + getPower(ActionParam4) + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
-                        return "Set Random Phase (" + getPower(ActionParam1) + ", " + getPower(ActionParam2) + " and " + getPower(ActionParam3) + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
-                        return "Set Random Phase (" + getPower(ActionParam1) + " and " + getPower(ActionParam2) + ")";
-                    } else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0")
+                        return "Set Random Phase (" + ActionParam1 + ", " + ActionParam2 + ", " + ActionParam3 + ", " + ActionParam4 + ", " + ActionParam5 + " and " + ActionParam6 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 == "0")
+                        return "Set Random Phase (" + ActionParam1 + ", " + ActionParam2 + ", " + ActionParam3 + ", " + ActionParam4 + " and " + ActionParam5 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0" && ActionParam6 == "0")
+                        return "Set Random Phase (" + ActionParam1 + ", " + ActionParam2 + ", " + ActionParam3 + " and " + ActionParam4 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0")
+                        return "Set Random Phase (" + ActionParam1 + ", " + ActionParam2 + " and " + ActionParam3 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0")
+                        return "Set Random Phase (" + ActionParam1 + " and " + ActionParam2 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
                         alert("Error:\nLine " + id + ": 'Phase index 2' should not be 0.");
                         return "Error";
                     } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0" && ActionParam6 == "0") {
@@ -752,9 +748,9 @@
                     }
                     break;
                 case "31":
-                    if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam1 != ActionParam2 && ActionParam2 > ActionParam1) {
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam1 != ActionParam2 && ActionParam2 > ActionParam1)
                         return "Set Phase Random Between " + ActionParam1 + "-" + ActionParam2;
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -799,33 +795,33 @@
                     }
                     break;
                 case "41":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Despawn Instant";
-                    } else if (ActionParam1 > "0") {
+                    else if (ActionParam1 > "0")
                         return "Despawn In " + ActionParam1 + "ms";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "42":
-                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 == "0")
                         return "Set Invincibility At " + ActionParam1 + " HP";
-                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                    else if (ActionParam1 == "0" && ActionParam2 != "0")
                         return "Set Invincibility At " + ActionParam1 + "% HP";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "43":
-                    if (ActionParam1 != "0" && ActionParam2 == "0") {
+                    if (ActionParam1 != "0" && ActionParam2 == "0")
                         return "Mount To Creature '<a href='http://wowhead.com/npc=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
-                    } else if (ActionParam1 == "0" && ActionParam2 != "0") {
+                    else if (ActionParam1 == "0" && ActionParam2 != "0")
                         return "Mount To Model " + ActionParam1;
-                    } else if (ActionParam1 == "0" && ActionParam2 == "0") {
+                    else if (ActionParam1 == "0" && ActionParam2 == "0")
                         return "Dismount";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -840,21 +836,21 @@
                     return "Move Forward " + ActionParam1 + " Yards";
                     break;
                 case "47":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Visibility Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Visibility On";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "48":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Active Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Active On";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -911,31 +907,31 @@
                     }
                     break;
                 case "59":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Run Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Run On";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "60":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Fly Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Fly On";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
                     break;
                 case "61":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Swim Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Swim On";
-                    } else {
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
@@ -1135,14 +1131,13 @@
                     }
                     break;
                 case "103":
-                    if (ActionParam1 == "0") {
+                    if (ActionParam1 == "0")
                         return "Set Root Off";
-                    } else if (ActionParam1 == "1") {
+                    else if (ActionParam1 == "1")
                         return "Set Root On";
-                    } else {
+                    else
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
-                    }
                     break;
                 case "104":
                 case "105":
@@ -1258,12 +1253,11 @@
             MaxID++;
 
             var BG = $('table > tbody > tr:has(td:first-child:contains("' + id + '"))').css('background-color');
-            if (BG.length == 0 || BG == "rgb(245, 245, 245)") {
+            if (BG.length == 0 || BG == "rgb(245, 245, 245)")
                 BG = "";
-            } else {
+            else
                 BG = 'style="background-color: ' + BG + ';"';
-            }
-
+            
             $('<tr ' + BG + '>' +
             '<td><strong>' + MaxID + '</strong></td>' +
             '<td>' + Lines[id].link + '</td>' +
@@ -1741,12 +1735,12 @@
                 case "23": //ACTION_INC_EVENT_PHASE
                 case "30": //ACTION_RANDOM_PHASE
                 case "31": //ACTION_RANDOM_PHASE_RANGE
-                    displayActionValPower(1, id);
-                    displayActionValPower(2, id);
-                    displayActionValPower(3, id);
-                    displayActionValPower(4, id);
-                    displayActionValPower(5, id);
-                    displayActionValPower(6, id);
+                    displayActionValDefault(1, id);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "25":
                 case "47":
@@ -2204,15 +2198,6 @@
             $('<input class="form-control" type="text" id="action_param' + param + '_val" />').appendTo(ActionParamDIV);
             $('#action_param' + param + '_val').val(Lines[id][attr]);
         }
-        function displayActionValPower(param, id) {
-            var ActionParam = $('#action_param' + param);
-            var ActionParamDIV = ActionParam.next('div');
-            var attr = 'action_param' + param;
-            ActionParam.removeClass('display_flags');
-            ActionParamDIV.empty();
-            $('<input class="form-control" type="text" id="action_param' + param + '_val" />').appendTo(ActionParamDIV);
-            $('#action_param' + param + '_val').val(getPower(Lines[id][attr]));
-        }
         function displayTargetValDefault(param, id) {
             if (param == "x" || param == "y" || param == "z" || param == "o") {
                 var TargetParam = $('#target_' + param);
@@ -2404,11 +2389,6 @@
                         Lines[id][attr] = total;
                     }
                     break;
-                case "30": //ACTION_RANDOM_PHASE
-                    if (value > 2) {
-                        Lines[id][attr] = Math.pow(2, value - 1);
-                    }
-                    break;
                 case "18": //ACTION_SET_UNIT_FLAG
                 case "19": //ACTION_REMOVE_UNIT_FLAG
                 case "81": //ACTION_SET_NPC_FLAG
@@ -2418,27 +2398,24 @@
                 case "95": //ACTION_ADD_DYNAMIC_FLAG
                 case "96": //ACTION_REMOVE_DYNAMIC_FLAG
                     if (param == 1) {
-                        for (i = 0; i < value.length; i++) {
+                        for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
-                        }
                         Lines[id][attr] = total;
                     }
                     break;
                 case "90": //ACTION_SET_UNIT_FIELD_BYTES_1
                 case "91": //ACTION_REMOVE_UNIT_FIELD_BYTES_1
                     if (param == 2 || param == 3) {
-                        for (i = 0; i < value.length; i++) {
+                        for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
-                        }
                         Lines[id][attr] = total;
                     }
                     break;
                 case "150": //ACTION_SET_UNIT_FIELD_BYTES_2
                 case "151": //ACTION_REMOVE_UNIT_FIELD_BYTES_2
                     if (param == 1 || param == 2) {
-                        for (i = 0; i < value.length; i++) {
+                        for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
-                        }
                         Lines[id][attr] = total;
                     }
                     break;
@@ -2461,9 +2438,8 @@
         function target(coord) {
             if ($('#target_' + coord).text() == "") {
                 $('#target_' + coord + '_val').hide();
-            } else {
+            } else
                 $('#target_' + coord + '_val').show();
-            }
         }
         function changeEventsParams(Line) {
             switch (Line.event_type) {
@@ -2471,11 +2447,10 @@
                     EventParam1.html(Events[Line.event_type].param1);
                     EventParam2.html(Events[Line.event_type].param2);
                     EventParam3.html(Events[Line.event_type].param3);
-                    if (Line.event_param3 == "0") {
+                    if (Line.event_param3 == "0")
                         EventParam4.html('Creature ID');
-                    } else {
+                    else
                         EventParam4.html('');
-                    }
                     break;
                 default:
                     EventParam1.html(Events[Line.event_type].param1);
@@ -2484,11 +2459,10 @@
                     EventParam4.html(Events[Line.event_type].param4);
             }
             for (i = 0; i < 5; i++) {
-                if ($('#event_param' + i).text() == "" || Line.event_type == "61") {
+                if ($('#event_param' + i).text() == "" || Line.event_type == "61")
                     $('#event_param' + i + '_val').hide();
-                } else {
+                else
                     $('#event_param' + i + '_val').show();
-                }
             }
         }
         function changeActionsParams(Line) {
@@ -2535,11 +2509,10 @@
                     ActionParam6.html(Actions[Line.action_type].param6);
             }
             for (i = 0; i < 7; i++) {
-                if ($('#action_param' + i).text() == "") {
+                if ($('#action_param' + i).text() == "")
                     $('#action_param' + i + '_val').hide();
-                } else {
+                else
                     $('#action_param' + i + '_val').show();
-                }
             }
         }
         function changeTargetsParams(value) {
@@ -2551,27 +2524,15 @@
             $('#target_z').html(Targets[value].target_z);
             $('#target_o').html(Targets[value].target_o);
             for (i = 0; i < 4; i++) {
-                if ($('#target_param' + i).text() == "") {
+                if ($('#target_param' + i).text() == "")
                     $('#target_param' + i + '_val').hide();
-                } else {
+                else
                     $('#target_param' + i + '_val').show();
-                }
             }
             target("x");
             target("y");
             target("z");
             target("o");
-        }
-        function getPower(int) {
-            var i;
-            if (int > 2) {
-                for (i = 0; int != 1; i++) {
-                    int = int / 2;
-                }
-                return i + 1;
-            } else {
-                return int;
-            }
         }
         function getSpellName(id) {
             var Data;
@@ -2648,19 +2609,17 @@
             else
                 select = 'nth-child('+child+')';
 
-            if (Mask & Binary) {
+            if (Mask & Binary)
                 $(NPCFlags + ' > option:'+select).attr('selected', 'selected');
-            } else {
+            else
                 $(NPCFlags + ' > option:'+select).removeAttr('selected');
-            }
         }
         function generateBitComment(Start, Comment, Binary, Mask, String) {
             if (Mask & Binary) {
-                if (Comment != Start) {
+                if (Comment != Start)
                     Comment += ", " + String;
-                } else {
+                else
                     Comment += String;
-                }
             }
             return Comment;
         }

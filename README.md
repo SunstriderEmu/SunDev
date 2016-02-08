@@ -15,7 +15,7 @@ SunDev is developed with the micro-framework Silex.
     - test_world: your ptr world (can be the same as world)
 - Create and edit `app/config.php` from `app/config.sample.php`
 - Edit your host file so that `dev.sunstrider.com` points to your server. For example:   
-        `127.0.0.1  dev.sunstrider.com`
+        `127.0.0.1 dev.sunstrider.com`
 - Create a virtual host in your web server config.
     Example of Apache config:
 

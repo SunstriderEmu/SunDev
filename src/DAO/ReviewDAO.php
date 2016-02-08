@@ -59,11 +59,11 @@ class ReviewDAO extends DAO {
 	 */
 	public function getUserReviews($start, $end) {
 		if($start == 0)
-			$start = 'CURDATE()';
+			$start = 'NOW()';
 		else
-			$start = "CURDATE() - INTERVAL {$start} DAY";
+			$start = "NOW() - INTERVAL {$start} DAY";
 		
-		return $this->getDb('tools')->fetchAll("SELECT * FROM smart_review WHERE state >= 0 AND (date BETWEEN UNIX_TIMESTAMP(CURDATE() - INTERVAL {$end} DAY) AND UNIX_TIMESTAMP({$start})) AND user = ?", array((int) $this->app['security.token_storage']->getToken()->getUser()->getId()));
+		return $this->getDb('tools')->fetchAll("SELECT *,  UNIX_TIMESTAMP(NOW() - INTERVAL {$end} DAY), UNIX_TIMESTAMP({$start}) FROM smart_review WHERE state >= 0 AND (date BETWEEN UNIX_TIMESTAMP(NOW() - INTERVAL {$end} DAY) AND UNIX_TIMESTAMP({$start})) AND user = ?", array((int) $this->app['security.token_storage']->getToken()->getUser()->getId()));
 	}
 
 	/**

@@ -71,6 +71,10 @@ class DAO
                             intval($data['review']->entryorguid)));
                     break;
                 case 11: // Equipment
+					if($data['review']->info1 == '0') {
+						$newEntry = $this->getDb($db)->fetchAssoc('SELECT MAX(entry) as entry FROM creature_equip_template');
+						$data['review']->info1 = $newEntry['entry'];
+					}
                     $this->getDb($db)->executeQuery("UPDATE creature_template SET equipment_id = ? WHERE entry = ?", array(intval($data['review']->info1), intval($data['review']->entryorguid)));
                     $this->getDb($db)->executeQuery("DELETE FROM creature_equip_template WHERE entry = ?", array(intval($data['review']->info1)));
                     $insert = "INSERT IGNORE INTO creature_equip_template (entry, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES ";

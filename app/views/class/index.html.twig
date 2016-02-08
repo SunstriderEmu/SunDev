@@ -38,7 +38,7 @@
         </div>
         {% for class in classes %}
         <div class="col-md-3">
-            <h2><a href="{{ app.request.basepath }}/classes/{{ class.name|lower }}">{{ class.name }}</a> - {{ (class.tested / class.total * 100)[:5] }}%</h2>
+            <h2><a href="{{ app.request.basepath }}/class/{{ class.name|lower }}">{{ class.name }}</a> - {{ (class.tested / class.total * 100)[:5] }}%</h2>
             <p class="col-md-6">
                 <strong>Total spells:</strong> {{ class.spells }}<br />
                 <strong>Total tested:</strong> {{ class.spellstested }}

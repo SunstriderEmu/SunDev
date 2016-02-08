@@ -6,7 +6,7 @@ use SUN\Domain\Creature;
 use SUN\Domain\Zone;
 use Doctrine\DBAL\Connection;
 
-class SunDungeonDAO extends DAO {
+class DungeonDAO extends DAO {
 	public function getCreatures($dungeon) {
 		$fetch = $this->getDb('tools')->fetchAll("SELECT ct.entry, ct.difficulty_entry_1 as heroic, ct.name, c.map,
 											    n_stats, n_resistances, n_immunities, n_respawn,

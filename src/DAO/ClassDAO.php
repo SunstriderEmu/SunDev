@@ -4,7 +4,7 @@ namespace SUN\DAO;
 
 use SUN\Domain\Classes;
 
-class ClassesDAO extends DAO {
+class ClassDAO extends DAO {
 	public function getTotal() {
 		$spells = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_spells');
 		$talents = $this->getDb('tools')->fetchAssoc('SELECT COUNT(*) as count FROM class_test_talents');

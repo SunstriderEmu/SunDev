@@ -197,6 +197,7 @@ if($app['debug'] == false) {
 }
 
 require_once __DIR__.'/controllers/API.php';
+require_once __DIR__.'/controllers/AreaTrigger.php';
 require_once __DIR__.'/controllers/Creature.php';
 require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/GameObject.php';

@@ -43,12 +43,14 @@ class DAO
             switch($data['review']->source_type) {
                 case 0: // Creature
                 case 1: // GO
-              //case 2:    AreaTrigger NIY
+                case 2: // AreaTrigger
                 case 9: // Script
                     if($data['review']->source_type == 0)
                         $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
                     if($data['review']->source_type == 1)
                         $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                    if($data['review']->source_type == 2)
+                        $this->getDb($db)->executeQuery('REPLACE INTO areatrigger_scripts VALUES (?, "SmartTrigger")', array(intval($data['review']->entryorguid)));
 
                     $this->getDb($db)->executeQuery('DELETE FROM smart_scripts WHERE entryorguid = ? AND source_type = ?;', array($data['review']->entryorguid, $data['review']->source_type));
                     if($data['script'] != null) {

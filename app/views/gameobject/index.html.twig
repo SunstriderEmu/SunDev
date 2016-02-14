@@ -3,7 +3,7 @@
     {% block head %}{% endblock %}
     {% block content %}
         <div class="col-md-12">
-            <h2>SunGameObject</h2>
+            <h2>GameObject</h2>
             <h4>Find the gameobject by ID</h4>
             <form class="form-inline">
                 <div class="form-group">
@@ -44,19 +44,19 @@
                     if($('#find-name').is(":focus"))
                         $('#find-name').trigger('change');
                     if($('#find-entry').is(":focus"))
-                        window.location = ('{{ app.request.basepath }}/object/entry/'+$('#find-entry').val());
+                        window.location = ('{{ app.request.basepath }}/gameobject/entry/'+$('#find-entry').val());
                 }
             });
             $('#find-name').change(function(){
                 $.ajax({
                     type: "GET",
-                    url: '{{ app.request.basepath }}/object/'+$(this).val()+'/search',
+                    url: '{{ app.request.basepath }}/gameobject/'+$(this).val()+'/search',
                     success: function (data) {
                         $('.table > tbody').html('');
                         console.log(Date());
                         var html = '';
                         $.each(JSON.parse(data), function(){
-                            html += '<tr><td><a href="{{ app.request.basepath }}/object/entry/'+this.entry+'">'+this.entry+'</a></td><td>'+getTypeName(this.type)+'</td><td>'+this.name+'</td></tr>';
+                            html += '<tr><td><a href="{{ app.request.basepath }}/gameobject/entry/'+this.entry+'">'+this.entry+'</a></td><td>'+getTypeName(this.type)+'</td><td>'+this.name+'</td></tr>';
                         });
                         $('.table > tbody').append(html);
                     },
@@ -69,7 +69,7 @@
             $('#find-entry').on('keyup change', function(){
                 $.ajax({
                     type: "GET",
-                    url: '{{ app.request.basepath }}/object/entry/'+$(this).val()+'/name',
+                    url: '{{ app.request.basepath }}/gameobject/entry/'+$(this).val()+'/name',
                     success: function (data) {
                         console.log(Date(), data);
                         $('#name').html('').html(data);

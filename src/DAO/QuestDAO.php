@@ -6,7 +6,7 @@ use SUN\Domain\Quest;
 use SUN\Domain\Zone;
 
 
-class SunQuestDAO extends DAO
+class QuestDAO extends DAO
 {
 	public function getQuests($zone) {
 		$getZoneID = $this->getDb('dbc')->fetchAll('SELECT id, name FROM dbc_areatable WHERE id = ?', array($zone));
@@ -166,5 +166,10 @@ class SunQuestDAO extends DAO
 			"bugged"	=> $this->countFields(3, $id),
 			"no"		=> $this->countFields(4, $id),
 		]);
+	}
+
+	public function getQuestName($id) {
+		$quest = $this->getDb('test')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
+		return $quest['Title'];
 	}
 }

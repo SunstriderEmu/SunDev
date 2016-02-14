@@ -361,7 +361,7 @@
                 $.ajax({
                     type : 'POST',
                     data : 'info=' + JSON.stringify(info),
-                    url  : '{{ app.request.basepath }}/classes/apply',
+                    url  : '{{ app.request.basepath }}/class/apply',
                     success: function(data) {
                         console.log(data);
                     }

@@ -107,7 +107,7 @@
                     {% if is_granted('ROLE_GO_SMARTAI')
                        or is_granted('ROLE_GO_DATA')
                        or is_granted('ROLE_GO_LOOT') %}
-                        <li><a href="{{ app.request.basepath }}/object">GameObject</a></li>
+                        <li><a href="{{ app.request.basepath }}/gameobject">GameObject</a></li>
                     {% endif %}
                     {% if is_granted('ROLE_SPELL') %}
                         <li><a href="{{ app.request.basepath }}/spell">Spell</a></li>
@@ -141,11 +141,11 @@
                            or is_granted('ROLE_CLASSES_SHAMAN')
                            or is_granted('ROLE_CLASSES_WARLOCK')
                            or is_granted('ROLE_CLASSES_WARRIOR') %}
-                        <li><a href="{{ app.request.basepath }}/classes">Classes</a></li>
+                        <li><a href="{{ app.request.basepath }}/class">Class</a></li>
                         {% endif %}
                         {% if is_granted('ROLE_QUESTS_READ')
                            or is_granted('ROLE_QUESTS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/quests">Quests</a></li>
+                        <li><a href="{{ app.request.basepath }}/quest">Quest</a></li>
                         {% endif %}
                     </ul>
                 </li>

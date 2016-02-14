@@ -27,7 +27,7 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
-    'suntools' => [
+    'tools' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
         'dbname'    => 'sun_tools',
@@ -45,7 +45,7 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
-    'test_world' => [
+    'test' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
         'dbname'    => 'sun_world',

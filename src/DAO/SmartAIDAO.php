@@ -110,24 +110,4 @@ class SmartAIDAO extends DAO {
 	public function getTarget($target) {
 		return $this->getDb('tools')->fetchAssoc('SELECT * FROM smartai_targets WHERE id = ?', array($target));
 	}
-
-	public function getSpellName($id) {
-		$spell = $this->getDb('test')->fetchAssoc('SELECT spellName1 FROM spell_template WHERE entry = ?', array($id));
-		return $spell['spellName1'];
-	}
-
-	public function getQuestName($id) {
-		$quest = $this->getDb('test')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
-		return $quest['Title'];
-	}
-
-	public function getItemName($id) {
-		$item = $this->getDb('test')->fetchAssoc('SELECT name FROM item_template WHERE entry = ?', array($id));
-		return $item['name'];
-	}
-
-	public function getItemDisplay($id) {
-		$item = $this->getDb('test')->fetchAssoc('SELECT displayid FROM item_template WHERE entry = ?', array($id));
-		return $item['displayid'];
-	}
 } 

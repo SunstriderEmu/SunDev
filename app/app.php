@@ -68,19 +68,19 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/account/[0-9]+/remove$', 	'ROLE_ACCOUNT_REMOVE'),
 		array('^/account/commands', 		'ROLE_ACCOUNT_COMMANDS'),
 
-		// SunClasses
-		array('^/classes$', 		array('ROLE_CLASSES', 'ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR')),
-		array('^/classes/druid', 	'ROLE_CLASSES_DRUID'),
-		array('^/classes/hunter', 	'ROLE_CLASSES_HUNTER'),
-		array('^/classes/mage', 	'ROLE_CLASSES_MAGE'),
-		array('^/classes/paladin', 	'ROLE_CLASSES_PALADIN'),
-		array('^/classes/priest', 	'ROLE_CLASSES_PRIEST'),
-		array('^/classes/rogue', 	'ROLE_CLASSES_ROGUE'),
-		array('^/classes/shaman', 	'ROLE_CLASSES_SHAMAN'),
-		array('^/classes/warlock', 	'ROLE_CLASSES_WARLOCK'),
-		array('^/classes/warrior', 	'ROLE_CLASSES_WARRIOR'),
+		// Class
+		array('^/class$', 		array('ROLE_CLASSES', 'ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR')),
+		array('^/class/druid', 	'ROLE_CLASSES_DRUID'),
+		array('^/class/hunter', 	'ROLE_CLASSES_HUNTER'),
+		array('^/class/mage', 	'ROLE_CLASSES_MAGE'),
+		array('^/class/paladin', 	'ROLE_CLASSES_PALADIN'),
+		array('^/class/priest', 	'ROLE_CLASSES_PRIEST'),
+		array('^/class/rogue', 	'ROLE_CLASSES_ROGUE'),
+		array('^/class/shaman', 	'ROLE_CLASSES_SHAMAN'),
+		array('^/class/warlock', 	'ROLE_CLASSES_WARLOCK'),
+		array('^/class/warrior', 	'ROLE_CLASSES_WARRIOR'),
 
-		// SunCreature
+		// Creature
 		array('^/creature/entry/[0-9]+$', 				array('ROLE_CREATURE')),
 		array('^/creature/entry/[0-9]+/smartai$', 		array('ROLE_CREATURE_SMARTAI')),
 		array('^/creature/entry/[0-9]+/stats$', 		array('ROLE_CREATURE_STATS')),
@@ -96,23 +96,23 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/creature/entry/[0-9]+/unitflag$', 		array('ROLE_CREATURE_FLAG_UNIT')),
 
 		// GameObject
-		array('^/object/entry/[0-9]+$', 				array('ROLE_GO')),
-		array('^/object/entry/[0-9]+/data$', 			array('ROLE_GO_DATA')),
-		array('^/object/entry/[0-9]+/smartai$', 		array('ROLE_GO_SMARTAI')),
+		array('^/gameobject/entry/[0-9]+$', 			array('ROLE_GO')),
+		array('^/gameobject/entry/[0-9]+/data$', 		array('ROLE_GO_DATA')),
+		array('^/gameobject/entry/[0-9]+/smartai$', 	array('ROLE_GO_SMARTAI')),
 
-		// SunSpell
+		// Spell
 		array('^/spell', 	'ROLE_SPELL'),
 
-		// SunQuests
-		array('^/quests', 	array('ROLE_QUESTS_WRITE', 'ROLE_QUESTS_READ')),
+		// Quest
+		array('^/quest', 	array('ROLE_QUESTS_WRITE', 'ROLE_QUESTS_READ')),
 
-		// SunDungeons
-		array('^/dungeons', array('ROLE_DUNGEONS_WRITE', 'ROLE_DUNGEONS_READ')),
+		// Dungeon
+		array('^/dungeon', array('ROLE_DUNGEONS_WRITE', 'ROLE_DUNGEONS_READ')),
 
 		// Waypoints
 		array('^/waypoints','ROLE_WAYPOINTS'),
 
-		// SunLoots
+		// Loot
 		array('^/loot$', 					array('ROLE_LOOT', 'ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_LOOT_GAMEOBJECT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING')),
 		array('^/loot/disenchant/[0-9]+$', 	'ROLE_LOOT_DISENCHANT'),
 		array('^/loot/fishing/[0-9]+$', 	'ROLE_LOOT_FISHING'),
@@ -142,19 +142,15 @@ $app['dao'] = $app->share(function ($app) {
 $app['dao.review'] = $app->share(function ($app) {
 	return new SUN\DAO\ReviewDAO($app);
 });
-
-$app['dao.classes'] = $app->share(function ($app) {
-	return new SUN\DAO\ClassesDAO($app);
+$app['dao.class'] = $app->share(function ($app) {
+	return new SUN\DAO\ClassDAO($app);
 });
-
-$app['dao.quests'] = $app->share(function ($app) {
-	return new SUN\DAO\SunQuestDAO($app);
+$app['dao.quest'] = $app->share(function ($app) {
+	return new SUN\DAO\QuestDAO($app);
 });
-
-$app['dao.dungeons'] = $app->share(function ($app) {
-	return new SUN\DAO\SunDungeonDAO($app);
+$app['dao.dungeon'] = $app->share(function ($app) {
+	return new SUN\DAO\DungeonDAO($app);
 });
-
 $app['dao.smartai'] = $app->share(function ($app) {
 	return new SUN\DAO\SmartAIDAO($app);
 });
@@ -168,6 +164,9 @@ $app['dao.object'] = $app->share(function ($app) {
 });
 $app['dao.spell'] = $app->share(function ($app) {
 	return new SUN\DAO\SpellDAO($app);
+});
+$app['dao.item'] = $app->share(function ($app) {
+	return new SUN\DAO\ItemDAO($app);
 });
 
 
@@ -201,13 +200,13 @@ require_once __DIR__.'/controllers/API.php';
 require_once __DIR__.'/controllers/Creature.php';
 require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/GameObject.php';
+require_once __DIR__.'/controllers/Item.php';
 require_once __DIR__.'/controllers/Review.php';
 require_once __DIR__.'/controllers/SmartAI.php';
-require_once __DIR__.'/controllers/SunClasses.php';
-require_once __DIR__.'/controllers/SunDungeon.php';
-require_once __DIR__.'/controllers/SunEquip.php';
-require_once __DIR__.'/controllers/SunLoot.php';
-require_once __DIR__.'/controllers/SunQuest.php';
+require_once __DIR__.'/controllers/Class.php';
+require_once __DIR__.'/controllers/Dungeon.php';
+require_once __DIR__.'/controllers/Loot.php';
+require_once __DIR__.'/controllers/Quest.php';
 require_once __DIR__.'/controllers/Spell.php';
 require_once __DIR__.'/controllers/User.php';
 require_once __DIR__.'/controllers/Account.php';

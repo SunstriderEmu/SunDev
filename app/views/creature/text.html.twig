@@ -56,8 +56,9 @@
                         <th width="7%">Type</th>
                         <th width="13%">Language</th>
                         <th width="11%">Emote</th>
-                        <th width="27%">Text</th>
-                        <th width="24%">Comment</th>
+                        <th width="18%">Text EN</th>
+                        <th width="18%">Text FR</th>
+                        <th width="15%">Comment</th>
                         <th width="3%"></th>
                     </tr>
                 </thead>
@@ -135,7 +136,10 @@
                             </select>
                         </td>
                         <td>
-                            <textarea class="form-control" rows="2" onchange="update({{ text.groupid }}, {{ text.id }}, 'text', this.value)">{{ text.text }}</textarea>
+                            <textarea class="form-control" rows="2" onchange="update({{ text.groupid }}, {{ text.id }}, 'texten', this.value)">{{ text.texten }}</textarea>
+                        </td>
+                        <td>
+                            <textarea class="form-control" rows="2" onchange="update({{ text.groupid }}, {{ text.id }}, 'textfr', this.value)">{{ text.textfr }}</textarea>
                         </td>
                         <td>
                             <textarea class="form-control" rows="2" onchange="update({{ text.groupid }}, {{ text.id }}, 'comment', this.value)">{{ text.comment }}</textarea>
@@ -152,11 +156,12 @@
         <script type="text/javascript">
             var Info = { "entryorguid": {{ creature.entry }}, "source_type": 12 };
             var Texts = {{ texts|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
+            console.log(Texts);
 
             function generateData(Texts) {
                 var Data = [];
                 $.each(Texts, function(){
-                    Data.push([this.groupid, this.id, this.text, this.type, this.language, this.probability, this.emote, this.sound, this.comment]);
+                    Data.push([this.groupid, this.id, this.texten, this.textfr, this.type, this.language, this.probability, this.emote, this.sound, this.comment]);
                 });
                 return Data;
             }
@@ -186,7 +191,8 @@
                     "entry":"{{ creature.entry }}",
                     "groupid": GID.toString(),
                     "id": ID.toString(),
-                    "text": "",
+                    "texten": "",
+                    "textfr": "",
                     "type": "0",
                     "language":"0",
                     "probability": "100",
@@ -263,7 +269,8 @@
                 '            <option value="275">Train</option>' +
                 '        </select>' +
                 '    </td>' +
-                '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'text\', this.value)"></textarea></td>' +
+                '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'texten\', this.value)"></textarea></td>' +
+                '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'textfr\', this.value)"></textarea></td>' +
                 '    <td><textarea class="form-control" rows="2" onchange="update(' + GID + ', ' + ID + ', \'comment\', this.value)">{{ creature.name }} - </textarea></td>' +
                 '    <td><span class="glyphicon glyphicon-remove" onclick="removeText(' + GID + ', ' + ID + ')"></span></td>' +
                 '</tr>').appendTo('table > tbody');
@@ -330,6 +337,7 @@
                         Check = i;
                 }
                 Texts[Check][prop] = value;
+                console.log(Texts);
             }
         </script>
     {% endblock %}

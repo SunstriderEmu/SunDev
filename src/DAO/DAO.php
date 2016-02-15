@@ -46,9 +46,25 @@ class DAO
                 case 2: // AreaTrigger
                 case 9: // Script
                     if($data['review']->source_type == 0)
-                        $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                    {
+                        if($data['review']->entryorguid > 0)
+                            $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                        else
+                        {
+                            $entry = $this->getDb($db)->executeQuery('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                            $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
+                        }
+                    }
                     if($data['review']->source_type == 1)
-                        $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                    {
+                        if($data['review']->entryorguid > 0)
+                            $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                        else
+                        {
+                            $entry = $this->getDb($db)->executeQuery('SELECT id FROM gameobject WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                            $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
+                        }
+                    }
                     if($data['review']->source_type == 2)
                         $this->getDb($db)->executeQuery('REPLACE INTO areatrigger_scripts VALUES (?, "SmartTrigger")', array(intval($data['review']->entryorguid)));
 

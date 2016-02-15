@@ -247,7 +247,6 @@
                 return PHASE[Color[0]];
         }
         function generateEventComment(id) {
-            console.log(Lines[id].event_param1);
             var EventParam1 = Lines[id].event_param1;
             var EventParam2 = Lines[id].event_param2;
             var EventParam3 = Lines[id].event_param3;

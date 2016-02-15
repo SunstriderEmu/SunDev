@@ -102,19 +102,19 @@ class DAO
                     $this->getDb($db)->executeQuery($insert);
                     break;
                 case 12: // Text
-                    var_dump($data['script']);
                     $this->getDb($db)->executeQuery("DELETE FROM creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                     $this->getDb($db)->executeQuery("DELETE FROM locales_creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                     $insert = "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";
                     $insertLocale = "INSERT IGNORE INTO locales_creature_text (entry, groupid, id, text_loc2) VALUES ";
                     foreach($data['script'] as $line)
                     {
-                        $insert .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, '{$line[2]}', {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, '{$line[9]}'),";
-                        $insertLocale .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, '{$line[3]}'),";
+                        $insert .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[2]}\", {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, \"{$line[9]}\"),";
+                        $insertLocale .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[3]}\"),";
                     }
                     $insert = rtrim($insert, ',');
                     $insertLocale = rtrim($insertLocale, ',');
-                    var_dump($insertLocale);
+					var_dump($insert);
+					var_dump($insertLocale);
                     $this->getDb($db)->executeQuery($insert);
                     $this->getDb($db)->executeQuery($insertLocale);
                     break;

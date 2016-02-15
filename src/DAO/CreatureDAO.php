@@ -153,7 +153,7 @@ class CreatureDAO extends DAO {
 
     public function getCreatureText($entry)
     {
-        return $this->getDb('test')->fetchAll('SELECT ct.entry, ct.groupid, ct.id, ct.text as texten, lct.text_loc2 as textfr, ct.type, ct.language, ct.probability, ct.emote, ct.duration, ct.sound, ct.comment, ct.BroadcastTextId, ct.TextRange FROM creature_text ct LEFT JOIN locales_creature_text lct ON ct.entry = lct.entry AND ct.groupid = lct.groupid AND ct.id = lct.id WHERE ct.entry = ? GROUP BY ct.id', array($entry));
+        return $this->getDb('test')->fetchAll('SELECT ct.entry, ct.groupid, ct.id, ct.text as texten, lct.text_loc2 as textfr, ct.type, ct.language, ct.probability, ct.emote, ct.duration, ct.sound, ct.comment, ct.BroadcastTextId, ct.TextRange FROM creature_text ct LEFT JOIN locales_creature_text lct ON ct.entry = lct.entry AND ct.groupid = lct.groupid AND ct.id = lct.id WHERE ct.entry = ?', array($entry));
     }
 
     public function getMenu($entry)

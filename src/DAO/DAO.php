@@ -51,7 +51,7 @@ class DAO
                             $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
                         else
                         {
-                            $entry = $this->getDb($db)->executeQuery('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                            $entry = $this->getDb($db)->fetchAssoc('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
                             $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
                         }
                     }

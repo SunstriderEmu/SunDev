@@ -49,6 +49,15 @@
         var TargetParam2DIV = TargetParam2.next('div');
         var TargetParam3DIV = TargetParam3.next('div');
 
+        var TargetX = $('#target_x');
+        var TargetY = $('#target_y');
+        var TargetZ = $('#target_z');
+        var TargetO = $('#target_o');
+        var TargetXDIV = TargetX.next('div');
+        var TargetYDIV = TargetY.next('div');
+        var TargetZDIV = TargetZ.next('div');
+        var TargetODIV = TargetO.next('div');
+
         var SelectTargetFlags = '#target_flags_value';
         var i;
 
@@ -2339,16 +2348,16 @@
         TargetParam3DIV.on("change", '#target_param3_val', function () {
             setTargetParamValue(3);
         });
-        $('#target_x_val').change(function () {
+        TargetXDIV.on("change", '#target_x_val', function () {
             setTargetParamValue("x");
         });
-        $('#target_y_val').change(function () {
+        TargetYDIV.on("change", '#target_y_val', function () {
             setTargetParamValue("y");
         });
-        $('#target_z_val').change(function () {
+        TargetZDIV.on("change", '#target_z_val', function () {
             setTargetParamValue("z");
         });
-        $('#target_o_val').change(function () {
+        TargetODIV.on("change", '#target_o_val', function () {
             setTargetParamValue("o");
         });
 

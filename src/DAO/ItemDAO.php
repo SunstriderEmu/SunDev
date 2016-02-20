@@ -1,5 +1,9 @@
 <?php
 
+namespace SUN\DAO;
+
+use Doctrine\DBAL\Connection;
+
 class ItemDAO extends DAO
 {
 	public function getItemName($id)

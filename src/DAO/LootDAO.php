@@ -156,6 +156,12 @@ class LootDAO extends DAO {
 			"type"		=> 8,
 		];
 	}
+	
+	public function getReferenceLastId()
+	{
+		$reference = $this->getDb('test')->fetchAssoc('SELECT MAX(entry) as entry FROM reference_loot_template');
+		return $reference['entry'];
+	}
 
 	public function getSkinningLoot($id) {
 		$loots = $this->getDb('test')->fetchAll('SELECT * FROM skinning_loot_template WHERE entry = ?', array(intval($id)));

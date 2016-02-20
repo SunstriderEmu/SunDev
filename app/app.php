@@ -154,6 +154,9 @@ $app['dao.dungeon'] = $app->share(function ($app) {
 $app['dao.smartai'] = $app->share(function ($app) {
 	return new SUN\DAO\SmartAIDAO($app);
 });
+$app['dao.loot'] = $app->share(function ($app) {
+	return new SUN\DAO\LootDAO($app);
+});
 
 
 $app['dao.creature'] = $app->share(function ($app) {

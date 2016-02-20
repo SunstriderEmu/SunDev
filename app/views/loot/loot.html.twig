@@ -1,9 +1,6 @@
 {% extends "layout.html.twig" %}
     {% block title %}
-        {% if item is defined %}
-            {{ item }} Loot -
-        {% endif %}
-        {{ parent() }}
+        {{ loot.id }} Loot - {{ parent() }}
     {% endblock %}
     {% block content %}
         <div class="col-md-12">
@@ -190,7 +187,8 @@
             function generateData(Loot) {
                 var Data = [];
                 $.each(Loot.items, function(key, value){
-                    Data.push([key, this.ChanceOrQuestChance, this.groupid, this.mincountOrRef, this.maxcount, this.lootcondition, this.condition_value1, this.condition_value2 ]);
+                    if(this.ChanceOrQuestChance)
+                        Data.push([this.item, this.ChanceOrQuestChance, this.groupid, this.mincountOrRef, this.maxcount, this.lootcondition, this.condition_value1, this.condition_value2 ]);
                 });
                 return Data;
             }

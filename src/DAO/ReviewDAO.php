@@ -43,9 +43,9 @@ class ReviewDAO extends DAO {
 	 * @return mixed
 	 */
 	public function updateReview($review) {
-		$check = $this->getDb('tools')->fetchAssoc('SELECT entryorguid FROM smart_review WHERE entryorguid = ? AND source_type = ?',
-			   array(intval($review->entryorguid), intval($review->source_type)));
-		if($check== null)
+		$check = $this->getDb('tools')->fetchAssoc('SELECT entryorguid FROM smart_review WHERE entryorguid = ? AND source_type = ?', array(intval($review->entryorguid), intval($review->source_type)));
+		
+		if($check == null)
 			$this->createReview($review);
 		
 		return $this->getDb('tools')->executeQuery('UPDATE smart_review SET validation_date = ?, validation_user = ?, state = ? WHERE entryorguid = ? AND source_type = ?',

@@ -21,11 +21,11 @@
     <form class="form-inline pull-left">
         <div class="form-group">
             <label>Start</label>
-            <input type="date" id="start" class="form-control" value="{{ reviews.reviews.0.start }}">
+            <input type="date" id="start" class="form-control" value="{% if reviews.reviews.0 is defined %}{{ reviews.reviews.0.start }}{% else %}{{ 'now'|date('Y-m-d') }}{% endif %}">
         </div>
         <div class="form-group">
             <label>End</label>
-            <input type="date" id="end" class="form-control" value="{{ reviews.reviews.0.end }}">
+            <input type="date" id="end" class="form-control" value="{% if reviews.reviews.0 is defined %}{{ reviews.reviews.0.end }}{% else %}{{ 'now'|date_modify("+7 day")|date('Y-m-d') }}{% endif %}">
         </div>
     </form>
     <button class="btn btn-primary" id="go">
@@ -108,7 +108,7 @@
         }
         
         google.charts.load('current', {packages: ['corechart', 'bar']});
-        google.charts.setOnLoadCallback(drawStacked);
+        {% if reviews.reviews.0 is defined %}google.charts.setOnLoadCallback(drawStacked);{% endif %}
 
         function drawStacked() {
               var data = google.visualization.arrayToDataTable([

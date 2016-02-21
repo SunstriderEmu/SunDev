@@ -29,6 +29,7 @@
                     <th>ID</th>
                     <th>Heroic</th>
                     <th>Name</th>
+                    <th></th>
                     </thead>
                     <tbody>
                     </tbody>
@@ -61,7 +62,7 @@
                                 html += '<td><a href="{{ app.request.basepath }}/creature/entry/'+this.heroic+'">'+this.heroic+'<a></td>';
                             else
                                 html += '<td></td>';
-                            html += '<td>'+this.name+'</td></tr>';
+                            html += '<td>'+this.name+'</td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/loot">Loot</a></tr>';
                         });
                         $('.table > tbody').append(html);
                     },

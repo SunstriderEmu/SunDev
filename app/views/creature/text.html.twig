@@ -75,12 +75,12 @@
                         </td>
                         <td>
                             <select class="form-control" onchange="update({{ text.groupid }}, {{ text.id }}, 'type', this.value)">
-                            <option value="0" {% if text.type == "0" %}selected="selected"{% endif %}>Say</option>
-                            <option value="1" {% if text.type == "1" %}selected="selected"{% endif %}>Yell</option>
-                            <option value="2" {% if text.type == "2" %}selected="selected"{% endif %}>Emote</option>
-                            <option value="3" {% if text.type == "3" %}selected="selected"{% endif %}>Boss Emote</option>
-                            <option value="4" {% if text.type == "4" %}selected="selected"{% endif %}>Whisper</option>
-                            <option value="5" {% if text.type == "5" %}selected="selected"{% endif %}>Boss Whisper</option>
+                            <option value="12" {% if text.type == "12" %}selected="selected"{% endif %}>Say</option>
+                            <option value="14" {% if text.type == "14" %}selected="selected"{% endif %}>Yell</option>
+                            <option value="16" {% if text.type == "16" %}selected="selected"{% endif %}>Emote</option>
+                            <option value="41" {% if text.type == "41" %}selected="selected"{% endif %}>Boss Emote</option>
+                            <option value="15" {% if text.type == "15" %}selected="selected"{% endif %}>Whisper</option>
+                            <option value="42" {% if text.type == "42" %}selected="selected"{% endif %}>Boss Whisper</option>
                             </select>
                         </td>
                         <td>
@@ -167,6 +167,7 @@
             }
 
             $('#apply').click(function () {
+                console.log(Texts);
                 apply(generateData(Texts), Info);
             });
             $('#review').click(function () {

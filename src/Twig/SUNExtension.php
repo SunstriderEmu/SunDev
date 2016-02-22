@@ -636,9 +636,9 @@ class SUNExtension extends \Twig_Extension
 				break;
 			case 1: // SmartAI GameObject
 				if($script['entryorguid'] > 0)
-					echo "<a href=\"/object/entry/{$script['entryorguid']}/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
+					echo "<a href=\"/gameobject/entry/{$script['entryorguid']}/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
 				else
-					echo "<a href=\"/object/guid/".abs($script['entryorguid'])."/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
+					echo "<a href=\"/gameobject/guid/".abs($script['entryorguid'])."/smartai\">{$this->getGOName($script['entryorguid'])} - SmartAI</a>";
 				break;
 			case 9: // SmartAI Script
 				echo "<a href=\"/smartai/script/{$script['entryorguid']}\">{$this->getScriptName($script['entryorguid'])} - Script {$this->getScript($script['entryorguid'])}</a>";
@@ -678,7 +678,7 @@ class SUNExtension extends \Twig_Extension
 
 			// Loot
 			case 50: // Creature Loot
-				echo "<a href=\"/loot/creature/{$script['entryorguid']}\">Creature Loot {$script['entryorguid']}</a>";
+				echo "<a href=\"/creature/{$script['entryorguid']}/loot\">Creature Loot {$script['entryorguid']}</a>";
 				break;
 			case 51: // Disenchant Loot
 				echo "<a href=\"/loot/disenchant/{$script['entryorguid']}\">Disenchant Loot {$script['entryorguid']}</a>";

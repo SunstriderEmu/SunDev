@@ -1224,6 +1224,9 @@
                         return "Error";
                     }
                     break;
+                case "114":
+                    return "Rise Of " + ActionParam1 + "m";
+                    break;
                 case "150":
                 case "151":
                     Binary = "0x" + Hex(ActionParam1);

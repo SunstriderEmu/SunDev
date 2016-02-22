@@ -497,9 +497,9 @@
 
             SelectInhabit.change(function(){
                 var value = $(this).val();
-                var total;
+                var total = 0;
                 for (i = 0; i < value.length; i++)
-                    total += value[i] << 0;
+                    total = total + parseInt(value[i]);
                 Creature.InhabitType = total;
             });
 

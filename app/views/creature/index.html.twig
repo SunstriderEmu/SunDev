@@ -23,12 +23,17 @@
                     <input type="text" class="form-control" id="find-name">
                 </div>
             </form>
-            <div class="col-md-6 row">
+            <div class="col-md-7 row">
                 <table class="table table-stripped">
                     <thead>
                     <th>ID</th>
                     <th>Heroic</th>
                     <th>Name</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                     </thead>
                     <tbody>
@@ -62,7 +67,7 @@
                                 html += '<td><a href="{{ app.request.basepath }}/creature/entry/'+this.heroic+'">'+this.heroic+'<a></td>';
                             else
                                 html += '<td></td>';
-                            html += '<td>'+this.name+'</td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/loot">Loot</a></tr>';
+                            html += '<td>'+this.name+'</td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/stats">Stats</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/smartai">Smartai</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/text">Text</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/equip">Equipment</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/loot">Loot</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/immune">Immune</a></td></tr>';
                         });
                         $('.table > tbody').append(html);
                     },

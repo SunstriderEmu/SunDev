@@ -42,7 +42,7 @@ $app->get('/creature/entry/{entry}/immune', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/immunities.html.twig', array(
         "entry"		=> $entry,
-        "name"		=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "immunities"=> $app['dao.creature']->getImmunities($entry),
     ));
 })->assert('entry', '\d+');
@@ -52,7 +52,7 @@ $app->get('/creature/entry/{entry}/npcflag', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/npcflag.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getNPCFlag($entry),
     ));
 })->assert('entry', '\d+');
@@ -62,7 +62,7 @@ $app->get('/creature/entry/{entry}/unitflag', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/unitflag.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getUnitFlag($entry),
     ));
 })->assert('entry', '\d+');
@@ -72,7 +72,7 @@ $app->get('/creature/entry/{entry}/unitflag2', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/unitflag2.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getUnitFlag2($entry),
     ));
 })->assert('entry', '\d+');
@@ -82,7 +82,7 @@ $app->get('/creature/entry/{entry}/dynamicflag', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/dynamicflag.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getDynamicFlag($entry),
     ));
 })->assert('entry', '\d+');
@@ -92,7 +92,7 @@ $app->get('/creature/entry/{entry}/typeflag', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/typeflag.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getTypeFlag($entry),
     ));
 })->assert('entry', '\d+');
@@ -102,22 +102,23 @@ $app->get('/creature/entry/{entry}/flagextra', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     return $app['twig']->render('creature/flagextra.html.twig', array(
         "entry"	=> $entry,
-        "name"	=> $app['dao.creature']->findCreatureEntryName($creature)->getName(),
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
         "flag"  => $app['dao.creature']->getFlagExtra($entry),
     ));
 })->assert('entry', '\d+');
 
 // Equip
 $app->get('/creature/entry/{entry}/equip', function ($entry) use ($app) {
+    $creature 	= new Creature(["entry" => $entry]);
 	return $app['twig']->render('creature/equip.html.twig', [
 		"entry"	=> $entry,
+        "creature"	=> array('name' => $app['dao.creature']->findCreatureEntryName($creature)->getName()),
 		"equip"	=> $app['dao.creature']->getEquipment($entry),
 	]);
 });
 
 // Gossip
 $app->get('/creature/entry/{entry}/gossip', function($entry) use($app) {
-    $creature 	= new Creature(["entry" => $entry]);
     $creature = $app['dao.creature']->getCreature($entry);
     $array = [
         "menus"      => [],

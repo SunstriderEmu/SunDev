@@ -1,5 +1,5 @@
 {% extends "layout.html.twig" %}
-    {% block title %}Dynamic Flag - {{ name }} - {{ parent() }}{% endblock %}
+    {% block title %}Dynamic Flag - {{ creature.name }} - {{ parent() }}{% endblock %}
     {% block head %}
         <style type="text/css">
             #imm ul > li {
@@ -20,7 +20,7 @@
     {% endblock %}
     {% block content %}
         <div class="col-md-9">
-            <h2>{{ name }} - Dynamic Flag</h2>
+            <h2>{{ creature.name }} - Dynamic Flag</h2>
         </div>
         <div class="col-md-3 text-right" style="margin-top: 30px">
             {% include 'review.html.twig' %}

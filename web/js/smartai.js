@@ -10,11 +10,21 @@
         var Targets = informations.Targets;
 
         var Info = { "entryorguid": Entry, "source_type": Type };
-
-        if (jQuery.isEmptyObject(Lines))
-            var MaxID = -1;
-        else
-            MaxID = Object.keys(Lines).length - 1;
+        
+       function getMaxID(Lines)
+        {
+            if (jQuery.isEmptyObject(Lines))
+                return -1;
+            else
+            {
+                var ID;
+                $.each(Lines, function(){
+                    ID = parseInt(this.id);
+                });
+                return ID;
+            }
+        }
+        var MaxID = getMaxID(Lines);
 
         var EventType = $('#event_type');
         var ActionType = $('#action_type');
@@ -651,7 +661,7 @@
                     var Binary = "0x" + Hex(ActionParam1);
                     Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1, 'Server Controlled');
                     Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2, 'Non Attackable');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4, 'Diasable Move');
+                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4, 'Disable Move');
                     Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8, 'PvP Attackable');
                     Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10, 'Rename');
                     Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20, 'Preparation');
@@ -1369,9 +1379,11 @@
             RefreshTable();
         }
         function deleteLine(id) {
-            $('table > tbody > tr:has(td:first-child:contains("' + id + '"))').closest('tr').remove();
+            $('tr td:first-child').filter(function(){
+                return $.trim($(this).text()) === id;
+            }).parent().remove();
             delete Lines[id];
-            MaxID = Object.keys(Lines).length - 1;   // Redefine MaxID to match the changes done to Lines
+            MaxID = getMaxID(Lines);   // Redefine MaxID to match the changes done to Lines
 
             displayLine(0, 'table > tbody > tr:has(td:first-child:contains(0))');
             RefreshTable();

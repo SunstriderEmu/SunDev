@@ -1,5 +1,23 @@
 (function($)
 {
+    /**
+     * HOW TO ADD A SMART_EVENT
+     *  1. Add a new row in smartai_events
+     *  2. Add a new case in the function generateEventComment()
+     *  If your event requires a specific display:
+     *  3. Add a new case in displayEventVal()
+     * --
+     * HOW TO ADD A SMART_ACTION
+     *  1. Add a new row in smartai_actions
+     *  2. Add a new case in the function generateActionComment()
+     *  If your action requires a specific display:
+     *  3. Add a new case in displayActionVal()
+     * --
+     * HOW TO ADD A SMART_TARGET
+     *  1. Add a new row in smartai_targets
+     *  If your target requires a specific display:
+     *  2. Add a new case in displayTargetVal()
+     */
     $.fn.smartai=function(informations) {
         var Entry = informations.Entry;
         var Type = informations.Type;
@@ -84,6 +102,10 @@
             9: "#89ADF8"
         };
 
+        // Launch functions
+        RefreshTable();
+        generateComments(Lines);
+
         function RefreshTableTr(tr) {
             var td;
             if(tr == 1)
@@ -112,7 +134,6 @@
                 deleteLine(id);
             });
         }
-        RefreshTable();
 
         // Set Phase Color at browsing
         $('table > tbody > tr').each(function () {
@@ -159,6 +180,11 @@
             }
         }
 
+
+        // Buttons
+        $('#new_line').click(function () {
+            addLine();
+        });
         $('#generate_comments').click(function () {
             generateComments(Lines);
         });
@@ -178,6 +204,7 @@
             generateComments(Lines);
             refuse(generateData(Lines), Info);
         });
+
         function generateData(Lines) {
             var Data = [];
             $.each(Object.keys(Lines), function(index, i) {
@@ -1249,7 +1276,7 @@
                             default: return;
                         }
                     }
-                    if (ActionParam2 == "1") {'Set Flag ',
+                    if (ActionParam2 == "1") {
                         Comment = generateBitComment('Set Flag ', Comment, Binary, 0x1, 'Unknown 1');
                         Comment = generateBitComment('Set Flag ', Comment, Binary, 0x2, 'Unknown 2');
                         Comment = generateBitComment('Set Flag ', Comment, Binary, 0x4, 'Sanctuary');
@@ -1269,6 +1296,28 @@
                 case "154":
                     return "Teleport On Target";
                     break;
+                case "155":
+                    return "Assist Target";
+                    break;
+                case "156":
+                    if(ActionParam1 == "0")
+                        return "Can Move Home";
+                    else if(ActionParam1 == "1")
+                        return "Prevent Moving Home";
+                    else
+                        alert('Error in line '+id+':\nAction Param 1 requires either 0 or 1.');
+                    break;
+                case "157":
+                    return "Add Target To Formation";
+                    break;
+                case "158":
+                    return "Remove Target From Formation";
+                    break;
+                case "159":
+                    return "Remove The Formation";
+                    break;
+                default:
+                    return "Error in generateActionComment";
             }
         }
         function duplicateLine(id) {
@@ -1292,8 +1341,7 @@
             '   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
             '</td>' +
             '</tr>').appendTo('table > tbody');
-
-            var New = {
+            Lines[MaxID] = {
                 "entryorguid": Entry.toString(),
                 "id": MaxID.toString(),
                 "source_type": Lines[id].source_type,
@@ -1324,7 +1372,6 @@
                 "target_z": Lines[id].target_z,
                 "target_o": Lines[id].target_o
             };
-            Lines[MaxID] = New;
             displayLine(MaxID, $('table > tbody > tr:has(td:first-child:contains("' + MaxID + '"))'));
             RefreshTable();
         }
@@ -1342,8 +1389,7 @@
             '   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
             '</td>' +
             '</tr>').appendTo('table > tbody');
-
-            var New = {
+            Lines[MaxID] = {
                 "entryorguid": Entry.toString,
                 "id": MaxID.toString(),
                 "source_type": Type.toString(),
@@ -1374,7 +1420,6 @@
                 "target_z": "0",
                 "target_o": "0"
             };
-            Lines[MaxID] = New;
             displayLine(MaxID, 'table > tbody > tr:has(td:first-child:contains("' + MaxID + '"))');
             RefreshTable();
         }
@@ -1453,11 +1498,6 @@
             ActionType.val(Lines[id].action_type).trigger('chosen:updated');
             TargetType.val(Lines[id].target_type).trigger('chosen:updated');
         }
-
-        generateComments(Lines);
-        $('#new_line').click(function () {
-            addLine();
-        });
 
         function displayEventVal(EventType, id) {
             switch (EventType) {
@@ -1578,6 +1618,40 @@
                     '   <option value="1">Yes</option>' +
                     '</select>').appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
+                case "5":
+                    ActionParam1DIV.empty();
+                    $(getEmoteSelect(1)).appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
+                case "10":
+                    ActionParam1DIV.empty();
+                    $(getEmoteSelect(1)).appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    ActionParam2DIV.empty();
+                    $(getEmoteSelect(2)).appendTo(ActionParam2DIV);
+                    $('#action_param2_val').val(Lines[id].action_param2);
+                    ActionParam3DIV.empty();
+                    $(getEmoteSelect(3)).appendTo(ActionParam3DIV);
+                    $('#action_param3_val').val(Lines[id].action_param3);
+                    ActionParam4DIV.empty();
+                    $(getEmoteSelect(4)).appendTo(ActionParam4DIV);
+                    $('#action_param4_val').val(Lines[id].action_param4);
+                    ActionParam5DIV.empty();
+                    $(getEmoteSelect(5)).appendTo(ActionParam5DIV);
+                    $('#action_param5_val').val(Lines[id].action_param5);
+                    ActionParam6DIV.empty();
+                    $(getEmoteSelect(6)).appendTo(ActionParam6DIV);
+                    $('#action_param6_val').val(Lines[id].action_param6);
                     break;
                 case "8":
                     ActionParam1DIV.empty();
@@ -1587,6 +1661,11 @@
                     '   <option value="2">Aggressive</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "11": //ACTION_CAST
                 case "85": //ACTION_INVOKER_CAST
@@ -1596,7 +1675,6 @@
                     displayActionValDefault(4, id);
                     displayActionValDefault(5, id);
                     displayActionValDefault(6, id);
-
                     ActionParam2.addClass('display_flags');
                     ActionParam2DIV.empty();
                     $('<select multiple class="form-control spell_flags" id="action_param2_val">' +
@@ -1647,10 +1725,64 @@
                     '</select>').appendTo(ActionParam5DIV);
                     $('#action_param5_val').val(Lines[id].action_param5);
                     break;
+                case "17":
+                    ActionParam1DIV.empty();
+                    $('<select class="form-control" id="action_param1_val">' +
+                        '   <option value="30">No</option>' +
+                        '   <option value="10">Dance</option>' +
+                        '   <option value="12">Sleep</option>' +
+                        '   <option value="13">Sit</option>' +
+                        '   <option value="26">Stand</option>' +
+                        '   <option value="27">Ready Unarmed</option>' +
+                        '   <option value="28">Work</option>' +
+                        '   <option value="29">Point</option>' +
+                        '   <option value="64">Stun</option>' +
+                        '   <option value="65">Dead</option>' +
+                        '   <option value="68">Kneel</option>' +
+                        '   <option value="69">Uses Standing</option>' +
+                        '   <option value="93">Stun No Sheathe</option>' +
+                        '   <option value="133">Uses Standing No Sheathe</option>' +
+                        '   <option value="173">Work No Sheathe</option>' +
+                        '   <option value="193">Spell Pre Cast</option>' +
+                        '   <option value="214">Ready Rifle</option>' +
+                        '   <option value="233">Work No Sheathe Mining</option>' +
+                        '   <option value="234">Work No Sheathe Chop Wood</option>' +
+                        '   <option value="313">At Ease</option>' +
+                        '   <option value="333">Ready 1H</option>' +
+                        '   <option value="353">Spell Kneel Start</option>' +
+                        '   <option value="373">Submerged</option>' +
+                        '   <option value="375">Ready 2H</option>' +
+                        '   <option value="376">Ready Bow</option>' +
+                        '   <option value="378">Talk</option>' +
+                        '   <option value="379">Fishing</option>' +
+                        '   <option value="382">Whirlwind</option>' +
+                        '   <option value="383">Drowned</option>' +
+                        '   <option value="384">Hold Bow</option>' +
+                        '   <option value="385">How Rifle</option>' +
+                        '   <option value="386">Hold Thrown</option>' +
+                        '   <option value="391">Roar</option>' +
+                        '   <option value="392">Laugh</option>' +
+                        '   <option value="398">Cannibalize</option>' +
+                        '   <option value="400">Dance Special</option>' +
+                        '   <option value="412">Exclaim</option>' +
+                        '   <option value="415">Sit Chair Medium</option>' +
+                        '   <option value="422">Spell Effect Hold</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
                 case "18": //ACTION_SET_UNIT_FLAG
                 case "19": //ACTION_REMOVE_UNIT_FLAG
-                    displayActionValDefault(2, id);
-                    ActionParam1.addClass('display_flags');
+                    ActionParam2DIV.empty();
+                    $('<select class="form-control" id="action_param2_val">' +
+                        '   <option value="0">UNIT_FLAGS</option>' +
+                        '   <option value="1">UNIT_FLAGS2</option>' +
+                        '</select>').appendTo(ActionParam2DIV);
+                    $('#action_param2_val').val(Lines[id].action_param2);
                     ActionParam1DIV.empty();
                     if (Lines[id].action_param2 == "0") {
                         $('<select multiple class="form-control npc_flags" id="action_param1_val">' +
@@ -1738,6 +1870,10 @@
                         selectByte(NPCFlags, 0x10, Binary, 3);
                         selectByte(NPCFlags, 0x40, Binary, 4);
                     }
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "20":
                     ActionParam1DIV.empty();
@@ -1747,6 +1883,11 @@
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     break;
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                 case "21":
                     ActionParam1DIV.empty();
                     $('<select class="form-control" id="action_param1_val">' +
@@ -1754,17 +1895,6 @@
                     '   <option value="1">Enable</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
-                    break;
-                case "22": //ACTION_SET_EVENT_PHASE
-                case "23": //ACTION_INC_EVENT_PHASE
-                case "30": //ACTION_RANDOM_PHASE
-                case "31": //ACTION_RANDOM_PHASE_RANGE
-                    displayActionValDefault(1, id);
-                    displayActionValDefault(2, id);
-                    displayActionValDefault(3, id);
-                    displayActionValDefault(4, id);
-                    displayActionValDefault(5, id);
-                    displayActionValDefault(6, id);
                     break;
                 case "25":
                 case "47":
@@ -1776,12 +1906,18 @@
                 case "103":
                 case "153":
                 case "154":
+                case "156":
                     ActionParam1DIV.empty();
                     $('<select class="form-control" id="action_param1_val">' +
                     '   <option value="0">No</option>' +
                     '   <option value="1">Yes</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "29":
                     displayActionValDefault(1, id);
@@ -1793,6 +1929,13 @@
                     '   <option value="1">Yes</option>' +
                     '</select>').appendTo(ActionParam4DIV);
                     $('#action_param4_val').val(Lines[id].action_param4);
+                    ActionParam5DIV.empty();
+                    $('<select class="form-control" id="action_param5_val">' +
+                        '   <option value="0">Monster KIll</option>' +
+                        '   <option value="1">Event</option>' +
+                        '</select>').appendTo(ActionParam5DIV);
+                    $('#action_param5_val').val(Lines[id].action_param5);
+                    displayActionValDefault(6, id);
                     break;
                 case "40":
                     ActionParam1DIV.empty();
@@ -1802,6 +1945,11 @@
                     '   <option value="1">Ranged</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "53":
                     ActionParam1DIV.empty();
@@ -1836,6 +1984,9 @@
                     '   <option value="1">Yes</option>' +
                     '</select>').appendTo(ActionParam3DIV);
                     $('#action_param3_val').val(Lines[id].action_param3);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "58":
                     ActionParam1.addClass('display_flags');
@@ -1888,6 +2039,10 @@
                     '   <option value="2">UPDATE</option>' +
                     '</select>').appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "81": //ACTION_SET_NPC_FLAG
                 case "82": //ACTION_ADD_NPC_FLAG
@@ -1952,6 +2107,11 @@
                     selectByte(NPCFlags, 0x800000, Binary, 25);
                     selectByte(NPCFlags, 0x1000000, Binary, 26);
                     selectByte(NPCFlags, 0x4000000, Binary, 27);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "90": //ACTION_SET_UNIT_FIELD_BYTES_1
                 case "91": //ACTION_REMOVE_UNIT_FIELD_BYTES_1
@@ -2014,7 +2174,6 @@
                         selectByte(NPCFlags, 0x10, Binary, 6);
                         selectByte(NPCFlags, 0xFF, Binary, 7);
                     }
-
                     ActionParam2DIV.empty();
                     $('<select class="form-control" id="action_param2_val">' +
                     '   <option value="0">STAND_STATE_TYPE</option>' +
@@ -2022,6 +2181,10 @@
                     '   <option value="3">BYTES1_FLAGS_TYPE</option>' +
                     '</select>').appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "92":
                     ActionParam1DIV.empty();
@@ -2037,6 +2200,9 @@
                     '   <option value="1">Yes</option>' +
                     '</select>').appendTo(ActionParam3DIV);
                     $('#action_param3_val').val(Lines[id].action_param3);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "94": //ACTION_SET_DYNAMIC_FLAG
                 case "95": //ACTION_ADD_DYNAMIC_FLAG
@@ -2061,6 +2227,11 @@
                     selectByte(NPCFlags, 0x8, Binary, 5);
                     selectByte(NPCFlags, 0x10, Binary, 6);
                     selectByte(NPCFlags, 0x20, Binary, 7);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "104": //ACTION_SET_GO_FLAG
                 case "105": //ACTION_ADD_GO_FLAG
@@ -2087,6 +2258,11 @@
                     selectByte(NPCFlags, 0x10, Binary, 6);
                     selectByte(NPCFlags, 0x20, Binary, 7);
                     selectByte(NPCFlags, 0x40, Binary, 8);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "108":
                 case "109":
@@ -2101,6 +2277,10 @@
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 case "150": //ACTION_SET_UNIT_FIELD_BYTES_2
                 case "151": //ACTION_REMOVE_UNIT_FIELD_BYTES_2
@@ -2160,6 +2340,10 @@
                     '   <option value="2">UNIT_RENAME</option>' +
                     '</select>').appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
                     break;
                 default:
                     displayActionValDefault(1, id);
@@ -2171,38 +2355,47 @@
             }
         }
         function displayTargetVal(TargetType, id) {
-    switch (TargetType) {
-        case "19":
-            displayTargetValDefault(1, id);
-            displayTargetValDefault(2, id);
-            TargetParam3DIV.empty();
-            $('<select class="form-control" id="target_param3_val">' +
-            '   <option value="0">No</option>' +
-            '   <option value="1">Yes</option>' +
-            '</select>').appendTo(TargetParam3DIV);
-            $('#target_param3_val').val(Lines[id].target_param3);
-            break;
-        case "25":
-        case "26":
-            displayTargetValDefault(1, id);
-            TargetParam2DIV.empty();
-            $('<select class="form-control" id="target_param2_val">' +
-            '   <option value="0">No</option>' +
-            '   <option value="1">Yes</option>' +
-            '</select>').appendTo(TargetParam2DIV);
-            $('#target_param2_val').val(Lines[id].target_param2);
-            displayTargetValDefault(2, id);
-            break;
-        default:
-            displayTargetValDefault(1, id);
-            displayTargetValDefault(2, id);
-            displayTargetValDefault(3, id);
-            displayTargetValDefault("x", id);
-            displayTargetValDefault("y", id);
-            displayTargetValDefault("z", id);
-            displayTargetValDefault("o", id);
-    }
-}
+            switch (TargetType) {
+                case "19":
+                    displayTargetValDefault(1, id);
+                    displayTargetValDefault(2, id);
+                    TargetParam3DIV.empty();
+                    $('<select class="form-control" id="target_param3_val">' +
+                    '   <option value="0">No</option>' +
+                    '   <option value="1">Yes</option>' +
+                    '</select>').appendTo(TargetParam3DIV);
+                    $('#target_param3_val').val(Lines[id].target_param3);
+                    displayTargetValDefault("x", id);
+                    displayTargetValDefault("y", id);
+                    displayTargetValDefault("z", id);
+                    displayTargetValDefault("o", id);
+                    break;
+                case "25":
+                case "26":
+                    displayTargetValDefault(1, id);
+                    TargetParam2DIV.empty();
+                    $('<select class="form-control" id="target_param2_val">' +
+                    '   <option value="0">No</option>' +
+                    '   <option value="1">Yes</option>' +
+                    '</select>').appendTo(TargetParam2DIV);
+                    $('#target_param2_val').val(Lines[id].target_param2);
+                    displayTargetValDefault(2, id);
+                    displayTargetValDefault(3, id);
+                    displayTargetValDefault("x", id);
+                    displayTargetValDefault("y", id);
+                    displayTargetValDefault("z", id);
+                    displayTargetValDefault("o", id);
+                    break;
+                default:
+                    displayTargetValDefault(1, id);
+                    displayTargetValDefault(2, id);
+                    displayTargetValDefault(3, id);
+                    displayTargetValDefault("x", id);
+                    displayTargetValDefault("y", id);
+                    displayTargetValDefault("z", id);
+                    displayTargetValDefault("o", id);
+            }
+        }
 
         function displayEventValDefault(param, id) {
             var EventParam = $('#event_param' + param);
@@ -2389,13 +2582,15 @@
                             total += value[i] << 0;
                         }
                         Lines[id][attr] = total;
-                    }
+                    } else
+                        Lines[id][attr] = value;
                     break;
                 default:
                     Lines[id][attr] = value;
             }
         }
         function setActionParamValue(param) {
+            debugger;
             var attr = 'action_param' + param;
             var value = $('#action_param' + param + '_val').val();
             var id = $('table > tbody > tr.active > td:first-child').text();
@@ -2405,13 +2600,13 @@
                 case "11": //ACTION_CAST
                 case "85": //ACTION_INVOKER_CAST
                 case "86": //ACTION_CROSS_CAST
-                    Lines[id][attr] = value;
                     if (param == 2) {
                         for (i = 0; i < value.length; i++) {
                             total += value[i] << 0;
                         }
                         Lines[id][attr] = total;
-                    }
+                    } else
+                        Lines[id][attr] = value;
                     break;
                 case "18": //ACTION_SET_UNIT_FLAG
                 case "19": //ACTION_REMOVE_UNIT_FLAG
@@ -2425,7 +2620,8 @@
                         for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
                         Lines[id][attr] = total;
-                    }
+                    } else
+                        Lines[id][attr] = value;
                     break;
                 case "90": //ACTION_SET_UNIT_FIELD_BYTES_1
                 case "91": //ACTION_REMOVE_UNIT_FIELD_BYTES_1
@@ -2433,7 +2629,8 @@
                         for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
                         Lines[id][attr] = total;
-                    }
+                    } else
+                        Lines[id][attr] = value;
                     break;
                 case "150": //ACTION_SET_UNIT_FIELD_BYTES_2
                 case "151": //ACTION_REMOVE_UNIT_FIELD_BYTES_2
@@ -2441,7 +2638,8 @@
                         for (i = 0; i < value.length; i++)
                             total += value[i] << 0;
                         Lines[id][attr] = total;
-                    }
+                    } else
+                        Lines[id][attr] = value;
                     break;
                 default:
                     Lines[id][attr] = value;
@@ -2557,6 +2755,88 @@
             target("y");
             target("z");
             target("o");
+        }
+
+        function getEmoteSelect(param)
+        {
+           return '<select class="form-control" id="action_param'+param+'_val">' +
+                '   <option value="0">None</option>' +
+                '   <option value="1">Start</option>' +
+                '   <option value="2">Bow</option>' +
+                '   <option value="3">Wave</option>' +
+                '   <option value="4">Cheer</option>' +
+                '   <option value="5">Exclamation</option>' +
+                '   <option value="6">Question</option>' +
+                '   <option value="7">Eat</option>' +
+                '   <option value="11">Laugh</option>' +
+                '   <option value="14">Rude</option>' +
+                '   <option value="15">Roar</option>' +
+                '   <option value="16">Kneel</option>' +
+                '   <option value="17">Kiss</option>' +
+                '   <option value="18">Cry</option>' +
+                '   <option value="19">Chicken</option>' +
+                '   <option value="20">Beg</option>' +
+                '   <option value="21">Applaud</option>' +
+                '   <option value="22">Shout</option>' +
+                '   <option value="23">Flex</option>' +
+                '   <option value="24">Shy</option>' +
+                '   <option value="25">Point</option>' +
+                '   <option value="33">Wound</option>' +
+                '   <option value="34">Wound Critical</option>' +
+                '   <option value="35">Attack Unarmed</option>' +
+                '   <option value="36">Attack 1H</option>' +
+                '   <option value="37">Attack 2H Tight</option>' +
+                '   <option value="38">Attack 2H Loose</option>' +
+                '   <option value="39">Parry Unarmed</option>' +
+                '   <option value="43">Parry Shield</option>' +
+                '   <option value="44">Ready Unarmed</option>' +
+                '   <option value="45">Ready 1H</option>' +
+                '   <option value="48">Ready Bow</option>' +
+                '   <option value="50">Spell Precast</option>' +
+                '   <option value="51">Spell Cast</option>' +
+                '   <option value="53">Battle Roar</option>' +
+                '   <option value="54">Special Attack 1H</option>' +
+                '   <option value="60">Kick</option>' +
+                '   <option value="61">Attack Thrown</option>' +
+                '   <option value="66">Salute</option>' +
+                '   <option value="70">Wave No Sheathe</option>' +
+                '   <option value="71">Cheer No Sheathe</option>' +
+                '   <option value="92">Eat No Sheathe</option>' +
+                '   <option value="94">Dance</option>' +
+                '   <option value="113">Salute No Sheathe</option>' +
+                '   <option value="153">Laugh No Sheathe</option>' +
+                '   <option value="253">Old Lift Off</option>' +
+                '   <option value="254">Lift Off</option>' +
+                '   <option value="273">Yes</option>' +
+                '   <option value="274">No</option>' +
+                '   <option value="275">Train</option>' +
+                '   <option value="293">Land</option>' +
+                '   <option value="374">Submerge</option>' +
+                '   <option value="377">Mount Special</option>' +
+                '   <option value="380">Fishing</option>' +
+                '   <option value="381">Loot</option>' +
+                '   <option value="387">Drown</option>' +
+                '   <option value="388">Stomp</option>' +
+                '   <option value="389">Attack Off</option>' +
+                '   <option value="390">Attack Off Pierce</option>' +
+                '   <option value="393">Creature Special</option>' +
+                '   <option value="394">Jump Land Run</option>' +
+                '   <option value="395">Jump End</option>' +
+                '   <option value="396">Talk No Sheathe</option>' +
+                '   <option value="397">Point No Sheathe</option>' +
+                '   <option value="399">Jump Start</option>' +
+                '   <option value="401">Dance Special</option>' +
+                '   <option value="402">Custom Spell 01</option>' +
+                '   <option value="403">Custom Spell 02</option>' +
+                '   <option value="404">Custom Spell 03</option>' +
+                '   <option value="405">Custom Spell 04</option>' +
+                '   <option value="406">Custom Spell 05</option>' +
+                '   <option value="407">Custom Spell 06</option>' +
+                '   <option value="408">Custom Spell 07</option>' +
+                '   <option value="409">Custom Spell 08</option>' +
+                '   <option value="410">Custom Spell 09</option>' +
+                '   <option value="411">Custom Spell 10</option>' +
+                '</select>';
         }
         function getSpellName(id) {
             var Data;

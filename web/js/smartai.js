@@ -1716,7 +1716,7 @@
                 case "17":
                     ActionParam1DIV.empty();
                     $('<select class="form-control" id="action_param1_val">' +
-                        '   <option value="30">No</option>' +
+                        '   <option value="0">None</option>' +
                         '   <option value="10">Dance</option>' +
                         '   <option value="12">Sleep</option>' +
                         '   <option value="13">Sit</option>' +

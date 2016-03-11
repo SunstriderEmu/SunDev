@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+
 $app->get('/quest', function () use ($app) {
 
 	$zones = [
@@ -53,15 +55,20 @@ $app->get('/quest/zone/{zone}', function ($zone) use ($app) {
 	));
 })->assert('zone', '\d+');
 
-$app->post('/quest/apply/status', function () use ($app) {
-	$quest  = json_decode($_POST['info']);
-	$app['dao.quest']->setStatus($quest);
+$app->post('/quest/apply/status', function (Request $request) use ($app) {
+	$app['dao.quest']->setStatus(json_decode($request->request->get('info')));
 	return "Success";
 });
 
-// Todo
-$app->post('/quest/apply/tester', function () use ($app) {
-	return "To do";
+$app->post('/quest/apply/comment', function (Request $request) use ($app) {
+	var_dump($request = Request::createFromGlobals());
+	$app['dao.quest']->setComment(json_decode($request->request->get('info')));
+	return "Success";
+});
+
+$app->post('/quest/apply/tester', function (Request $request) use ($app) {
+	$app['dao.quest']->setTester(json_decode($request->request->get('info')));
+	return "Success";
 });
 
 // GET QUEST NAME

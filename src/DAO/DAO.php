@@ -239,7 +239,7 @@ class DAO
                     // Transfer
                     $insert = 'INSERT INTO waypoints (entry, pointid, position_x, position_y, position_z, point_comment) VALUES ';
                     foreach($points as $point)
-                        $insert .= "({$data['script']->entry}, {$point['point']}, {$point['position_x']}, {$point['position_y']}, {$point['position_z']}, '{$name['name']}'),";
+                        $insert .= "({$data['script']->entry}, {$point['point']}, {$point['position_x']}, {$point['position_y']}, {$point['position_z']}, \"{$name['name']}\"),";
                     $insert = rtrim($insert, ',');
                     $this->getDb($db)->executeQuery($insert);
                     break;

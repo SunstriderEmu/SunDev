@@ -12,7 +12,7 @@ $app->get('/areatrigger/{entry}', function($entry) use($app) {
 
 // SmartAI
 $app->get('/areatrigger/{entry}/smartai', function($entry) use($app) {
-    $lines		= $app['dao.smartai']->getAreaTriggerScript($entry);
+    $lines	= $app['dao.smartai']->getAreaTriggerScript($entry);
     return $app['twig']->render('smartai/areatrigger/entry.html.twig',
         array(
             "lines" 	=> $lines,

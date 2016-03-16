@@ -14,7 +14,7 @@ class QuestDAO extends DAO
 		if($getZoneID == null)
 			return $this->app->redirect('/quests');
 
-		$fetch = $this->getDb('test')->fetchAll("SELECT qt.entry, qt.Title as name, qt.RequiredRaces as race, it.entry as itemid, it.name as itemname,
+		$fetch = $this->getDb('local')->fetchAll("SELECT qt.entry, qt.Title as name, qt.RequiredRaces as race, it.entry as itemid, it.name as itemname,
 							  			ct.entry as idstarter, ct.name as starter, ct2.entry as idender, ct2.name as ender,
 							  			qtest.startTxt, qtest.progTxt, qtest.endTxt, qtest.txtEvent, qtest.pathEvent, qtest.timeEvent,
 							  			qtest.Exp, qtest.Stuff, qtest.Gold, qtest.emotNPC, qtest.spellNPC, qtest.placeNPC, qtest.workObj, qtest.baObj,
@@ -192,7 +192,7 @@ class QuestDAO extends DAO
 
 	public function getQuestName($id)
 	{
-		$quest = $this->getDb('test')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
+		$quest = $this->getDb('local')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
 		return $quest['Title'];
 	}
 }

@@ -1,9 +1,9 @@
 {% extends "layout.html.twig" %}
-    {% block title %}SunSpell - {{ parent() }}{% endblock %}
+    {% block title %}Spell - {{ parent() }}{% endblock %}
     {% block head %}{% endblock %}
     {% block content %}
         <div class="col-md-12">
-            <h2>SunSpell</h2>
+            <h2>Spell</h2>
             <!--
             <h4>Find the spell by ID</h4>
             <form class="form-inline">
@@ -57,12 +57,7 @@
                         $('.table > tbody').html('');
                         var html = '';
                         $.each(JSON.parse(data), function(){
-                            html += '<tr><td><a href="http://wowhead.com/spell='+this.entry+'" target="_blank">'+this.entry+'</a></td><td>'+this.spellName1+'</td>';
-                            if(this.rank3 != '')
-                                html += '<td>'+this.rank3.match(/\d+/)[0]+'</td></tr>';
-                            else
-                                html += '<td></td>';
-                            html += '</tr>';
+                            html += '<tr><td><a href="http://wowhead.com/spell='+this.entry+'" target="_blank">'+this.entry+'</a></td><td>'+this.spellName1+'</td><td>'+this.rank3+'</td></tr>';
                         });
                         $('.table > tbody').append(html);
                     },
@@ -72,20 +67,5 @@
                     }
                 });
             });
-            /*
-            $('#find-entry').on('keyup change', function(){
-                $.ajax({
-                    type: "GET",
-                    url: '{{ app.request.basepath }}/creature/entry/'+$(this).val()+'/name',
-                    success: function (data) {
-                        console.log(Date(), data);
-                        $('#name').html('').html(data);
-                    },
-                    error: function (xhr, err) {
-                        $('#name').html('');
-                    }
-                });
-            });
-            */
         </script>
     {% endblock %}

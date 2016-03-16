@@ -54,4 +54,13 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
+    'local' => [
+        'driver'    => 'pdo_mysql',
+        'host'      => '127.0.0.1',
+        'dbname'    => 'sun_world',
+        'user'      => 'root',
+        'password'  => '',
+        'charset'   => 'utf8',
+        'port'		=> '',
+    ],
 ];

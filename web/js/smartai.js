@@ -2590,7 +2590,6 @@
             }
         }
         function setActionParamValue(param) {
-            debugger;
             var attr = 'action_param' + param;
             var value = $('#action_param' + param + '_val').val();
             var id = $('table > tbody > tr.active > td:first-child').text();
@@ -2615,7 +2614,9 @@
                 case "83": //ACTION_REMOVE_NPC_FLAG
                 case "94": //ACTION_SET_DYNAMIC_FLAG
                 case "95": //ACTION_ADD_DYNAMIC_FLAG
-                case "96": //ACTION_REMOVE_DYNAMIC_FLAG
+                case "104": //ACTION_SET_GO_FLAG
+                case "105": //ACTION_ADD_GO_FLAG
+                case "106": //ACTION_REMOVE_GO_FLAG
                     if (param == 1) {
                         for (i = 0; i < value.length; i++)
                             total += value[i] << 0;

@@ -108,6 +108,8 @@ class DAO
                     $insertLocale = "INSERT IGNORE INTO locales_creature_text (entry, groupid, id, text_loc2) VALUES ";
                     foreach($data['script'] as $line)
                     {
+						$line[2] = str_replace('"', '\"', $line[2]);
+						$line[3] = str_replace('"', '\"', $line[3]);
                         $insert .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[2]}\", {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, \"{$line[9]}\"),";
                         $insertLocale .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[3]}\"),";
                     }

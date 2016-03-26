@@ -2914,10 +2914,25 @@
             else
                 select = 'nth-child('+child+')';
 
+            var option = $(NPCFlags + ' > option:'+select).val();
+            var flag = $(NPCFlags).val();
+            if(flag == null)
+                flag = [];
+            
             if (Mask & Binary)
+            {
+                flag.push(option);
                 $(NPCFlags + ' > option:'+select).attr('selected', 'selected');
+            }
             else
+            {
+                var index = flag.indexOf(option);
+                if (index > -1)
+                    flag.splice(index, 1);
                 $(NPCFlags + ' > option:'+select).removeAttr('selected');
+            }
+            $(NPCFlags).val(flag);
+            $(NPCFlags).trigger("chosen:updated");
         }
         function generateBitComment(Start, Comment, Binary, Mask, String) {
             if (Mask & Binary) {

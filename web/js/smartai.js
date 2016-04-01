@@ -415,7 +415,7 @@
                     return "On Reached Point " + EventParam2;
                     break;
                 case "35":
-                    return "On Summon '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>' Despawned";
+                    return "On Summoned '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>' Despawned";
                     break;
                 case "36":
                     return "On Corpse Removed";
@@ -504,7 +504,7 @@
                     return generateEventComment(Event);
                     break;
                 case "62":
-                    return "On Gossip Option " + EventParam2 + " Selected";
+                    return "On Gossip " + EventParam1 + " Option " + EventParam2 + " Selected";
                     break;
                 case "63":
                     return "On Just Created";
@@ -543,10 +543,10 @@
                     return "On Friendly Between " + EventParam1 + "-" + EventParam2 + "% HP";
                     break;
                 case "75":
-                    return "On Distance To Creature";
+                    return "On " + EventParam3 + "m To " + getCreatureName(EventParam2);
                     break;
                 case "76":
-                    return "On Distance To GO";
+                    return "On " + EventParam3 + "m To " + getGOName(EventParam2);
                     break;
                 case "77":
                     return "On Counter Set " + EventParam1;
@@ -571,7 +571,13 @@
                     return "On Enter Phase " + EventParam1;
                     break;
                 case "104":
-                    return "On GO State Loot Changed";
+                    var Comment = "On GO State Loot ";
+                    var Binary = "0x" + Hex(EventParam1);
+                    Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x1, 'Not Ready');
+                    Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x2, 'Ready');
+                    Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x4, 'Activated');
+                    Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x8, 'Just Deactivated');
+                    return replaceComma(Comment);
                     break;
             }
         }
@@ -686,38 +692,38 @@
                 case "19":
                     var Comment = "Set Unit Flag ";
                     var Binary = "0x" + Hex(ActionParam1);
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1, 'Server Controlled');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2, 'Non Attackable');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4, 'Disable Move');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8, 'PvP Attackable');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10, 'Rename');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20, 'Preparation');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40, 'Unknown 6');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80, 'Not Atackable 1');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x100, 'Immune to PC');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x200, 'Immune to NPC');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x400, 'Looting');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x800, 'Pet In Combat');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1000, 'PvP');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2000, 'Silenced');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4000, 'Unkown 14');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8000, 'Unknown 15');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10000, 'Not PL Spell Target');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20000, 'Pacified');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40000, 'Stunned');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80000, 'In Combat');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x100000, 'Taxi Flight');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x200000, 'Disarmed');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x400000, 'Confused');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x800000, 'Fleeing');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x1000000, 'Player Controlled');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x2000000, 'Not Selectable');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x4000000, 'Skinnable');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x8000000, 'Mount');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x10000000, 'Unknown 28');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x20000000, 'Unknown 29');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x40000000, 'Sheathe');
-                    Comment = generateBitComment('Set Uit Flag ', Comment, Binary, 0x80000000, 'Unknown 31');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x1, 'Server Controlled');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x2, 'Non Attackable');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x4, 'Disable Move');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x8, 'PvP Attackable');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x10, 'Rename');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x20, 'Preparation');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x40, 'Unknown 6');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x80, 'Not Atackable 1');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x100, 'Immune to PC');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x200, 'Immune to NPC');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x400, 'Looting');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x800, 'Pet In Combat');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x1000, 'PvP');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x2000, 'Silenced');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x4000, 'Unkown 14');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x8000, 'Unknown 15');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x10000, 'Not PL Spell Target');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x20000, 'Pacified');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x40000, 'Stunned');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x80000, 'In Combat');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x100000, 'Taxi Flight');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x200000, 'Disarmed');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x400000, 'Confused');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x800000, 'Fleeing');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x1000000, 'Player Controlled');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x2000000, 'Not Selectable');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x4000000, 'Skinnable');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x8000000, 'Mount');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x10000000, 'Unknown 28');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x20000000, 'Unknown 29');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x40000000, 'Sheathe');
+                    Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x80000000, 'Unknown 31');
                     return replaceComma(Comment);
                     break;
                 case "20":
@@ -805,13 +811,13 @@
                     return "Reset GO";
                     break;
                 case "33":
-                    return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
+                    return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
                     break;
                 case "34":
-                    return "Set Instance Data " + ActionParam1 + " to " + ActionParam2;
+                    return "Set Instance Data " + ActionParam1 + " " + ActionParam2;
                     break;
                 case "35":
-                    return "Set Instance Data " + ActionParam1 + " to " + ActionParam2;
+                    return "Set Instance Data " + ActionParam1 + " " + ActionParam2;
                     break;
                 case "36":
                     return "Update Template To '<a href='http://wowhead.com/npc=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
@@ -917,7 +923,7 @@
                     return "Start Waypoint " + ActionParam2;
                     break;
                 case "54":
-                    return "Pause Waypoint";
+                    return "Pause Waypoint " + ActionParam1 + "ms";
                     break;
                 case "55":
                     return "Stop Waypoint";
@@ -989,7 +995,7 @@
                     return "Unused Action Type 63";
                     break;
                 case "64":
-                    return "Store Targetlist";
+                    return "Store Targetlist " + ActionParam1;
                     break;
                 case "65":
                     return "Resume Waypoint";
@@ -1085,7 +1091,7 @@
                     return "Run Random Script";
                     break;
                 case "88":
-                    return "Run Random Script Between " + ActionParam1 + "-" + ActionParam2;
+                    return "Run Random Script Between " + ActionParam1 + " and " + ActionParam2;
                     break;
                 case "89":
                     return "Start Random Movement";

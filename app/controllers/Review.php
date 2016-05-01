@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Reviews
  */
@@ -21,13 +23,13 @@ $app->get('/reviews/old', function() use($app) {
 /**
  * Development: Apply on test realm
  */
-$app->post('/dev/apply', function() use($app) {
+$app->post('/dev/apply', function(Request $request) use($app) {
 	// Check if there is an AJAX request, if the $_POST values exists and if the ROLE_DEV is granted
-	if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest' && !isset($_POST['sql']) && !isset($_POST['info']) && !$app['security.authorization_checker']->isGranted('ROLE_DEV'))
+	if (strtolower($request->server->get('HTTP_X_REQUESTED_WITH')) != 'xmlhttprequest' && !$request->request->get('sql') && !$request->request->get('info') && !$app['security.authorization_checker']->isGranted('ROLE_DEV'))
 		throw new \Symfony\Component\Config\Definition\Exception\Exception;
 
-	$data['script'] = json_decode($_POST['sql']);
-	$data['review'] = json_decode($_POST['info']);
+	$data['script'] = json_decode($request->request->get('sql'));
+	$data['review'] = json_decode($request->request->get('info'));
 
 	$app['dao']->setScript($data, 'test');
 	
@@ -42,9 +44,9 @@ $app->post('/dev/apply', function() use($app) {
 /**
  * Development: Send a review
  */
-$app->post('/dev/review', function() use($app) {
+$app->post('/dev/review', function(Request $request) use($app) {
 	// Check if there is an AJAX request, if the $_POST values exists and if the ROLE_DEV is granted
-	if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest' && !isset($_POST['sql']) && !isset($_POST['info']) && !$app['security.authorization_checker']->isGranted('ROLE_DEV'))
+	if (strtolower($request->server->get('HTTP_X_REQUESTED_WITH')) != 'xmlhttprequest' && !$request->request->get('sql') && !$request->request->get('info') && !$app['security.authorization_checker']->isGranted('ROLE_DEV'))
 		throw new \Symfony\Component\Config\Definition\Exception\Exception;
 
 	$data['script'] = json_decode($_POST['sql']);
@@ -61,8 +63,8 @@ $app->post('/dev/review', function() use($app) {
 /**
  * Admin: Validate a review, apply on test and live realm
  */
-$app->post('/dev/validate', function() use($app) {
-	if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest' && !isset($_POST['sql']) && !isset($_POST['info']) && !$app['security.authorization_checker']->isGranted('ROLE_ADMIN'))
+$app->post('/dev/validate', function(Request $request) use($app) {
+	if (strtolower($request->server->get('HTTP_X_REQUESTED_WITH')) != 'xmlhttprequest' && !$request->request->get('sql') && !$request->request->get('info') && !$app['security.authorization_checker']->isGranted('ROLE_ADMIN'))
 		throw new \Symfony\Component\Config\Definition\Exception\Exception;
 
 	$data['script'] = json_decode($_POST['sql']);
@@ -81,8 +83,8 @@ $app->post('/dev/validate', function() use($app) {
 /**
  * Admin: Refuse a review, apply on test realm
  */
-$app->post('/dev/refuse', function() use($app) {
-	if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest' && !isset($_POST['sql']) && !isset($_POST['info']) && !$app['security.authorization_checker']->isGranted('ROLE_ADMIN'))
+$app->post('/dev/refuse', function(Request $request) use($app) {
+	if (strtolower($request->server->get('HTTP_X_REQUESTED_WITH')) != 'xmlhttprequest' && !$request->request->get('sql') && !$request->request->get('info') && !$app['security.authorization_checker']->isGranted('ROLE_ADMIN'))
 		throw new \Symfony\Component\Config\Definition\Exception\Exception;
 
 	$data['script'] = json_decode($_POST['sql']);

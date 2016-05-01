@@ -282,7 +282,7 @@
             $.ajax({
                 type: "POST",
                 url: '/quest/apply/tester',
-                data: 'info=' + info,
+                data: 'info=' + JSON.stringify(info),
                 success: function(data) {
                     console.log(data);
                 },
@@ -296,12 +296,11 @@
         $('textarea').change(function(){
             var questId = $(this).attr('id');
             var Comment = $(this).val();
-            var info = { "id": questId, "comment": Comment };
-            Comment = Comment.replace(/\r?\n/g, '%0D%0A');
+            var info = { "id": questId, "comment": Comment.replace(/\r?\n/g, '%0D%0A') };
             $.ajax({
                 type: "POST",
                 url: '/quest/apply/comment',
-                data: 'info=' + info,
+                data: 'info=' + JSON.stringify(info),
                 success: function(data) {
                     console.log(data);
                 },

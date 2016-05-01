@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\HttpFoundation\Request;
+
 $app->get('/class', function () use ($app) {
 	$global = $app['dao.class']->getGlobal();
 	$classes = [
@@ -27,8 +29,7 @@ $app->get('/class/{class}', function ($class) use ($app) {
 	));
 });
 
-$app->post('/class/apply', function () use ($app) {
-	$info  = json_decode($_POST['info']);
-	$app['dao.class']->setInfo($info);
+$app->post('/class/apply', function (Request $request) use ($app) {
+	$app['dao.class']->setInfo(json_decode($request->request->get('info')));
 	return "Success";
 });

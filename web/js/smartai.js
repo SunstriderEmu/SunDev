@@ -1529,6 +1529,14 @@
                     displayEventValDefault(3, id);
                     displayEventValDefault(4, id);
                     break;
+                case "22":
+                    EventParam1DIV.empty();
+                    $(getEmoteSelect('event', 1)).appendTo(EventParam1DIV);
+                    $('#event_param1_val').val(Lines[id].event_param1);
+                    displayEventValDefault(2, id);
+                    displayEventValDefault(3, id);
+                    displayEventValDefault(4, id);
+                    break;
                 case "34":
                     EventParam1DIV.empty();
                     $('<select class="form-control" id="event_param1_val">' +
@@ -1613,7 +1621,7 @@
                     break;
                 case "5":
                     ActionParam1DIV.empty();
-                    $(getEmoteSelect(1)).appendTo(ActionParam1DIV);
+                    $(getEmoteSelect('action', 1)).appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     displayActionValDefault(2, id);
                     displayActionValDefault(3, id);
@@ -1623,22 +1631,22 @@
                     break;
                 case "10":
                     ActionParam1DIV.empty();
-                    $(getEmoteSelect(1)).appendTo(ActionParam1DIV);
+                    $(getEmoteSelect('action', 1)).appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     ActionParam2DIV.empty();
-                    $(getEmoteSelect(2)).appendTo(ActionParam2DIV);
+                    $(getEmoteSelect('action', 2)).appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
                     ActionParam3DIV.empty();
-                    $(getEmoteSelect(3)).appendTo(ActionParam3DIV);
+                    $(getEmoteSelect('action', 3)).appendTo(ActionParam3DIV);
                     $('#action_param3_val').val(Lines[id].action_param3);
                     ActionParam4DIV.empty();
-                    $(getEmoteSelect(4)).appendTo(ActionParam4DIV);
+                    $(getEmoteSelect('action', 4)).appendTo(ActionParam4DIV);
                     $('#action_param4_val').val(Lines[id].action_param4);
                     ActionParam5DIV.empty();
-                    $(getEmoteSelect(5)).appendTo(ActionParam5DIV);
+                    $(getEmoteSelect('action', 5)).appendTo(ActionParam5DIV);
                     $('#action_param5_val').val(Lines[id].action_param5);
                     ActionParam6DIV.empty();
-                    $(getEmoteSelect(6)).appendTo(ActionParam6DIV);
+                    $(getEmoteSelect('action', 6)).appendTo(ActionParam6DIV);
                     $('#action_param6_val').val(Lines[id].action_param6);
                     break;
                 case "8":
@@ -2476,6 +2484,10 @@
                 $('table > tbody > tr.active > td:nth-child(6)').attr('onclick', 'displayLine(' + ID + ', this)');
             }
         });
+        $('#event_chance_val').change(function () {
+            var id = $('table > tbody > tr.active > td:first-child').text();
+            Lines[id].event_chance = $(this).val();
+        });
         $('#link_val').change(function () {
             var Link = $('table > tbody > tr.active > td:nth-child(2)');
             var id = $('table > tbody > tr.active > td:first-child').text();
@@ -2745,9 +2757,9 @@
             target("o");
         }
 
-        function getEmoteSelect(param)
+        function getEmoteSelect(type, param)
         {
-           return '<select class="form-control" id="action_param'+param+'_val">' +
+           return '<select class="form-control" id="'+type+'_param'+param+'_val">' +
                 '   <option value="0">None</option>' +
                 '   <option value="1">Start</option>' +
                 '   <option value="2">Bow</option>' +

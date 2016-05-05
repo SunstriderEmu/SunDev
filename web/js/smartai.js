@@ -1549,7 +1549,7 @@
                     break;
                 case "22":
                     EventParam1DIV.empty();
-                    $(getEmoteSelect('event', 1)).appendTo(EventParam1DIV);
+                    $(getReceiveEmoteSelect('event', 1)).appendTo(EventParam1DIV);
                     $('#event_param1_val').val(Lines[id].event_param1);
                     displayEventValDefault(2, id);
                     displayEventValDefault(3, id);
@@ -2776,6 +2776,185 @@
             target("o");
         }
 
+        function getReceiveEmoteSelect(type, param)
+        {
+           return '<select class="form-control" id="'+type+'_param'+param+'_val">' +
+                '   <option value="0">None</option>' +
+                '   <option value="1">Agree</option>' +
+                '   <option value="2">Amaze</option>' +
+                '   <option value="3">Angry</option>' +
+                '   <option value="4">Apologize</option>' +
+                '   <option value="5">Applaud</option>' +
+                '   <option value="6">Bashful</option>' +
+                '   <option value="7">Beckon</option>' +
+                '   <option value="8">Beg</option>' +
+                '   <option value="9">Bite</option>' +
+                '   <option value="10">Bleed</option>' +
+                '   <option value="11">Blink</option>' +
+                '   <option value="12">Blush</option>' +
+                '   <option value="13">Bonk</option>' +
+                '   <option value="14">Bored</option>' +
+                '   <option value="15">Bounce</option>' +
+                '   <option value="16">Brb</option>' +
+                '   <option value="17">Bow</option>' +
+                '   <option value="18">Burp</option>' +
+                '   <option value="19">Bye</option>' +
+                '   <option value="20">Cackle</option>' +
+                '   <option value="21">Cheer</option>' +
+                '   <option value="22">Chicken</option>' +
+                '   <option value="23">Chuckle</option>' +
+                '   <option value="24">Clap</option>' +
+                '   <option value="25">Confused</option>' +
+                '   <option value="26">Congratulate</option>' +
+                '   <option value="27">Cough</option>' +
+                '   <option value="28">Cower</option>' +
+                '   <option value="29">Crack</option>' +
+                '   <option value="30">Cringe</option>' +
+                '   <option value="31">Cry</option>' +
+                '   <option value="32">Curious</option>' +
+                '   <option value="33">Curtsey</option>' +
+                '   <option value="34">Dance</option>' +
+                '   <option value="35">Drink</option>' +
+                '   <option value="36">Drool</option>' +
+                '   <option value="37">Eat</option>' +
+                '   <option value="38">Eye</option>' +
+                '   <option value="39">Fart</option>' +
+                '   <option value="40">Fidget</option>' +
+                '   <option value="41">Flex</option>' +
+                '   <option value="42">Frown</option>' +
+                '   <option value="43">Gasp</option>' +
+                '   <option value="44">Gaze</option>' +
+                '   <option value="45">Giggle</option>' +
+                '   <option value="46">Glare</option>' +
+                '   <option value="47">Gloat</option>' +
+                '   <option value="48">Greet</option>' +
+                '   <option value="49">Grin</option>' +
+                '   <option value="50">Groan</option>' +
+                '   <option value="51">Grovel</option>' +
+                '   <option value="52">Guffaw</option>' +
+                '   <option value="53">Hail</option>' +
+                '   <option value="54">Happy</option>' +
+                '   <option value="55">Hello</option>' +
+                '   <option value="56">Hug</option>' +
+                '   <option value="57">Hungry</option>' +
+                '   <option value="58">Kiss</option>' +
+                '   <option value="59">Kneel</option>' +
+                '   <option value="60">Laugh</option>' +
+                '   <option value="61">Laydown</option>' +
+                '   <option value="62">Message</option>' +
+                '   <option value="63">Moan</option>' +
+                '   <option value="64">Moon</option>' +
+                '   <option value="65">Mourn</option>' +
+                '   <option value="66">No</option>' +
+                '   <option value="67">Nod</option>' +
+                '   <option value="68">Nosepick</option>' +
+                '   <option value="69">Panic</option>' +
+                '   <option value="70">Peer</option>' +
+                '   <option value="71">Plead</option>' +
+                '   <option value="72">Point</option>' +
+                '   <option value="73">Poke</option>' +
+                '   <option value="74">Pray</option>' +
+                '   <option value="75">Roar</option>' +
+                '   <option value="76">Rofl</option>' +
+                '   <option value="77">Rude</option>' +
+                '   <option value="78">Salute</option>' +
+                '   <option value="79">Scratch</option>' +
+                '   <option value="80">Sexy</option>' +
+                '   <option value="81">Shake</option>' +
+                '   <option value="82">Shout</option>' +
+                '   <option value="83">Shrug</option>' +
+                '   <option value="84">Shy</option>' +
+                '   <option value="85">Sigh</option>' +
+                '   <option value="86">Sit</option>' +
+                '   <option value="87">Sleep</option>' +
+                '   <option value="88">Snarl</option>' +
+                '   <option value="89">Spit</option>' +
+                '   <option value="90">Stare</option>' +
+                '   <option value="91">Surprised</option>' +
+                '   <option value="92">Surrender</option>' +
+                '   <option value="93">Talk</option>' +
+                '   <option value="94">Talk Exclamation</option>' +
+                '   <option value="95">Talk Question</option>' +
+                '   <option value="96">Tap</option>' +
+                '   <option value="97">Thank</option>' +
+                '   <option value="98">Threaten</option>' +
+                '   <option value="99">Tired</option>' +
+                '   <option value="100">Victory</option>' +
+                '   <option value="101">Wave</option>' +
+                '   <option value="102">Welcome</option>' +
+                '   <option value="103">Whine</option>' +
+                '   <option value="104">Whistle</option>' +
+                '   <option value="105">Work</option>' +
+                '   <option value="106">Yawn</option>' +
+                '   <option value="107">Boggle</option>' +
+                '   <option value="108">Calm</option>' +
+                '   <option value="109">Cold</option>' +
+                '   <option value="110">Comfort</option>' +
+                '   <option value="111">Cuddle</option>' +
+                '   <option value="112">Duck</option>' +
+                '   <option value="113">Insult</option>' +
+                '   <option value="114">Introduce</option>' +
+                '   <option value="115">Jk</option>' +
+                '   <option value="116">Lick</option>' +
+                '   <option value="117">Listen</option>' +
+                '   <option value="118">Lost</option>' +
+                '   <option value="119">Mock</option>' +
+                '   <option value="120">Ponder</option>' +
+                '   <option value="121">Pounce</option>' +
+                '   <option value="122">Praise</option>' +
+                '   <option value="123">Purr</option>' +
+                '   <option value="124">Puzzle</option>' +
+                '   <option value="125">Raise</option>' +
+                '   <option value="126">Ready</option>' +
+                '   <option value="127">Shimmy</option>' +
+                '   <option value="128">Shiver</option>' +
+                '   <option value="129">Shoo</option>' +
+                '   <option value="130">Slap</option>' +
+                '   <option value="131">Smirk</option>' +
+                '   <option value="132">Sniff</option>' +
+                '   <option value="133">Snub</option>' +
+                '   <option value="134">Soothe</option>' +
+                '   <option value="135">Stink</option>' +
+                '   <option value="136">Taunt</option>' +
+                '   <option value="137">Tease</option>' +
+                '   <option value="138">Thirsty</option>' +
+                '   <option value="139">Veto</option>' +
+                '   <option value="140">Snicker</option>' +
+                '   <option value="141">Stand</option>' +
+                '   <option value="142">Tickle</option>' +
+                '   <option value="143">Violin</option>' +
+                '   <option value="163">Smile</option>' +
+                '   <option value="183">Rasp</option>' +
+                '   <option value="203">Pity</option>' +
+                '   <option value="204">Growl</option>' +
+                '   <option value="205">Bark</option>' +
+                '   <option value="223">Scared</option>' +
+                '   <option value="224">Flop</option>' +
+                '   <option value="225">Love</option>' +
+                '   <option value="226">Moo</option>' +
+                '   <option value="327">Open fire</option>' +
+                '   <option value="328">Flirt</option>' +
+                '   <option value="329">Joke</option>' +
+                '   <option value="243">Command</option>' +
+                '   <option value="363">Wink</option>' +
+                '   <option value="364">Pat</option>' +
+                '   <option value="365">Serious</option>' +
+                '   <option value="366">Mount special</option>' +
+                '   <option value="367">Goodluck</option>' +
+                '   <option value="368">Blame</option>' +
+                '   <option value="369">Blank</option>' +
+                '   <option value="370">Brandish</option>' +
+                '   <option value="371">Breath</option>' +
+                '   <option value="372">Disagree</option>' +
+                '   <option value="373">Doubt</option>' +
+                '   <option value="374">Embarass</option>' +
+                '   <option value="375">Encourage</option>' +
+                '   <option value="376">Enemy</option>' +
+                '   <option value="377">Eyebrow</option>' +
+                '   <option value="378">Toast</option>' +
+                '</select>';
+        }
+
         function getEmoteSelect(type, param)
         {
            return '<select class="form-control" id="'+type+'_param'+param+'_val">' +
@@ -2857,6 +3036,7 @@
                 '   <option value="411">Custom Spell 10</option>' +
                 '</select>';
         }
+
         function getSpellName(id) {
             var Data;
             $.ajax({

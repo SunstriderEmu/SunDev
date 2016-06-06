@@ -954,6 +954,9 @@
                         case "5":
                             return "Install Caged Creature Part Template";
                             break;
+                        case "6":
+                            return "Install Caster SUN Template";
+                            break;
                         default:
                             return;
                     }
@@ -2012,6 +2015,7 @@
                     '   <option value="3">PASSIVE</option>' +
                     '   <option value="4">CAGED_GO_PART</option>' +
                     '   <option value="5">CAGED_NPC_PART</option>' +
+                    '   <option value="6">CASTER_SUN</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
 
@@ -2043,7 +2047,21 @@
                             displayActionValDefault(4, id);
                             displayActionValDefault(5, id);
                             displayActionValDefault(6, id);
-                    } break;
+                    }
+                    break;
+                case "69":
+                    displayActionValDefault(1, id);
+                    displayActionValDefault(2, id);
+                    ActionParam3DIV.empty();
+                    $('<select class="form-control" id="action_param3_val">' +
+                        '   <option value="0">No</option>' +
+                        '   <option value="1">Yes</option>' +
+                        '</select>').appendTo(ActionParam3DIV);
+                    $('#action_param3_val').val(Lines[id].action_param3);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
                 case "80":
                     displayActionValDefault(1, id);
                     ActionParam2DIV.empty();
@@ -2732,6 +2750,13 @@
                             ActionParam4.html('Walk/Run (0/1)');
                             ActionParam5.html('Distance');
                             ActionParam6.html('GroupID');
+                            break;
+                        case "6":
+                            ActionParam2.html('Spell ID');
+                            ActionParam3.html('RepeatMin');
+                            ActionParam4.html('RepeatMax');
+                            ActionParam5.html('Cast flags');
+                            ActionParam6.html('');
                             break;
                         default:
                             ActionParam2.html('');

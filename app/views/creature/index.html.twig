@@ -3,7 +3,7 @@
     {% block head %}{% endblock %}
     {% block content %}
         <div class="col-md-12">
-            <h2>SunCreature</h2>
+            <h2>Creature</h2>
             <h4>Find the creature by ID</h4>
             <form class="form-inline">
                 <div class="form-group">
@@ -13,7 +13,7 @@
                         <div class="input-group-addon" id="name"></div>
                     </div>
                 </div>
-                <button class="go btn btn-primary">Go!</button>
+                <a id="go" href="#" class="go btn btn-primary">Go!</a>
             </form>
             <hr>
             <h4>Find the creature by name</h4>
@@ -23,18 +23,12 @@
                     <input type="text" class="form-control" id="find-name">
                 </div>
             </form>
-            <div class="col-md-7 row">
+            <div class="col-md-3 col-sm-12 row">
                 <table class="table table-stripped">
                     <thead>
-                    <th>ID</th>
-                    <th>Heroic</th>
-                    <th>Name</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th></th>
                     </thead>
                     <tbody>
                     </tbody>
@@ -59,15 +53,9 @@
                     url: '{{ app.request.basepath }}/creature/'+$(this).val()+'/search',
                     success: function (data) {
                         $('.table > tbody').html('');
-                        console.log(Date());
                         var html = '';
                         $.each(JSON.parse(data), function(){
-                            html += '<tr><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'">'+this.entry+'</a></td>';
-                            if(this.heroic > 0)
-                                html += '<td><a href="{{ app.request.basepath }}/creature/entry/'+this.heroic+'">'+this.heroic+'<a></td>';
-                            else
-                                html += '<td></td>';
-                            html += '<td>'+this.name+'</td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/stats">Stats</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/smartai">Smartai</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/text">Text</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/equip">Equipment</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/loot">Loot</a></td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/immune">Immune</a></td></tr>';
+                            html += '<tr><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'">'+this.entry+'</a></td><td>'+this.name+'</td><td><a href="{{ app.request.basepath }}/creature/entry/'+this.entry+'/eventai">EventAI</a></td></tr>';
                         });
                         $('.table > tbody').append(html);
                     },
@@ -78,12 +66,13 @@
                 });
             });
             $('#find-entry').on('keyup change', function(){
+                var val = $(this).val();
                 $.ajax({
                     type: "GET",
-                    url: '{{ app.request.basepath }}/creature/entry/'+$(this).val()+'/name',
+                    url: '{{ app.request.basepath }}/creature/entry/'+val+'/name',
                     success: function (data) {
-                        console.log(Date(), data);
                         $('#name').html('').html(data);
+                        $('#go').prop('href', '{{ app.request.basepath }}/creature/entry/'+val);
                     },
                     error: function (xhr, err) {
                         $('#name').html('');

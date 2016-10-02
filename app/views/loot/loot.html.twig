@@ -49,9 +49,7 @@
                         <th>GroupID</th>
                         <th>MinCount</th>
                         <th>MaxCount</th>
-                        <th>Condition</th>
-                        <th>Condition 1</th>
-                        <th>Condition 2</th>
+                        <th>Condition ID</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -70,9 +68,7 @@
                         <td>{{ item.groupid }}</td>
                         <td>{{ item.mincountOrRef }}</td>
                         <td>{{ item.maxcount }}</td>
-                        <td>{{ item.lootcondition }}</td>
-                        <td>{{ item.condition_value1 }}</td>
-                        <td>{{ item.condition_value2 }}</td>
+                        <td>{{ item.condition_id }}</td>
                         <td><span class="glyphicon glyphicon-remove" onclick="removeItem({{ item.item }})"></span></td>
                     </tr>
                     {% endfor %}

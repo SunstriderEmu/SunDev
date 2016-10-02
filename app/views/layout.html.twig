@@ -7,7 +7,7 @@
     <script src="{{ app.request.basepath }}/js/jquery-1.11.3.min.js"></script>
     {% block head %}
     {% endblock %}
-    <title>{% block title %}SunDev{% endblock %}</title>
+    <title>{% block title %}ElyDev{% endblock %}</title>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -19,7 +19,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ app.request.basepath }}/">SunDev</a>
+            <a class="navbar-brand" href="{{ app.request.basepath }}/">ElyDev</a>
         </div>
 
         {% if app.security.token is not null and is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -39,118 +39,28 @@
                         {% if is_granted('ROLE_USER_ADD') %}
                         <li><a href="{{ app.request.basepath }}/user/add">Add an user</a></li>
                         {% endif %}
-                        {% if (is_granted('ROLE_USER_LIST') or is_granted('ROLE_USER_ADD')) and (is_granted('ROLE_ACCOUNT_LIST') or is_granted('ROLE_ACCOUNT_ADD')) %}
-                        <li role="separator" class="divider"></li>
-                        {% endif %}
-                        {% if is_granted('ROLE_ACCOUNT_LIST') %}
-                        <li><a href="{{ app.request.basepath }}/account">All accounts</a></li>
-                        {% endif %}
-                        {% if is_granted('ROLE_ACCOUNT_ADD') %}
-                        <li><a href="{{ app.request.basepath }}/account/add">Add an account</a></li>
-                        {% endif %}
-                        {% if is_granted('ROLE_ACCOUNT_COMMANDS') %}
-                        <li><a href="{{ app.request.basepath }}/account/commands">Modify commands ranks</a></li>
-                        {% endif %}
-                        {% if (is_granted('ROLE_ADMIN')) %}
-                        <li role="separator" class="divider"></li>
-                        <li><a href="{{ app.request.basepath }}/reviews">All the reviews</a></li>
-                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if is_granted('ROLE_CREATURE_SMARTAI')
-                   or is_granted('ROLE_CREATURE_STATS')
+                {% if is_granted('ROLE_CREATURE_EVENTAI')
                    or is_granted('ROLE_CREATURE_LOOT')
                    or is_granted('ROLE_CREATURE_EQUIP')
-                   or is_granted('ROLE_CREATURE_TEXT')
-                   or is_granted('ROLE_CREATURE_IMMUNE')
-                   or is_granted('ROLE_CREATURE_GOSSIP')
-                   or is_granted('ROLE_CREATURE_FLAG_DYN')
-                   or is_granted('ROLE_CREATURE_FLAG_EXTRA')
-                   or is_granted('ROLE_CREATURE_FLAG_NPC')
-                   or is_granted('ROLE_CREATURE_FLAG_TYPE')
-                   or is_granted('ROLE_CREATURE_FLAG_UNIT')
-                   or is_granted('ROLE_LOOT_DISENCHANT')
-                   or is_granted('ROLE_LOOT_FISHING')
-                   or is_granted('ROLE_LOOT_GAMEOBJECT')
-                   or is_granted('ROLE_LOOT_ITEM')
-                   or is_granted('ROLE_LOOT_PICKPOCKET')
-                   or is_granted('ROLE_LOOT_PROSPECT')
-                   or is_granted('ROLE_LOOT_QUESTMAIL')
-                   or is_granted('ROLE_LOOT_REFERENCE')
-                   or is_granted('ROLE_LOOT_SKINNING')
-                   or is_granted('ROLE_DUNGEONS_READ')
-                   or is_granted('ROLE_DUNGEONS_WRITE')
                    or is_granted('ROLE_SPELL')
                    or is_granted('ROLE_WAYPOINTS') %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span> Development <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                    {% if is_granted('ROLE_CREATURE_SMARTAI')
-                       or is_granted('ROLE_CREATURE_STATS')
+                    {% if is_granted('ROLE_CREATURE_EVENTAI')
                        or is_granted('ROLE_CREATURE_LOOT')
-                       or is_granted('ROLE_CREATURE_EQUIP')
-                       or is_granted('ROLE_CREATURE_TEXT')
-                       or is_granted('ROLE_CREATURE_IMMUNE')
-                       or is_granted('ROLE_CREATURE_GOSSIP')
-                       or is_granted('ROLE_CREATURE_FLAG_DYN')
-                       or is_granted('ROLE_CREATURE_FLAG_EXTRA')
-                       or is_granted('ROLE_CREATURE_FLAG_NPC')
-                       or is_granted('ROLE_CREATURE_FLAG_TYPE')
-                       or is_granted('ROLE_CREATURE_FLAG_UNIT') %}
+                       or is_granted('ROLE_CREATURE_EQUIP') %}
                         <li><a href="{{ app.request.basepath }}/creature">Creature</a></li>
                     {% endif %}
-                    {% if is_granted('ROLE_DUNGEONS_READ')
-                       or is_granted('ROLE_DUNGEONS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/dungeon">Dungeon</a></li>
-                    {% endif %}
-                    {% if is_granted('ROLE_GO_SMARTAI')
-                       or is_granted('ROLE_GO_DATA')
-                       or is_granted('ROLE_GO_LOOT') %}
+                    {% if is_granted('ROLE_GO_DATA') %}
                         <li><a href="{{ app.request.basepath }}/gameobject">GameObject</a></li>
                     {% endif %}
-                    {% if is_granted('ROLE_SPELL') %}
-                        <li><a href="{{ app.request.basepath }}/spell">Spell</a></li>
-                    {% endif %}
-                    {% if is_granted('ROLE_WAYPOINTS') %}
-                        <li><a href="{{ app.request.basepath }}/waypoints">Waypoints</a></li>
-                    {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if is_granted('ROLE_QUESTS_READ')
-                   or is_granted('ROLE_QUESTS_WRITE')
-                   or is_granted('ROLE_CLASSES_DRUID')
-                   or is_granted('ROLE_CLASSES_HUNTER')
-                   or is_granted('ROLE_CLASSES_MAGE')
-                   or is_granted('ROLE_CLASSES_PALADIN')
-                   or is_granted('ROLE_CLASSES_PRIEST')
-                   or is_granted('ROLE_CLASSES_ROGUE')
-                   or is_granted('ROLE_CLASSES_SHAMAN')
-                   or is_granted('ROLE_CLASSES_WARLOCK')
-                   or is_granted('ROLE_CLASSES_WARRIOR') %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-eye-open"></span> Testing <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        {% if is_granted('ROLE_CLASSES_DRUID')
-                           or is_granted('ROLE_CLASSES_HUNTER')
-                           or is_granted('ROLE_CLASSES_MAGE')
-                           or is_granted('ROLE_CLASSES_PALADIN')
-                           or is_granted('ROLE_CLASSES_PRIEST')
-                           or is_granted('ROLE_CLASSES_ROGUE')
-                           or is_granted('ROLE_CLASSES_SHAMAN')
-                           or is_granted('ROLE_CLASSES_WARLOCK')
-                           or is_granted('ROLE_CLASSES_WARRIOR') %}
-                        <li><a href="{{ app.request.basepath }}/class">Class</a></li>
-                        {% endif %}
-                        {% if is_granted('ROLE_QUESTS_READ')
-                           or is_granted('ROLE_QUESTS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/quest">Quest</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-                <li><a href="http://wiki.sunstrider.tk"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -159,33 +69,6 @@
                             <span class="glyphicon glyphicon-user"></span> {{ app.user.username }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ app.request.basepath }}/user/edit">Edit user</a></li>
-                            {% if is_granted('ROLE_CREATURE_SMARTAI')
-                               or is_granted('ROLE_CREATURE_STATS')
-                               or is_granted('ROLE_CREATURE_LOOT')
-                               or is_granted('ROLE_CREATURE_EQUIP')
-                               or is_granted('ROLE_CREATURE_TEXT')
-                               or is_granted('ROLE_CREATURE_IMMUNE')
-                               or is_granted('ROLE_CREATURE_GOSSIP')
-                               or is_granted('ROLE_CREATURE_FLAG_DYN')
-                               or is_granted('ROLE_CREATURE_FLAG_EXTRA')
-                               or is_granted('ROLE_CREATURE_FLAG_NPC')
-                               or is_granted('ROLE_CREATURE_FLAG_TYPE')
-                               or is_granted('ROLE_CREATURE_FLAG_UNIT')
-                               or is_granted('ROLE_LOOT_DISENCHANT')
-                               or is_granted('ROLE_LOOT_FISHING')
-                               or is_granted('ROLE_LOOT_GAMEOBJECT')
-                               or is_granted('ROLE_LOOT_ITEM')
-                               or is_granted('ROLE_LOOT_PICKPOCKET')
-                               or is_granted('ROLE_LOOT_PROSPECT')
-                               or is_granted('ROLE_LOOT_QUESTMAIL')
-                               or is_granted('ROLE_LOOT_REFERENCE')
-                               or is_granted('ROLE_LOOT_SKINNING')
-                               or is_granted('ROLE_DUNGEONS_READ')
-                               or is_granted('ROLE_DUNGEONS_WRITE')
-                               or is_granted('ROLE_SPELL')
-                               or is_granted('ROLE_WAYPOINTS') %}
-                            <li><a href="{{ app.request.basepath }}/user/commits">My commits</a></li>
-                            {% endif %}
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ path('logout') }}">Log out</a></li>
                         </ul>
@@ -207,22 +90,7 @@
                         <span class="glyphicon glyphicon-star"></span> {{ creature.name }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}"><span class="glyphicon glyphicon-th"></span> Summary</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/stats"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/smartai"><span class="glyphicon glyphicon-console"></span> SmartAI</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/text"><span class="glyphicon glyphicon-comment"></span> Text</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/equip"><span class="glyphicon glyphicon-sunglasses"></span> Equipment</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/loot"><span class="glyphicon glyphicon-gift"></span> Loot</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/immune"><span class="glyphicon glyphicon-lock"></span> Immunities</a></li>
-                        <li class="dropdown-submenu">
-                            <a tabindex="-1" href="#"><span class="glyphicon glyphicon-flag"></span> Flags</a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/dynamicflag">Dynamic</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/flagextra">Extra</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/npcflag">NPC</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/typeflag">Type</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/unitflag">Unit</a></li>
-                            </ul>
-                        </li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/eventai"><span class="glyphicon glyphicon-stats"></span> EventAI</a></li>
                     </ul>
                 </li>
             </ul>

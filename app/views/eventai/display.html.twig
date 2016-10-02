@@ -1,0 +1,382 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ creature.name }} - {{ parent() }}{% endblock %}
+    {% block head %}
+        <link rel="stylesheet" type="text/css" href="{{ app.request.basepath }}/css/chosen.min.css" />
+        <script src="{{ app.request.basepath }}/js/jquery.dataTables.min.js"></script>
+        <script src="{{ app.request.basepath }}/js/jquery.xcolor.min.js"></script>
+        <script src="{{ app.request.basepath }}/js/chosen.jquery.min.js"></script>
+        <style type="text/css">
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+            table {
+                font-size: 13px;
+            }
+            .table {
+                margin-bottom: 0;
+                flex: 1 1 auto;
+            }
+            .table > tbody > tr > td {
+                vertical-align: middle;
+            }
+            td.options {
+                width: 5%;
+                text-align: center;
+            }
+            .clear {
+                clear: both;
+            }
+            .glyphicon {
+                cursor: pointer;
+            }
+            .form-group-sm .form-control {
+                height: 25px;
+            }
+            .form-group-sm select[multiple].form-control {
+                height: 23px;
+            }
+            #event_flags_value:hover {
+                height: 102px;
+            }
+            #event_inverse_phase_mask_value:hover {
+                height: 147px;
+            }
+            #target_flags_value {
+                font-size: 10px;
+                padding: 3px 3px;
+                letter-spacing: -0.5px;
+            }
+            #target_flags_value:hover {
+                height: 73px;
+            }
+            .pad-right-0 {
+                padding-right: 0;
+            }
+            .dataTables_info {
+                display: none;
+            }
+            .npc_flags {
+                height: 158px!important;
+                width: 175px;
+            }
+            .spell_flags {
+                height: 87px!important;
+                width: 175px;
+            }
+            .display_flags {
+                margin-left: -65px;
+            }
+            .flags {
+                width: 175px;
+            }
+            #event_comment,
+            #action1_comment,
+            #action2_comment,
+            #action3_comment {
+                display: none;
+                position: absolute;
+                z-index: 9;
+                top: 50px;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                word-wrap: break-word;
+                padding: 5px 8px;
+                line-height: 1.2;
+                font-size: 13px;
+            }
+            #action1_comment,
+            #action2_comment{
+                left: 97%;
+            }
+            #action3_comment {
+                right: 97%;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div id="smartai" class="col-md-12">
+            <div class="row">
+                <div id="event" class="col-md-3">
+                    <h4>Event</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form class="form-horizontal">
+                                <div class="form-group form-group-sm row">
+                                    <label class="col-sm-4 control-label" id="id">ID</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" id="id_val">
+                                    </div>
+                                    <label class="col-sm-4 control-label" id="event_chance">Chance</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" id="event_chance_val">
+                                    </div>
+                                    <label class="col-sm-4 control-label" id="event_flags">Flags</label>
+                                    <div class="col-sm-8">
+                                        <select multiple class="form-control chosen-select" data-placeholder="Select Flags" id="event_flags_value">
+                                            <option value="1">REPEATABLE</option>
+                                            <option value="32">RANDOM_ACTION</option>
+                                            <option value="128">DEBUG_ONLY</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-4 control-label" id="event_inverse_phase_mask">Not In Phasemask</label>
+                                    <div class="col-sm-8">
+                                        <select multiple class="form-control chosen-select" data-placeholder="Select Phases" id="event_inverse_phase_mask_value">
+                                            <option value="1">PHASE_1</option>
+                                            <option value="2">PHASE_2</option>
+                                            <option value="4">PHASE_3</option>
+                                            <option value="8">PHASE_4</option>
+                                            <option value="16">PHASE_5</option>
+                                            <option value="32">PHASE_6</option>
+                                            <option value="64">PHASE_7</option>
+                                            <option value="128">PHASE_8</option>
+                                            <option value="256">PHASE_9</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form class="form-horizontal">
+                                <select class="form-control input-sm chosen-select" id="event_type">
+                                    {% for event in events %}
+                                        <option value="{{ event.id }}">{{ event.id }} - {{ event.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="event_comment" class="col-md-10"></div>
+                                <div class="form-group form-group-sm row">
+                                    <div class="clear">
+                                        <label class="col-sm-6 control-label" id="event_param1">Param1</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" id="event_param1_val">
+                                        </div>
+                                    </div>
+                                    <div class="clear">
+                                        <label class="col-sm-6 control-label" id="event_param2">Param2</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" id="event_param2_val">
+                                        </div>
+                                    </div>
+                                    <div class="clear">
+                                        <label class="col-sm-6 control-label" id="event_param3">Param3</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" id="event_param3_val">
+                                        </div>
+                                    </div>
+                                    <div class="clear">
+                                        <label class="col-sm-6 control-label" id="event_param4">Param4</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" type="text" id="event_param4_val">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="action1" class="col-md-3">
+                    <h4>Action #1</h4>
+                    <form class="form-horizontal">
+                        <select class="form-control input-sm chosen-select" id="action1_type">
+                            {% for action in actions %}
+                                <option value="{{ action.id }}">{{ action.id }} - {{ action.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="action1_comment" class="col-md-10"></div>
+                        <div class="form-group form-group-sm">
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action1_param1">Param1</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action1_param1_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action1_param2">Param2</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action1_param2_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action1_param3">Param3</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action1_param3_val">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="action2" class="col-md-3">
+                    <h4>Action #2</h4>
+                    <form class="form-horizontal">
+                        <select class="form-control input-sm chosen-select" id="action2_type">
+                            {% for action in actions %}
+                                <option value="{{ action.id }}">{{ action.id }} - {{ action.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="action2_comment" class="col-md-10"></div>
+                        <div class="form-group form-group-sm">
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action2_param1">Param1</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action2_param1_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action2_param2">Param2</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action2_param2_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action2_param3">Param3</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action2_param3_val">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="action3" class="col-md-3">
+                    <h4>Action #3</h4>
+                    <form class="form-horizontal">
+                        <select class="form-control input-sm chosen-select" id="action3_type">
+                            {% for action in actions %}
+                                <option value="{{ action.id }}">{{ action.id }} - {{ action.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="action3_comment" class="col-md-10"></div>
+                        <div class="form-group form-group-sm">
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action3_param1">Param1</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action3_param1_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action3_param2">Param2</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action3_param2_val">
+                                </div>
+                            </div>
+                            <div class="clear">
+                                <label class="col-sm-7 control-label" id="action3_param3">Param3</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control" type="text" id="action3_param3_val">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="text-align: right;">
+            <button id="new_line" class="btn btn-info btn-xs">New Line</button>
+            <button id="generate_comments" class="btn btn-info btn-xs">Generate comments</button>
+            <button id="generate_sql" class="btn btn-warning btn-xs">Generate SQL</button>
+        </div>
+        <div id="lines" class="col-md-12">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Event</th>
+                    <th>Action #1</th>
+                    <th>Action #2</th>
+                    <th>Action #3</th>
+                    <th>Comment</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for line in lines %}
+                    <tr>
+                        <td><strong>{{ line.id }}</strong></td>
+                        <td>{{ events[line.eventtype].name[6:] }}</td>
+                        <td>{{ actions[line.action1type].name[7:] }}</td>
+                        <td>{{ actions[line.action2type].name[7:] }}</td>
+                        <td>{{ actions[line.action3type].name[7:] }}</td>
+                        <td>{{ line.comment }}</td>
+                        <td class="options">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var Events = {{ events|json_encode|raw }};
+                var Actions = {{ actions|json_encode|raw }};
+
+                var EventChosen = $("#event_type_chosen");
+                var EventComment = $("#event_comment");
+                var Action1Chosen = $("#action1_type_chosen");
+                var Action2Chosen = $("#action2_type_chosen");
+                var Action3Chosen = $("#action3_type_chosen");
+                var Action1Comment = $("#action1_comment");
+                var Action2Comment = $("#action2_comment");
+                var Action3Comment = $("#action3_comment");
+
+                EventChosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Events[ID].comment != null) {
+                        EventComment.html('<h5>Help</h5>' + Events[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    EventComment.hide();
+                });
+
+                Action1Chosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Actions[ID].comment != null) {
+                        Action1Comment.html('<h5>Help</h5>' + Actions[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    Action1Comment.hide();
+                });
+                Action2Chosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Actions[ID].comment != null) {
+                        Action2Comment.html('<h5>Help</h5>' + Actions[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    Action2Comment.hide();
+                });
+                Action3Chosen.on("mouseover", ".active-result", function() {
+                    var ID = ($(this).text().match(/\d+\.\d+|\d+\b|\d+(?=\w)/g) || [] ).map(function (v) {return +v;}).shift();
+                    if(Actions[ID].comment != null) {
+                        Action3Comment.html('<h5>Help</h5>' + Actions[ID].comment).show();
+                    }
+                }).on("mouseout", ".active-result", function() {
+                    Action3Comment.hide();
+                });
+            });
+        </script>
+        <script src="{{ app.request.basepath }}/js/eventai.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.table').DataTable( {
+                    "scrollY":        "calc(100vh - 360px)",
+                    "paging":         false,
+                    "autoWidth":      false,
+                    "searching":      false,
+                } );
+            } );
+
+            $('body').eventai({
+                "User": "{{ app.user.id }}",
+                "Entry": "{{ creature.entry }}",
+                "Name": "{{ creature.name }}",
+                "Lines": {{ lines|json_encode(constant('JSON_FORCE_OBJECT'))|raw }},
+                "Events": {{ events|json_encode|raw }},
+                "Actions": {{ actions|json_encode|raw }}
+            });
+        </script>
+    {% endblock %}

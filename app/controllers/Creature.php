@@ -160,6 +160,21 @@ $app->get('/creature/guid/{guid}/smartai', function($guid) use($app) {
         ));
 })->assert('guid', '\d+');
 
+// EventAI
+$app->get('/creature/entry/{entry}/eventai', function($entry) use($app) {
+    $creature 	= new Creature(["entry" => $entry]);
+    $creature->setName($app['dao.creature']->findCreatureEntryName($creature)->getName());
+    $lines		= $app['dao.eventai']->getCreatureEntryScript($creature);
+
+    return $app['twig']->render('eventai/display.html.twig',
+        array(
+            "lines" 	=> $lines,
+            "creature" 	=> $creature,
+            "events" 	=> $app['dao.eventai']->getEvents(),
+            "actions" 	=> $app['dao.eventai']->getActions(),
+        ));
+})->assert('entry', '\d+');
+
 // GET NAMES
 $app->get('/creature/entry/{entry}/name', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);

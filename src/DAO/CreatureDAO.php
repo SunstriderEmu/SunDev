@@ -5,64 +5,11 @@ namespace SUN\DAO;
 use SUN\Domain\Creature;
 use Doctrine\DBAL\Connection;
 
-class CreatureDAO extends DAO {
+class CreatureDAO extends DAO
+{
     public function getCreature($entry)
     {
-        $creature = $this->getDb('test')->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));
-        $minStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['minlevel']));
-        $maxStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['maxlevel']));
-
-        $creature['gender'] = $this->getGender($entry);
-
-        $total = $this->getDb('test')->fetchAssoc('SELECT COUNT(*) as count, map from creature WHERE id = ?', array($entry));
-        $creature['total'] = $total['count'];
-
-        $zone = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($total['map']));
-        $creature['zone'] = $zone['name'];
-
-        $creature['texts'] = $this->getDb('test')->fetchAll('SELECT text, type FROM creature_text WHERE entry = ?', array($entry));
-
-        $creature['minhp'] = $creature['HealthModifier'] * $minStats["basehp{$creature['exp']}"];
-        $creature['minmp'] = $creature['ManaModifier'] * $minStats["basemana"];
-        $creature['minarmor'] = $creature['ArmorModifier'] * $minStats["basearmor"];
-
-        if($creature['minlevel'] != $creature['maxlevel']) {
-            $creature['maxhp'] = $creature['HealthModifier'] * $maxStats["basehp{$creature['exp']}"];
-            $creature['maxmp'] = $creature['ManaModifier'] * $maxStats["basemana"];
-            $creature['maxarmor'] = $creature['ArmorModifier'] * $maxStats["basearmor"];
-        }
-
-        if($creature['exp'] != 0)
-            $base_damage = "damage_exp{$creature['exp']}";
-        else
-            $base_damage = "damage_base";
-
-        $creature['melee']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
-        $creature['melee']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000);
-        $creature['melee']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000));
-        $creature['melee']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000)) * (1 + $creature['BaseVariance']);
-        $creature['melee']['minlevel']['avg']   = ($creature['melee']['minlevel']['min'] + $creature['melee']['minlevel']['max']) / 2 / ($creature['BaseAttackTime'] / 1000);
-
-        $creature['ranged']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
-        $creature['ranged']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
-        $creature['ranged']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
-        $creature['ranged']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
-        $creature['ranged']['minlevel']['avg']   = ($creature['ranged']['minlevel']['min'] + $creature['ranged']['minlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
-
-        if($creature['minlevel'] != $creature['maxlevel']) {
-            $creature['melee']['maxlevel']['base']  = $creature['DamageModifier'] * $maxStats[$base_damage];
-            $creature['melee']['maxlevel']['ap']    = $creature['DamageModifier'] * ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000);
-            $creature['melee']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000));
-            $creature['melee']['maxlevel']['max']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000)) * (1 + $creature['BaseVariance']);
-            $creature['melee']['maxlevel']['avg']   = ($creature['melee']['maxlevel']['min'] + $creature['melee']['maxlevel']['max']) / 2 / ($creature['BaseAttackTime'] / 1000);
-
-            $creature['ranged']['maxlevel']['base']  = $creature['DamageModifier'] * $maxStats[$base_damage];
-            $creature['ranged']['maxlevel']['ap']    = $creature['DamageModifier'] * ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
-            $creature['ranged']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
-            $creature['ranged']['maxlevel']['max']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
-            $creature['ranged']['maxlevel']['avg']   = ($creature['ranged']['maxlevel']['min'] + $creature['ranged']['maxlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
-        }
-        return $creature;
+        return $this->getDb('test')->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));
     }
 
     public function getStats($class, $level)
@@ -274,7 +221,7 @@ class CreatureDAO extends DAO {
 
     public function search($name)
     {
-        return $this->getDb('test')->fetchAll("SELECT entry, difficulty_entry_1 as heroic, name FROM creature_template WHERE name LIKE '%{$name}%'");
+        return $this->getDb('test')->fetchAll("SELECT entry, name FROM creature_template WHERE name LIKE '%{$name}%'");
     }
 	
 	public function getEquipment($entry)

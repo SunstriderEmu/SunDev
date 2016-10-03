@@ -650,9 +650,9 @@
                     }
                     break;
                 case "23":
-                    if (ActionParam1 > "0" && ActionParam1 <= "31")
+                    if (ActionParam1 > 0 && ActionParam1 <= 31)
                         return "Increase Phase By " + ActionParam1;
-                    else if (ActionParam1 < "0" && ActionParam1 >= "-31")
+                    else if (ActionParam1 < 0 && ActionParam1 >= -31)
                         return "Decrease Phase By " + ActionParam1;
                     else {
                         alert("Error:\nLine " + id + ": something is wrong.");

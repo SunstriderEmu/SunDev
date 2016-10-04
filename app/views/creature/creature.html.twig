@@ -81,6 +81,8 @@
                                 {% if creature.minlevel != creature.maxlevel %}<th></th>{% endif %}
                                 <th></th>
                                 <th>Base Damage</th>
+                                <th>Damage Modifier</th>
+                                <th>Attack Speed</th>
                                 <th>Attack Power</th>
                                 <th>Min Damage</th>
                                 <th>Max Damage</th>
@@ -91,18 +93,21 @@
                             <tr>
                                 <td>Melee</td>
                                 <td>{{ creature.mindmg|number_format(1, '.', ',') }} - {{ creature.maxdmg|number_format(1, '.', ',') }}</td>
+                                <td rowspan="2">{{ creature.dmg_multiplier }}</td>
+                                <td>{% if creature.baseattacktime == 0 %}<span style="color: red">{{ creature.baseattacktime/1000 }}</span>{% else %}{{ creature.baseattacktime/1000 }}{% endif %}</td>
                                 <td>{{ creature.attackpower|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.mindmg*creature.dmg_multiplier|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.maxdmg*creature.dmg_multiplier|number_format(1, '.', ',') }}</td>
-                                <td>{{ ((creature.mindmg*creature.dmg_multiplier + creature.maxdmg*creature.dmg_multiplier)/2/creature.baseattacktime/1000)|number_format(1, '.', ',') }}</td>
+                                <td>{% if creature.baseattacktime == 0 %}/{% else %}{{ ((creature.mindmg*creature.dmg_multiplier + creature.maxdmg*creature.dmg_multiplier)/2/(creature.baseattacktime/1000))|number_format(2, '.', ',') }}{% endif %}</td>
                             </tr>
                             <tr>
                                 <td>Ranged</td>
                                 <td>{{ creature.minrangedmg|number_format(1, '.', ',') }}</td>
+                                <td>{% if creature.rangeattacktime == 0 %}<span style="color: red">{{ creature.rangeattacktime/1000 }}{% else %}{{ creature.rangeattacktime/1000 }}{% endif %}</td>
                                 <td>{{ creature.rangedattackpower|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.minrangedmg*creature.dmg_multiplier|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.maxrangedmg*creature.dmg_multiplier|number_format(1, '.', ',') }}</td>
-                                <td>{{ ((creature.minrangedmg*creature.dmg_multiplier + creature.maxrangedmg*creature.dmg_multiplier)/2/creature.rangeattacktime/1000)|number_format(1, '.', ',') }}</td>
+                                <td>{% if creature.rangeattacktime == 0 %}/{% else %}{{ ((creature.minrangedmg*creature.dmg_multiplier + creature.maxrangedmg*creature.dmg_multiplier)/2/(creature.rangeattacktime/1000))|number_format(2, '.', ',') }}{% endif %}</td>
                             </tr>
                         </tbody>
                     </table>

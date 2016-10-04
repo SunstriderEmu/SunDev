@@ -957,7 +957,6 @@
 
             var SelectFlags = '#event_flags_value';
             var SelectPhase = '#event_inverse_phase_mask_value';
-            var SelectTargetFlags = '#target_flags_value';
 
             if (Lines[id].event_flags != "0") {
                 var Binary = "0x" + Hex(Lines[id].event_flags);
@@ -984,19 +983,8 @@
             } else {
                 $(SelectPhase + ' > option').removeAttr('selected');
             }
-            if (Lines[id].target_flags != "0") {
-                Binary = "0x" + Hex(Lines[id].target_flags);
-                selectByte(SelectTargetFlags, 0x1, Binary, 1);
-                selectByte(SelectTargetFlags, 0x2, Binary, 2);
-                selectByte(SelectTargetFlags, 0x4, Binary, 3);
-                selectByte(SelectTargetFlags, 0x8, Binary, 4);
-                selectByte(SelectTargetFlags, 0x10, Binary, 5);
-            } else {
-                $(SelectTargetFlags + ' > option').removeAttr('selected');
-            }
             $(SelectPhase).trigger('chosen:updated');
             $(SelectFlags).trigger('chosen:updated');
-            $(SelectTargetFlags).trigger('chosen:updated');
             EventType.val(Lines[id].event_type).trigger('chosen:updated');
             Action1Type.val(Lines[id].action1_type).trigger('chosen:updated');
             Action2Type.val(Lines[id].action2_type).trigger('chosen:updated');
@@ -1416,11 +1404,17 @@
                 '   <option value="3">Hostile Last Aggro</option>' +
                 '   <option value="4">Hostile Random</option>' +
                 '   <option value="5">Hostile Random Not Top</option>' +
+                '   <option value="12">Hostile Random With Mana</option>' +
+                '   <option value="13">Hostile Random In Melee</option>' +
+                '   <option value="14">Hostile Random In Melee Not Top</option>' +
+                '   <option value="15">Hostile Random In Range</option>' +
+                '   <option value="16">Hostile Random In Range Not Top</option>' +
                 '   <option value="6">Action Invoker</option>' +
                 '   <option value="7">Action Invoker Owner</option>' +
+                '   <option value="10">Sender</option>' +
                 '   <option value="8">Hostile Random Player</option>' +
                 '   <option value="9">Hostile Random Player Not Top</option>' +
-                '   <option value="10">Sender</option>' +
+                '   <option value="11">Hostile Random Player With Mana</option>' +
                 '</select>').appendTo(Param);
             $('#action'+Type+'_param'+id+'_val').val(Lines[ID]['action'+Type+'_param'+id]+'');
         }

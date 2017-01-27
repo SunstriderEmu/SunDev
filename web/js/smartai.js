@@ -397,7 +397,7 @@
                     return "On Passenger Removed";
                     break;
                 case "29":
-                    return "On Charmed";
+                    return "On " + (EventParam1 == 1 ? "Remove " : "") + "Charmed";
                     break;
                 case "30":
                     return "On Target Charmed";
@@ -504,7 +504,7 @@
                     return generateEventComment(Event);
                     break;
                 case "62":
-                    return "On Gossip " + EventParam1 + " Option " + EventParam2 + " Selected";
+                    return "On Gossip" + EventParam1 (EventParam3 == 1 ? "" : " Option " + EventParam2) + " Selected";
                     break;
                 case "63":
                     return "On Just Created";
@@ -577,6 +577,40 @@
                     Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x2, 'Ready');
                     Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x4, 'Activated');
                     Comment = generateBitComment('On GO State Loot ', Comment, Binary, 0x8, 'Just Deactivated');
+                    return replaceComma(Comment);
+                case "105":
+                    var Comment = "On Affected By ";
+                    var Binary = "0x" + Hex(EventParam2);
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x2, 'Charm');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x4, 'Disoriented');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x8, 'Disarm');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x10, 'Distract');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x20, 'Fear');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x40, 'Fumble');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x80, 'Root');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x100, 'Pacify');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x200, 'Silence');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x400, 'Sleep');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x800, 'Snare');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x1000, 'Stun');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x2000, 'Freeze');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x4000, 'Knockout');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x8000, 'Bleed');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x10000, 'Bandage');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x20000, 'Polymorph');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x40000, 'Banish');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x80000, 'Shield');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x100000, 'Shackle');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x200000, 'Mount');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x400000, 'Persuade');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x800000, 'Turn');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x1000000, 'Horror');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x2000000, 'Invulnerability');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x4000000, 'Interrupt');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x8000000, 'Daze');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x10000000, 'Discovery');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x20000000, 'Immune Shield');
+                    Comment = generateBitComment('On Affected By ', Comment, Binary, 0x40000000, 'Sapped');
                     return replaceComma(Comment);
                     break;
             }
@@ -814,7 +848,7 @@
                     return "Quest Credit '<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getCreatureName(ActionParam1) + "</a>'";
                     break;
                 case "34":
-                    return "Set Instance Data " + ActionParam1 + " " + ActionParam2;
+                    return "Set Instance " + (ActionParam3 == 1 ? "Boss State " : "Data ") + ActionParam1 + " " + ActionParam2;
                     break;
                 case "35":
                     return "Set Instance Data " + ActionParam1 + " " + ActionParam2;
@@ -1013,7 +1047,7 @@
                     return "Play Movie " + ActionParam1;
                     break;
                 case "69":
-                    return "Move To Pos";
+                    return "Move To Pos" + (ActionParam3 == 1 ? ' Pathfinding Disabled' : '');
                     break;
                 case "70":
                     return "Respawn Target";
@@ -1271,7 +1305,44 @@
                     }
                     break;
                 case "114":
-                    return "Rise Of " + ActionParam1 + "m";
+                    return "Move Offset " + Lines[id].target_z;
+                    break;
+                case "115":
+                    if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0")
+                        return "Play Random Sound (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0")
+                      return "Play Random Sound (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "&" + ActionParam5 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 == "0")
+                      return "Play Random Sound (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "&" + ActionParam4 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 == "0" && ActionParam5 == "0")
+                      return "Play Random Sound (" + ActionParam1 + "," + ActionParam2 + "&" + ActionParam3 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0")
+                        return "Play Random Sound (" + ActionParam1 + "&" + ActionParam2 + ")";
+                    else if (ActionParam1 != "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0") {
+                        alert("Error:\nLine " + id + ": 'Sound Id 2 should not be 0.");
+                        return "Error";
+                    } else if (ActionParam1 == "0" && ActionParam2 == "0" && ActionParam3 == "0" && ActionParam4 == "0" && ActionParam5 == "0") {
+                        alert("Error:\nLine " + id + ": 'Sound Id 1 & 2 should not be 0.");
+                        return "Error";
+                    } else {
+                        alert("Error:\nLine " + id + ": something is wrong.");
+                        return "Error";
+                    }
+                    break;
+                case "116":
+                    return "Delay Corpse " + ActionParam1 + "ms";
+                    break;
+                case "117":
+                    return (ActionParam1 == 1 ? "Disable Evade" : "Enable Evade");
+                    break;
+                case "118":
+                    switch(ActionParam1)
+                    {
+                        case 0: return "Set GO State Active"; break;
+                        case 1: return "Set GO Ready"; break;
+                        case 2: return "Set GO Active Alternative"; break;
+                        default: alert("Error:\nLine " + id + ": something is wrong."); return "Error";
+                    }
                     break;
                 case "150":
                 case "151":
@@ -1324,6 +1395,45 @@
                     break;
                 case "159":
                     return "Remove The Formation";
+                    break;
+                case "160":
+                    var Com = (ActionParam2 == 1 ? "Apply " : "Remove ") + "Immune";
+                    switch (ActionParam1) {
+                        case "2": return Com += "Charm"; break;
+                        case "4": return Com += "Disoriented"; break;
+                        case "8": return Com += "Disarm"; break;
+                        case "16": return Com += "Distrat"; break;
+                        case "32": return Com += "Fear"; break;
+                        case "64": return Com += "Fumble"; break;
+                        case "128": return Com += "Root"; break;
+                        case "256": return Com += "Pacify"; break;
+                        case "512": return Com += "Silence"; break;
+                        case "1024": return Com += "Sleep"; break;
+                        case "2048": return Com += "Snare"; break;
+                        case "4096": return Com += "Stun"; break;
+                        case "8192": return Com += "Freeze"; break;
+                        case "16384": return Com += "Knockout"; break;
+                        case "32768": return Com += "Bleed"; break;
+                        case "65536": return Com += "Bandage"; break;
+                        case "131072": return Com += "Polymorph"; break;
+                        case "262144": return Com += "Banish"; break;
+                        case "524288": return Com += "Shield"; break;
+                        case "1048576": return Com += "Shackle"; break;
+                        case "2097152": return Com += "Mount"; break;
+                        case "4194304": return Com += "Persuade"; break;
+                        case "8388608": return Com += "Turn"; break;
+                        case "16777216": return Com += "Horror"; break;
+                        case "33554432": return Com += "Invulnerability"; break;
+                        case "67108864": return Com += "Interrupt"; break;
+                        case "134217728": return Com += "Daze"; break;
+                        case "268435456": return Com += "Discovery"; break;
+                        case "536870912": return Com += "Immune Shield"; break;
+                        case "1073741824": return Com += "Sapped"; break;
+                        default: return 'Error';
+                    }
+                    break;
+                case "161":
+                    return (ActionParam2 == 1 ? "Apply " : "Remove ") + getSpellName(ActionParam1);
                     break;
                 default:
                     return "Error in generateActionComment";
@@ -1511,6 +1621,7 @@
         function displayEventVal(EventType, id) {
             switch (EventType) {
                 case "5":
+                case "62":
                     displayEventValDefault(1, id);
                     displayEventValDefault(2, id);
                     EventParam3DIV.empty();
@@ -1540,6 +1651,7 @@
                     break;
                 case "10":
                 case "26":
+                case "29":
                     EventParam1DIV.empty();
                     $('<select class="form-control" id="event_param1_val">' +
                     '   <option value="0">No</option>' +
@@ -1613,6 +1725,80 @@
                     selectByte(NPCFlags, 0x4, Binary, 3);
                     selectByte(NPCFlags, 0x8, Binary, 4);
                     displayEventValDefault(2, id);
+                    displayEventValDefault(3, id);
+                    displayEventValDefault(4, id);
+                    break;
+                case "105":
+                    displayEventValDefault(1, id);
+                    EventParam2DIV.empty();
+                    $('<select multiple class="form-control spell_flags" id="event_param2_val">' +
+                        '   <option value="0">NONE</option>' +
+                        '   <option value="2">CHARM</option>' +
+                        '   <option value="4">DISORIENTED</option>' +
+                        '   <option value="8">DISARM</option>' +
+                        '   <option value="16">DISTRACT</option>' +
+                        '   <option value="32">FEAR</option>' +
+                        '   <option value="64">FUMBLE</option>' +
+                        '   <option value="128">ROOT</option>' +
+                        '   <option value="256">PACIFY</option>' +
+                        '   <option value="512">SILENCE</option>' +
+                        '   <option value="1024">SLEEP</option>' +
+                        '   <option value="2048">SNARE</option>' +
+                        '   <option value="4096">STUN</option>' +
+                        '   <option value="8192">FREEZE</option>' +
+                        '   <option value="16384">KNOCKOUT</option>' +
+                        '   <option value="32768">BLEED</option>' +
+                        '   <option value="65536">BANDAGE</option>' +
+                        '   <option value="131072">POLYMORPH</option>' +
+                        '   <option value="262144">BANISH</option>' +
+                        '   <option value="524288">SHIELD</option>' +
+                        '   <option value="1048576">SHACKLE</option>' +
+                        '   <option value="2097152">MOUNT</option>' +
+                        '   <option value="4194304">PERSUADE</option>' +
+                        '   <option value="8388608">TURN</option>' +
+                        '   <option value="16777216">HORROR</option>' +
+                        '   <option value="33554432">INVULNERABILITY</option>' +
+                        '   <option value="67108864">INTERRUPT</option>' +
+                        '   <option value="134217728">DAZE</option>' +
+                        '   <option value="268435456">DISCOVERY</option>' +
+                        '   <option value="536870912">IMMUNE_SHIELD</option>' +
+                        '   <option value="1073741824">SAPPED</option>' +
+                        '</select>').appendTo(ActionParam2DIV);
+                    var NPCFlags = '#action_param2_val';
+                    var Binary = "0x" + Hex(Lines[id].action_param2);
+                    selectByte(NPCFlags, 0x0, Binary, 1);
+                    selectByte(NPCFlags, 0x1, Binary, 2);
+                    selectByte(NPCFlags, 0x2, Binary, 3);
+                    selectByte(NPCFlags, 0x4, Binary, 4);
+                    selectByte(NPCFlags, 0x8, Binary, 5);
+                    selectByte(NPCFlags, 0x10, Binary, 6);
+                    selectByte(NPCFlags, 0x20, Binary, 7);
+                    selectByte(NPCFlags, 0x40, Binary, 8);
+                    selectByte(NPCFlags, 0x80, Binary, 9);
+                    selectByte(NPCFlags, 0x100, Binary, 10);
+                    selectByte(NPCFlags, 0x200, Binary, 11);
+                    selectByte(NPCFlags, 0x400, Binary, 12);
+                    selectByte(NPCFlags, 0x800, Binary, 13);
+                    selectByte(NPCFlags, 0x1000, Binary, 14);
+                    selectByte(NPCFlags, 0x2000, Binary, 15);
+                    selectByte(NPCFlags, 0x4000, Binary, 16);
+                    selectByte(NPCFlags, 0x8000, Binary, 17);
+                    selectByte(NPCFlags, 0x10000, Binary, 18);
+                    selectByte(NPCFlags, 0x20000, Binary, 19);
+                    selectByte(NPCFlags, 0x40000, Binary, 20);
+                    selectByte(NPCFlags, 0x80000, Binary, 21);
+                    selectByte(NPCFlags, 0x100000, Binary, 22);
+                    selectByte(NPCFlags, 0x200000, Binary, 23);
+                    selectByte(NPCFlags, 0x400000, Binary, 24);
+                    selectByte(NPCFlags, 0x800000, Binary, 25);
+                    selectByte(NPCFlags, 0x1000000, Binary, 26);
+                    selectByte(NPCFlags, 0x2000000, Binary, 27);
+                    selectByte(NPCFlags, 0x4000000, Binary, 28);
+                    selectByte(NPCFlags, 0x8000000, Binary, 29);
+                    selectByte(NPCFlags, 0x10000000, Binary, 30);
+                    selectByte(NPCFlags, 0x20000000, Binary, 31);
+                    selectByte(NPCFlags, 0x40000000, Binary, 32);
+                    selectByte(NPCFlags, 0x80000000, Binary, 33);
                     displayEventValDefault(3, id);
                     displayEventValDefault(4, id);
                     break;
@@ -1952,6 +2138,19 @@
                         '   <option value="1">Event</option>' +
                         '</select>').appendTo(ActionParam5DIV);
                     $('#action_param5_val').val(Lines[id].action_param5);
+                    displayActionValDefault(6, id);
+                    break;
+                case "34":
+                    displayActionValDefault(1, id);
+                    displayActionValDefault(2, id);
+                    ActionParam3DIV.empty();
+                    $('<select class="form-control" id="action_param3_val">' +
+                        '   <option value="0">Data</option>' +
+                        '   <option value="1">Boss State</option>' +
+                        '</select>').appendTo(ActionParam3DIV);
+                    $('#action_param3_val').val(Lines[id].action_param3);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
                     displayActionValDefault(6, id);
                     break;
                 case "40":
@@ -2314,6 +2513,46 @@
                     displayActionValDefault(5, id);
                     displayActionValDefault(6, id);
                     break;
+                case "115":
+                    displayActionValDefault(1, id);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    ActionParam6DIV.empty();
+                    $('<select class="form-control" id="action_param6_val">' +
+                        '   <option value="0">No</option>' +
+                        '   <option value="1">Yes</option>' +
+                        '</select>').appendTo(ActionParam6DIV);
+                    $('#action_param6_val').val(Lines[id].action_param6);
+                    break;
+                case "117":
+                    ActionParam1DIV.empty();
+                    $('<select class="form-control" id="action_param1_val">' +
+                        '   <option value="0">Enable</option>' +
+                        '   <option value="1">Disable</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
+                case "118":
+                    ActionParam1DIV.empty();
+                    $('<select class="form-control" id="action_param1_val">' +
+                        '   <option value="0">ACTIVE</option>' +
+                        '   <option value="1">READY</option>' +
+                        '   <option value="2">ACTIVE_ALTERNATIVE</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    displayActionValDefault(2, id);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
                 case "150": //ACTION_SET_UNIT_FIELD_BYTES_2
                 case "151": //ACTION_REMOVE_UNIT_FIELD_BYTES_2
                     if (Lines[id].action_param2 == "0") {
@@ -2371,6 +2610,66 @@
                     '   <option value="1">BYTES2_FLAGS_TYPE</option>' +
                     '   <option value="2">UNIT_RENAME</option>' +
                     '</select>').appendTo(ActionParam2DIV);
+                    $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
+                case "160":
+                    ActionParam1DIV.empty();
+                    $('<select class="form-control" id="action_param1_val">' +
+                        '   <option value="0">NONE</option>' +
+                        '   <option value="2">CHARM</option>' +
+                        '   <option value="4">DISORIENTED</option>' +
+                        '   <option value="8">DISARM</option>' +
+                        '   <option value="16">DISTRACT</option>' +
+                        '   <option value="32">FEAR</option>' +
+                        '   <option value="64">FUMBLE</option>' +
+                        '   <option value="128">ROOT</option>' +
+                        '   <option value="256">PACIFY</option>' +
+                        '   <option value="512">SILENCE</option>' +
+                        '   <option value="1024">SLEEP</option>' +
+                        '   <option value="2048">SNARE</option>' +
+                        '   <option value="4096">STUN</option>' +
+                        '   <option value="8192">FREEZE</option>' +
+                        '   <option value="16384">KNOCKOUT</option>' +
+                        '   <option value="32768">BLEED</option>' +
+                        '   <option value="65536">BANDAGE</option>' +
+                        '   <option value="131072">POLYMORPH</option>' +
+                        '   <option value="262144">BANISH</option>' +
+                        '   <option value="524288">SHIELD</option>' +
+                        '   <option value="1048576">SHACKLE</option>' +
+                        '   <option value="2097152">MOUNT</option>' +
+                        '   <option value="4194304">PERSUADE</option>' +
+                        '   <option value="8388608">TURN</option>' +
+                        '   <option value="16777216">HORROR</option>' +
+                        '   <option value="33554432">INVULNERABILITY</option>' +
+                        '   <option value="67108864">INTERRUPT</option>' +
+                        '   <option value="134217728">DAZE</option>' +
+                        '   <option value="268435456">DISCOVERY</option>' +
+                        '   <option value="536870912">IMMUNE_SHIELD</option>' +
+                        '   <option value="1073741824">SAPPED</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
+                    $('#action_param1_val').val(Lines[id].action_param1);
+                    ActionParam2DIV.empty();
+                    $('<select class="form-control" id="action_param2_val">' +
+                        '   <option value="0">Remove</option>' +
+                        '   <option value="1">Apply</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
+                    $('#action_param2_val').val(Lines[id].action_param2);
+                    displayActionValDefault(3, id);
+                    displayActionValDefault(4, id);
+                    displayActionValDefault(5, id);
+                    displayActionValDefault(6, id);
+                    break;
+                case "161":
+                    displayActionValDefault(1, id);
+                    ActionParam2DIV.empty();
+                    $('<select class="form-control" id="action_param2_val">' +
+                        '   <option value="0">Remove</option>' +
+                        '   <option value="1">Apply</option>' +
+                        '</select>').appendTo(ActionParam1DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);
                     displayActionValDefault(3, id);
                     displayActionValDefault(4, id);

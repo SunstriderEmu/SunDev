@@ -21,8 +21,8 @@ $app->match('/account/add', function(Request $request) use ($app) {
     if ($form->isValid()) {
         $account = $form->getData();
         $accountData = [
-            'username'      => strtoupper($account['username']),
-            'sha_pass_hash' => strtoupper(sha1(strtoupper($account['username']).':'.strtoupper($account['password']))),
+            'username'  => strtoupper($account['username']),
+            'password'  => strtoupper(sha1(strtoupper($account['username']).':'.strtoupper($account['password']))),
         ];
         $app['dbs']['auth']->insert('account', $accountData);
         if($account['access'] > 0) {

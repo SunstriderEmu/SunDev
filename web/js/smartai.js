@@ -89,7 +89,6 @@
         var SelectTargetFlags = '#target_flags_value';
         var i;
 
-
         PHASE = {
             1: "#8CDAFE",
             2: "#FA91AC",
@@ -504,7 +503,7 @@
                     return generateEventComment(Event);
                     break;
                 case "62":
-                    return "On Gossip" + EventParam1 (EventParam3 == 1 ? "" : " Option " + EventParam2) + " Selected";
+                    return "On Gossip " + EventParam1 + (EventParam3 == 1 ? "" : " Option " + EventParam2) + " Selected";
                     break;
                 case "63":
                     return "On Just Created";

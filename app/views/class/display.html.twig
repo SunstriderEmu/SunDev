@@ -67,7 +67,7 @@
                     {% for talent in class.spec1talents %}
                         <tr{% if talent.tested == 1 %} class="assigned"{% elseif talent.tested == 2 %} class="ok"{% elseif talent.tested == 3 %} class="bug"{% else %}{% endif %}>
                             <td>
-                                <select class="form-control status" onchange="update('talents', '{{ talent.name }}', 'tested', this.value)">
+                                <select class="form-control status" onchange='update("talents", "{{ talent.name|replace("'", "\'") }}", "tested", this.value)'>
                                     <option value="0">Choose</option>
                                     <option value="1" {% if talent.tested == 1 %}selected="selected"{% endif %}>Assigned</option>
                                     <option value="2" {% if talent.tested == 2 %}selected="selected"{% endif %}>OK</option>
@@ -94,7 +94,7 @@
                                     <option value="14" {% if talent.tester == 14 %}selected="selected"{% endif %}>Yukka</option>
                                 </select>
                             </td>
-                            <td><span>{% if talent.issue != 0 %}<a href="https://github.com/Nqsty/Sunstrider-Classes-Issues/issues/{{ talent.issue }}">#</a>{% else %}#{% endif %}</span> <input class="form-control link" type="text" onchange="update('talents', '{{ talent.name }}', 'issue', this.value)" value="{% if talent.issue != 0 %}{{ talent.issue }}{% else %}{% endif %}" /></td>
+                            <td><span>{% if talent.issue != 0 %}<a href="https://github.com/Nqsty/Sunstrider-Classes-Issues/issues/{{ talent.issue }}">#</a>{% else %}#{% endif %}</span> <input class="form-control link" type="text" onchange='update("talents", "{{ talent.name|replace("'", "\'") }}", "issue", this.value)' value="{% if talent.issue != 0 %}{{ talent.issue }}{% else %}{% endif %}" /></td>
                         </tr>
                     {% endfor %}
                     </tbody>

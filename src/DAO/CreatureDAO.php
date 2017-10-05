@@ -5,7 +5,8 @@ namespace SUN\DAO;
 use SUN\Domain\Creature;
 use Doctrine\DBAL\Connection;
 
-class CreatureDAO extends DAO {
+class CreatureDAO extends DAO
+{
     public function getCreature($entry)
     {
         $creature = $this->getDb('test')->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));

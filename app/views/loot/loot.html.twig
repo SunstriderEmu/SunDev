@@ -8,7 +8,7 @@
             {% if loot.creatures is defined %}
             <div class="col-md-4">
                 <p>
-                    Used by {{ loot.used }} creature{% if loot.used > 1 %}s{% endif %}.
+                    Used by {{ loot.creatures|length }} creature{{ loot.creatures|length > 1 ? 's' : '' }}.
                 </p>
                 <ul>
                     {% for creature in loot.creatures %}

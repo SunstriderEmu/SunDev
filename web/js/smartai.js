@@ -230,7 +230,9 @@
             Return = generateBitComment('(', Return, Binary, 0x4, 'Heroic Dungeon');
             Return = generateBitComment('(', Return, Binary, 0x8, 'Normal Raid');
             Return = generateBitComment('(', Return, Binary, 0x10, 'Heroic Raid');
-            Return = generateBitComment('(', Return, Binary, 0x20, 'Debug');
+            Return = generateBitComment('(', Return, Binary, 0x80, 'Debug');
+            Return = generateBitComment('(', Return, Binary, 0x100, "Don't Reset");
+            Return = generateBitComment('(', Return, Binary, 0x200, 'While Charmed');
             Return += ")";
             if (Return == "()")
                 return "";
@@ -355,7 +357,7 @@
                     return "On Quest '<a href='http://wowhead.com/quest=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Accepted";
                     break;
                 case "20":
-                    return "On Quest '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Rewarded";
+                    return "On Quest '<a href='http://wowhead.com/quest=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Rewarded";
                     break;
                 case "21":
                     return "On Reached Home";
@@ -1734,6 +1736,15 @@
                 case "161":
                     return (ActionParam2 == 1 ? "Apply " : "Remove ") + getSpellName(ActionParam1);
                     break;
+                case "162":
+                    return "DO NOT USE";
+                    break;
+                case "163":
+                    return "Store Current Phase";
+                    break;
+                case "164":
+                    return "Restore Phase";
+                    break;
                 default:
                     return "Error in generateActionComment";
             }
@@ -1869,7 +1880,6 @@
             changeActionsParams(Lines[id]);
             changeTargetsParams(Lines[id].target_type);
 
-
             var SelectFlags = '#event_flags_value';
             var SelectPhase = '#event_phase_mask_value';
             var SelectTargetFlags = '#target_flags_value';
@@ -1881,7 +1891,9 @@
                 selectByte(SelectFlags, 0x4, Binary, 3);
                 selectByte(SelectFlags, 0x8, Binary, 4);
                 selectByte(SelectFlags, 0x10, Binary, 5);
-                selectByte(SelectFlags, 0x20, Binary, 6);
+                selectByte(SelectFlags, 0x80, Binary, 6);
+                selectByte(SelectFlags, 0x100, Binary, 7);
+                selectByte(SelectFlags, 0x200, Binary, 8);
             } else {
                 $(SelectFlags + ' > option').removeAttr('selected');
             }

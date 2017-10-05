@@ -5797,7 +5797,8 @@ ZamModelViewer.WebGL.prototype = {
             i;
         mat4.perspective(self.projMatrix, self.fov * .0174532925, self.viewer.aspect, .1, 5e3);
         self.updateCamera();
-        gl.clearColor(0, 0, 0, 1);
+        console.log(self.context);
+        gl.clearColor(0.5, 0.5, 0.5, 0);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -5998,7 +5999,7 @@ ZamModelViewer.WebGL.prototype = {
             self.context.viewport(0, 0, self.drawingBufferWidth, self.drawingBufferHeight)
         }
         if (self.options.background) {
-            self.loadBackground()
+            //self.loadBackground()
         }
     },
     loadBackground: function() {

@@ -12,7 +12,7 @@ class LootDAO extends DAO {
 		foreach($loots as $item) {
 			$items[$item['item']] = $item;
 		}
-		$creatures = $this->getDb('test')->fetchAll('SELECT COUNT(*) as count, entry, name FROM creature_template WHERE lootid = ?', array(intval($id)));
+		$creatures = $this->getDb('test')->fetchAll('SELECT entry, name FROM creature_template WHERE lootid = ? GROUP BY entry', array(intval($id)));
 
 		return [
 			"id"		=> $id,

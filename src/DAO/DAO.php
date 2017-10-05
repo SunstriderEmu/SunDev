@@ -45,37 +45,58 @@ class DAO
                 case 1: // GO
                 case 2: // AreaTrigger
                 case 9: // Script
-                    if($data['review']->source_type == 0)
+                    $export = "\n";
+                    switch($data['review']->source_type)
                     {
-                        if($data['review']->entryorguid > 0)
-                            $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
-                        else
-                        {
-                            $entry = $this->getDb($db)->fetchAssoc('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
-                            $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
-                        }
+                        case 0:
+                            if ($data['review']->entryorguid > 0)
+                            {
+                                $export .= "-- NPC {$data['review']->entryorguid}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE creature_template SET AIName='SmartAI', ScriptName='' WHERE entry = @ENTRY;\n";
+                                $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+
+                            }
+                            else
+                            {
+                                $entry = $this->getDb($db)->fetchAssoc('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                                $export .= "-- GUID {$data['review']->entryorguid} - ENTRY {$entry['id']}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE creature_template SET AIName='SmartAI', ScriptName='' WHERE entry = {$entry['id']};";
+                                $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
+                            }
+                            break;
+                        case 1:
+                            if ($data['review']->entryorguid > 0)
+                            {
+                                $export .= "-- GO {$data['review']->entryorguid}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE gameobject_template SET AIName='SmartGameObjectAI', ScriptName='' WHERE entry = @ENTRY;\n";
+                                $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
+                            }
+                            else
+                            {
+                                $entry = $this->getDb($db)->executeQuery('SELECT id FROM gameobject WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                                $export .= "-- GUID {$data['review']->entryorguid} - ENTRY {$entry['id']}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE gameobject_template SET AIName='SmartGameObjectAI', ScriptName='' WHERE entry = {$entry['id']};";
+                                $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
+                            }
+                            break;
+                        case 2:
+                            $export .= "-- AreaTrigger {$data['review']->entryorguid}\nSET @ENTRY = {$data['review']->entryorguid};\nREPLACE INTO areatrigger_scripts VALUES (@ENTRY, 'SmartTrigger');\n";
+                            $this->getDb($db)->executeQuery('REPLACE INTO areatrigger_scripts VALUES (?, "SmartTrigger")', array(intval($data['review']->entryorguid)));
+                            break;
                     }
-                    if($data['review']->source_type == 1)
-                    {
-                        if($data['review']->entryorguid > 0)
-                            $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
-                        else
-                        {
-                            $entry = $this->getDb($db)->executeQuery('SELECT id FROM gameobject WHERE guid = ?;', array(abs($data['review']->entryorguid)));
-                            $this->getDb($db)->executeQuery('UPDATE gameobject_template SET AIName="SmartGameObjectAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
-                        }
-                    }
-                    if($data['review']->source_type == 2)
-                        $this->getDb($db)->executeQuery('REPLACE INTO areatrigger_scripts VALUES (?, "SmartTrigger")', array(intval($data['review']->entryorguid)));
+
+                    $export .= "DELETE FROM smart_scripts WHERE entryorguid = @ENTRY AND source_type = {$data['review']->source_type};\n";
 
                     $this->getDb($db)->executeQuery('DELETE FROM smart_scripts WHERE entryorguid = ? AND source_type = ?;', array($data['review']->entryorguid, $data['review']->source_type));
                     if($data['script'] != null) {
+                        $export .= "INSERT IGNORE INTO smart_scripts (entryorguid, source_type, id, link, event_type, event_phase_mask, event_chance, event_flags, event_param1, event_param2, event_param3, event_param4, action_type, action_param1, action_param2, action_param3, action_param4, action_param5, action_param6, target_type, target_flags, target_param1, target_param2, target_param3, target_x, target_y, target_z, target_o, comment) VALUES \n";
                         $insert = 'INSERT IGNORE INTO smart_scripts (entryorguid, source_type, id, link, event_type, event_phase_mask, event_chance, event_flags, event_param1, event_param2, event_param3, event_param4, action_type, action_param1, action_param2, action_param3, action_param4, action_param5, action_param6, target_type, target_flags, target_param1, target_param2, target_param3, target_x, target_y, target_z, target_o, comment) VALUES ';
                         foreach($data['script'] as $line)
+                        {
                             $insert .= "({$data['review']->entryorguid}, {$data['review']->source_type}, {$line[0]}, {$line[1]}, {$line[2]}, {$line[3]}, {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, {$line[9]}, {$line[10]}, {$line[11]}, {$line[12]}, {$line[13]}, {$line[14]}, {$line[15]}, {$line[16]}, {$line[17]}, {$line[18]}, {$line[19]}, {$line[20]}, {$line[21]}, {$line[22]}, {$line[23]}, {$line[24]}, {$line[25]}, '{$line[26]}'),";
+                            $export .= "(@ENTRY, {$data['review']->source_type}, {$line[0]}, {$line[1]}, {$line[2]}, {$line[3]}, {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, {$line[9]}, {$line[10]}, {$line[11]}, {$line[12]}, {$line[13]}, {$line[14]}, {$line[15]}, {$line[16]}, {$line[17]}, {$line[18]}, {$line[19]}, {$line[20]}, {$line[21]}, {$line[22]}, {$line[23]}, {$line[24]}, {$line[25]}, '{$line[26]}'),\n";
+                        }
                         $insert = rtrim($insert, ',');
+                        $export = rtrim($export, ",\n");
                         $this->getDb($db)->executeQuery($insert);
                     }
+                    echo $export.";\n";
                     break;
                 case 10: // Stats
                     $this->getDb($db)->executeQuery("UPDATE creature_template
@@ -102,23 +123,26 @@ class DAO
                     $this->getDb($db)->executeQuery($insert);
                     break;
                 case 12: // Text
+                    $export = "\nSET @ENTRY = {$data['review']->entryorguid};\nDELETE FROM creature_text WHERE entry = @ENTRY;\n";
                     $this->getDb($db)->executeQuery("DELETE FROM creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                     $this->getDb($db)->executeQuery("DELETE FROM locales_creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                     $insert = "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";
+                    $export .= "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES \n";
                     $insertLocale = "INSERT IGNORE INTO locales_creature_text (entry, groupid, id, text_loc2) VALUES ";
                     foreach($data['script'] as $line)
                     {
 						$line[2] = str_replace('"', '\"', $line[2]);
 						$line[3] = str_replace('"', '\"', $line[3]);
+                        $export .= "(@ENTRY, {$line[0]}, {$line[1]}, \"{$line[2]}\", {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, \"{$line[9]}\"),\n";
                         $insert .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[2]}\", {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, \"{$line[9]}\"),";
                         $insertLocale .= "({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, \"{$line[3]}\"),";
                     }
+                    $export = rtrim($export, ",\n");
                     $insert = rtrim($insert, ',');
                     $insertLocale = rtrim($insertLocale, ',');
-					var_dump($insert);
-					var_dump($insertLocale);
                     $this->getDb($db)->executeQuery($insert);
                     $this->getDb($db)->executeQuery($insertLocale);
+                    echo $export.";\n";
                     break;
                 case 13: // Gossip
                     // newX = new entry de maxentry;

@@ -200,27 +200,27 @@
                     </li>
                 {% endif %}
             </ul>
-            {% if app.request.attributes.get('_route') starts with 'GET_creature_entry_entry' %}
+            {% if app.request.attributes.get('_route') starts with 'GET_creature_entry_entry' or app.request.attributes.get('_route') starts with 'GET_creature_guid_guid' %}
             <ul class="nav navbar-nav navbar">
                 <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-star"></span> {{ creature.name }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}"><span class="glyphicon glyphicon-th"></span> Summary</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/stats"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/smartai"><span class="glyphicon glyphicon-console"></span> SmartAI</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/text"><span class="glyphicon glyphicon-comment"></span> Text</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/equip"><span class="glyphicon glyphicon-sunglasses"></span> Equipment</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/loot"><span class="glyphicon glyphicon-gift"></span> Loot</a></li>
-                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/immune"><span class="glyphicon glyphicon-lock"></span> Immunities</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}"><span class="glyphicon glyphicon-th"></span> Summary</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/stats"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/smartai"><span class="glyphicon glyphicon-console"></span> SmartAI</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/text"><span class="glyphicon glyphicon-comment"></span> Text</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/equip"><span class="glyphicon glyphicon-sunglasses"></span> Equipment</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/loot"><span class="glyphicon glyphicon-gift"></span> Loot</a></li>
+                        <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/immune"><span class="glyphicon glyphicon-lock"></span> Immunities</a></li>
                         <li class="dropdown-submenu">
                             <a tabindex="-1" href="#"><span class="glyphicon glyphicon-flag"></span> Flags</a>
                             <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/dynamicflag">Dynamic</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/flagextra">Extra</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/npcflag">NPC</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/typeflag">Type</a></li>
-                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ app.request.attributes.get("entry") }}/unitflag">Unit</a></li>
+                                <li><a tabindex="-1" href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/dynamicflag">Dynamic</a></li>
+                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/flagextra">Extra</a></li>
+                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/npcflag">NPC</a></li>
+                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/typeflag">Type</a></li>
+                                <li><a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/unitflag">Unit</a></li>
                             </ul>
                         </li>
                     </ul>

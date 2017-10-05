@@ -156,7 +156,6 @@
         <script type="text/javascript">
             var Info = { "entryorguid": {{ creature.entry }}, "source_type": 12 };
             var Texts = {{ texts|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
-            console.log(Texts);
 
             function generateData(Texts) {
                 var Data = [];
@@ -167,7 +166,6 @@
             }
 
             $('#apply').click(function () {
-                console.log(Texts);
                 apply(generateData(Texts), Info);
             });
             $('#review').click(function () {
@@ -194,7 +192,7 @@
                     "id": ID.toString(),
                     "texten": "",
                     "textfr": "",
-                    "type": "0",
+                    "type": "12",
                     "language":"0",
                     "probability": "100",
                     "emote": "0",
@@ -210,12 +208,12 @@
                 '    <td><input type="text" class="form-control" value="0" onchange="update(' + GID + ', ' + ID + ', \'sound\', this.value)"> </td>' +
                 '    <td>' +
                 '        <select class="form-control" onchange="update(' + GID + ', ' + ID + ', \'type\', this.value)">' +
-                '            <option value="0" "selected=selected">Say</option>' +
-                '            <option value="1">Yell</option>' +
-                '            <option value="2">Emote</option>' +
-                '            <option value="3">Boss Emote</option>' +
-                '            <option value="4">Whisper</option>' +
-                '            <option value="5">Boss Whisper</option>' +
+                '            <option value="12" "selected=selected">Say</option>' +
+                '            <option value="14">Yell</option>' +
+                '            <option value="16">Emote</option>' +
+                '            <option value="41">Boss Emote</option>' +
+                '            <option value="15">Whisper</option>' +
+                '            <option value="42">Boss Whisper</option>' +
                 '        </select>' +
                 '    </td>' +
                 '    <td>' +

@@ -3523,7 +3523,9 @@
             if (Lines[id].action_type == "150" ||
                 Lines[id].action_type == "151" ||
                 Lines[id].action_type == "90" ||
-                Lines[id].action_type == "91") {
+                Lines[id].action_type == "91" ||
+                Lines[id].action_type == "18" ||
+                Lines[id].action_type == "19") {
                 displayLine(id, Lines);
             }
         });

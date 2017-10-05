@@ -211,23 +211,23 @@
             {% endif %}
         </div>
         <div class="col-md-12">
-            {% if creature.ScriptName == null %}
                 <div class="well col-md-4" style="margin-right: 15px">
                     <strong>TEXTS</strong><br/>
-                    {% for text in creature.texts %}
-                        {% if text.type == 0 %}{{ creature.name }} says: {{ text.text }}<br/>
-                        {% elseif text.type == 1 %}<span class="text-danger">{{ creature.name }} yells: {{ text.text }}</span><br/>
-                        {% elseif text.type == 2 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
-                        {% elseif text.type == 3 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
-                        {% elseif text.type == 4 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
-                        {% elseif text.type == 5 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
-                        {% endif %}
-                    {% endfor %}
-                    <br>
-                    <a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/text"><button class="btn btn-primary">Edit</button></a>
+					{% if creature.ScriptName == null %}
+						{% for text in creature.texts %}
+							{% if text.type == 0 %}{{ creature.name }} says: {{ text.text }}<br/>
+							{% elseif text.type == 1 %}<span class="text-danger">{{ creature.name }} yells: {{ text.text }}</span><br/>
+							{% elseif text.type == 2 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
+							{% elseif text.type == 3 %}<span class="text-warning">{{ creature.name }} {{ text.text }}</span><br/>
+							{% elseif text.type == 4 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
+							{% elseif text.type == 5 %}<span style="color: #ff6666">{{ creature.name }} {{ text.text }}</span><br/>
+							{% endif %}
+						{% endfor %}
+						<br>
+						<a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/text"><button class="btn btn-primary">Edit</button></a>
+					{% endif %}
 					<a href="{{ app.request.basepath }}/creature/entry/{{ creature.entry }}/importgossip"><button class="btn btn-primary">Import</button></a>
                 </div>
-            {% endif %}
             <div class="well col-md-4">
                 <strong>FLAGS</strong><br />
                 <a href="{{ app.request.requestUri }}/dynamicflag"><button class="btn btn-primary">Dynamic Flag</button></a>

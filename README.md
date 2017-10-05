@@ -23,6 +23,31 @@ SunDev is developed with the micro-framework Silex.
             DocumentRoot "D:/htdocs/SunDev/web"
             ServerName dev.sunstrider.com
         </VirtualHost>
+        
+    Example of Nginx config
+        server {
+            listen        127.0.0.1:80;
+
+            server_name     dev.sunstrider.com.test;
+            root        "e:/web/www/dev.sunstrider.com/web";
+
+
+            ## Access Restrictions
+            allow        127.0.0.1;
+            deny        all;
+
+            autoindex on;
+
+            location ~ ^/index.php(/|$) {
+                try_files $uri =404;
+                include        nginx.fastcgi.conf;
+                fastcgi_pass    php_farm;
+            }
+
+            location / {
+                try_files $uri /index.php$is_args$args;
+            }
+        }
 
 # Usage
 ## Access

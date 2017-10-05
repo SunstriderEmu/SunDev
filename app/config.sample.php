@@ -36,6 +36,7 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
+	//production world
     'world' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
@@ -45,6 +46,7 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
+	//ptr world
     'test' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
@@ -54,6 +56,7 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
+	//testing world
     'local' => [
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',

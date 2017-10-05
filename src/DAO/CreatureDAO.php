@@ -21,7 +21,7 @@ class CreatureDAO extends DAO
         $zone = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($total['map']));
         $creature['zone'] = $zone['name'];
 
-        $creature['texts'] = $this->getDb('test')->fetchAll('SELECT text, type FROM creature_text WHERE entry = ?', array($entry));
+        $creature['texts'] = $this->getDb('test')->fetchAll('SELECT CreatureID, type FROM creature_text WHERE CreatureID = ?', array($entry));
 
         $creature['minhp'] = $creature['HealthModifier'] * $minStats["basehp{$creature['exp']}"];
         $creature['minmp'] = $creature['ManaModifier'] * $minStats["basemana"];

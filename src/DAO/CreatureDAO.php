@@ -205,7 +205,12 @@ class CreatureDAO extends DAO
 		$text_id = $result_gossip_menu['TextID'];
 		//Create requests
 		$sun_text_id++;
-		array_push($requests, "INSERT INTO gossip_text (ID, comment, text0_0, text0_1) VALUES ($sun_text_id, \"".$result_gossip_menu['comment']."\",\"".$result_gossip_menu['text0_0']."\", \"".$result_gossip_menu['text0_1']."\");");
+		array_push($requests, "DELETE FROM gossip_text WHERE ID = $sun_text_id;");
+		$result_gossip_menu['comment'] = $this->getDb('trinity')->quote($result_gossip_menu['comment']);
+		$result_gossip_menu['text0_0'] = $this->getDb('trinity')->quote($result_gossip_menu['text0_0']);
+		$result_gossip_menu['text0_1'] = $this->getDb('trinity')->quote($result_gossip_menu['text0_1']);
+		array_push($requests, "INSERT INTO gossip_text (ID, comment, text0_0, text0_1) VALUES ($sun_text_id, ".$result_gossip_menu['comment'].",".$result_gossip_menu['text0_0'].", ".$result_gossip_menu['text0_1'].");");
+		array_push($requests, "DELETE FROM gossip_menu WHERE entry = $free_menu_id;");
 		array_push($requests, "INSERT INTO gossip_menu (entry, text_id) VALUES ($free_menu_id, $sun_text_id);");
 		$this->getTCCreatureGossipOptionSQL($tc_menu_id, $requests, $free_menu_id, $sun_text_id);
 	}
@@ -220,7 +225,7 @@ class CreatureDAO extends DAO
 		$free_menu_id = $this->getFreeGossipMenuId();
 		$sun_text_id = $this->getFreeTextId();
 		array_push($requests, "-- Link creature to first menu and ensure gossip is enabled");
-		array_push($requests, "UPDATE creature_template SET gossip_menu_id = $free_menu_id, npcflag |= 0x1 WHERE entry = $entry;");
+		array_push($requests, "UPDATE creature_template SET gossip_menu_id = $free_menu_id, npcflag = npcflag | 0x1 WHERE entry = $entry;");
 		$this->getTCCreatureGossipMenuSQL($tc_menu_id, $requests, $free_menu_id, $sun_text_id);
 		return $requests;
 	}

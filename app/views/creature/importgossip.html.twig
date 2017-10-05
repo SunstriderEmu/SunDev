@@ -8,6 +8,7 @@
 	<button id="copybtn" class="btn btn-default" onclick="selectText()">Copy to clipboard</button>
 	<hr/>
 	<pre id="code">
+	<span>-- {{ creature.name }}</span>
 	{% for sql_request in tc_gossip %}
 		<code>{{ sql_request }}</code>
 	{% endfor %}

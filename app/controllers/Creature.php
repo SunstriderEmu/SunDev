@@ -37,6 +37,17 @@ $app->get('/creature/entry/{entry}/text', function($entry) use($app) {
     ));
 })->assert('entry', '\d+');
 
+// Creature Gossips import
+$app->get('/creature/entry/{entry}/importgossip', function($entry) use($app) {
+    $creature 	= new Creature(["entry" => $entry]);
+    $creature->setName($app['dao.creature']->findCreatureEntryName($creature)->getName());
+    return $app['twig']->render('creature/importgossip.html.twig', array(
+        "tc_gossip" => $app['dao.creature']->getTCCreatureGossipSQL($entry),
+        "creature"	=> $creature,
+    ));
+})->assert('entry', '\d+');
+
+
 // Immunities
 $app->get('/creature/entry/{entry}/immune', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);

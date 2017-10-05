@@ -1,0 +1,36 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ creature.name }} Texts - {{ parent() }}{% endblock %}
+    {% block head %}
+	
+    {% endblock %}
+    {% block content %}
+	<h1>Gossip from Trinity</h1>
+	<button id="copybtn" class="btn btn-default" onclick="selectText()">Copy to clipboard</button>
+	<hr/>
+	<pre id="code">
+	{% for sql_request in tc_gossip %}
+		<code>{{ sql_request }}</code>
+	{% endfor %}
+	</pre>
+    {% endblock %}
+	{% block script %}
+        <script type="text/javascript">
+            function selectText() {
+				if (document.selection) {
+					var range = document.body.createTextRange();
+					range.moveToElementText(document.getElementById("code"));
+					range.select();
+				} else if (window.getSelection) {
+					var range = document.createRange();
+					range.selectNode(document.getElementById("code"));
+					window.getSelection().removeAllRanges();
+					window.getSelection().addRange(range);
+				}
+				document.execCommand('copy');
+				$('#copybtn').css('display', 'inline');
+				$('#copybtn').removeClass("btn-default");
+				$('#copybtn').addClass("btn-success");
+				$('#copybtn').html("Copied!");
+			}
+        </script>
+    {% endblock %}

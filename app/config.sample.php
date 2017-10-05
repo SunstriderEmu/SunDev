@@ -66,4 +66,13 @@ $app['dbs.options'] = [
         'charset'   => 'utf8',
         'port'		=> '',
     ],
+	'trinity' => [
+        'driver'    => 'pdo_mysql',
+        'host'      => '127.0.0.1',
+        'dbname'    => 'trinityworld',
+        'user'      => 'root',
+        'password'  => '',
+        'charset'   => 'utf8',
+        'port'		=> '',
+    ],
 ];

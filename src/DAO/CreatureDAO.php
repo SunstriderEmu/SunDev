@@ -156,6 +156,74 @@ class CreatureDAO extends DAO
     {
         return $this->getDb('test')->fetchAll('SELECT ct.CreatureID, ct.groupid, ct.id, ct.text as texten, lct.text_loc2 as textfr, ct.type, ct.language, ct.probability, ct.emote, ct.duration, ct.sound, ct.comment, ct.BroadcastTextId, ct.TextRange FROM creature_text ct LEFT JOIN locales_creature_text lct ON ct.CreatureID = lct.entry AND ct.groupid = lct.groupid AND ct.id = lct.id WHERE ct.CreatureID = ?', array($entry));
     }
+	
+	public function getFreeGossipMenuId()
+	{
+		$result = $this->getDb('test')->fetchAssoc('SELECT max(entry) +1 as free_id FROM gossip_menu', array());
+		return $result['free_id'];
+	}
+	
+	public function getFreeTextId()
+	{
+		$result = $this->getDb('test')->fetchAssoc('SELECT max(ID) +1 as free_id FROM gossip_text', array());
+		return $result['free_id'];
+	}
+	
+	public function getTCCreatureGossipOptionSQL($tc_menu_id, &$requests, &$free_menu_id, &$sun_text_id)
+	{
+		$result_gossip_menu_option = $this->getDb('trinity')->fetchAll('SELECT MenuID, OptionID, OptionIcon, OptionText, OptionBroadcastTextID, OptionType, OptionNpcFlag, ActionMenuID, ActionPoiID, BoxCoded, BoxMoney, BoxText, BoxBroadcastTextID FROM gossip_menu_option WHERE MenuID = ?', array($tc_menu_id));
+
+		if(sizeof($result_gossip_menu_option) == 0)
+			return;
+		
+		//sorry about this...
+		$option_menu_id = $free_menu_id;
+		$free_menu_id += sizeof($result_gossip_menu_option)+1;
+		$starting_free_menu_id = $free_menu_id;
+		foreach($result_gossip_menu_option as $gossip_option) {
+			array_push($requests, "INSERT INTO gossip_menu_option (menu_id, id, option_icon, option_text, OptionBroadcastTextID, option_id, npc_option_npcflag, action_menu_id, action_poi_id, box_coded, box_money, box_text, BoxBroadcastTextID) VALUES ($option_menu_id, \"".$gossip_option['OptionID']."\",\"".$gossip_option['OptionIcon']."\", \"".$gossip_option['OptionText']."\",\"".$gossip_option['OptionBroadcastTextID']."\",\"".$gossip_option['OptionType']."\",\"".$gossip_option['OptionNpcFlag']."\",".++$free_menu_id.",\"".$gossip_option['ActionPoiID']."\",\"".$gossip_option['BoxCoded']."\",\"".$gossip_option['BoxMoney']."\",\"".$gossip_option['BoxText']."\",\"".$gossip_option['BoxBroadcastTextID']."\");");
+			if($gossip_option['ActionPoiID'] != 0)
+				array_push($requests, "-- -- Last request containts ActionPoiID, this tool currently does not handle it");
+		}
+		
+		$free_menu_id = $starting_free_menu_id;
+		foreach($result_gossip_menu_option as $gossip_option) {
+			if($gossip_option['ActionMenuID'] != 0) {
+				$free_menu_id++;
+				$this->getTCCreatureGossipMenuSQL($gossip_option['ActionMenuID'], $requests, $free_menu_id, $sun_text_id);
+			}
+		}
+	}
+	
+	public function getTCCreatureGossipMenuSQL($tc_menu_id, &$requests, &$free_menu_id, &$sun_text_id)
+	{
+		//Get initial menu id
+		array_push($requests, "-- Menu $free_menu_id");
+		$result_gossip_menu = $this->getDb('trinity')->fetchAssoc('SELECT gm.MenuID, gm.TextID, gt.* FROM gossip_menu gm JOIN npc_text gt ON gm.TextID = gt.ID WHERE gm.MenuID = ?', array($tc_menu_id));
+		if(sizeof($result_gossip_menu) == 0)
+			return "Menu $tc_menu_id exists but not found in gossip menu (or text $text_id not found)";
+		$text_id = $result_gossip_menu['TextID'];
+		//Create requests
+		$sun_text_id++;
+		array_push($requests, "INSERT INTO gossip_text (ID, comment, text0_0, text0_1) VALUES ($sun_text_id, \"".$result_gossip_menu['comment']."\",\"".$result_gossip_menu['text0_0']."\", \"".$result_gossip_menu['text0_1']."\");");
+		array_push($requests, "INSERT INTO gossip_menu (entry, text_id) VALUES ($free_menu_id, $sun_text_id);");
+		$this->getTCCreatureGossipOptionSQL($tc_menu_id, $requests, $free_menu_id, $sun_text_id);
+	}
+	
+	public function getTCCreatureGossipSQL($entry)
+	{
+		$result_creature_template = $this->getDb('trinity')->fetchAssoc('SELECT gossip_menu_id FROM creature_template WHERE entry = ?', array($entry));
+		$tc_menu_id = $result_creature_template['gossip_menu_id'];
+		if($tc_menu_id == 0)
+			return "No menu for this creature";
+		$requests = array();
+		$free_menu_id = $this->getFreeGossipMenuId();
+		$sun_text_id = $this->getFreeTextId();
+		array_push($requests, "-- Link creature to first menu and ensure gossip is enabled");
+		array_push($requests, "UPDATE creature_template SET gossip_menu_id = $free_menu_id, npcflag |= 0x1 WHERE entry = $entry;");
+		$this->getTCCreatureGossipMenuSQL($tc_menu_id, $requests, $free_menu_id, $sun_text_id);
+		return $requests;
+	}
 
     public function getMenu($entry)
     {
@@ -169,7 +237,7 @@ class CreatureDAO extends DAO
         return $this->getDb('test')->fetchAll('SELECT menu_id, id, option_icon, option_text, action_menu_id, npc_option_npcflag FROM gossip_menu_option WHERE menu_id = ?', array(intval($entry)));
     }
 
-// Return the conditions of a menu in the form of an array of [ id, source, type, target, reverse, value1, value2, value3 ]
+	// Return the conditions of a menu in the form of an array of [ id, source, type, target, reverse, value1, value2, value3 ]
     public function getMenuConditions($entry, $textid)
     {
         return $this->getDb('test')->fetchAll('SELECT

@@ -124,10 +124,10 @@ class DAO
                     break;
                 case 12: // Text
                     $export = "\nSET @ENTRY = {$data['review']->entryorguid};\nDELETE FROM creature_text WHERE entry = @ENTRY;\n";
-                    $this->getDb($db)->executeQuery("DELETE FROM creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
+                    $this->getDb($db)->executeQuery("DELETE FROM creature_text WHERE CreatureID = ?", array(intval($data['review']->entryorguid)));
                     $this->getDb($db)->executeQuery("DELETE FROM locales_creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
-                    $insert = "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";
-                    $export .= "INSERT IGNORE INTO creature_text (entry, groupid, id, text, type, language, probability, emote, sound, comment) VALUES \n";
+                    $insert = "INSERT IGNORE INTO creature_text (CreatureID, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";
+                    $export .= "INSERT IGNORE INTO creature_text (CreatureID, groupid, id, text, type, language, probability, emote, sound, comment) VALUES \n";
                     $insertLocale = "INSERT IGNORE INTO locales_creature_text (entry, groupid, id, text_loc2) VALUES ";
                     foreach($data['script'] as $line)
                     {

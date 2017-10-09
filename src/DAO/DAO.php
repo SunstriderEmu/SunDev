@@ -123,7 +123,7 @@ class DAO
                     $this->getDb($db)->executeQuery($insert);
                     break;
                 case 12: // Text
-                    $export = "\nSET @ENTRY = {$data['review']->entryorguid};\nDELETE FROM creature_text WHERE entry = @ENTRY;\n";
+                    $export = "\nSET @ENTRY = {$data['review']->entryorguid};\nDELETE FROM creature_text WHERE CreatureID = @ENTRY;\n";
                     $this->getDb($db)->executeQuery("DELETE FROM creature_text WHERE CreatureID = ?", array(intval($data['review']->entryorguid)));
                     $this->getDb($db)->executeQuery("DELETE FROM locales_creature_text WHERE entry = ?", array(intval($data['review']->entryorguid)));
                     $insert = "INSERT IGNORE INTO creature_text (CreatureID, groupid, id, text, type, language, probability, emote, sound, comment) VALUES ";

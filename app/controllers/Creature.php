@@ -42,7 +42,9 @@ $app->get('/creature/entry/{entry}/importgossip', function($entry) use($app) {
     $creature 	= new Creature(["entry" => $entry]);
     $creature->setName($app['dao.creature']->findCreatureEntryName($creature)->getName());
     return $app['twig']->render('creature/importgossip.html.twig', array(
-        "tc_gossip" => $app['dao.creature']->getTCCreatureGossipSQL($entry),
+        "tc_gossip" => $app['dao.creature']->getTCGossipSQL($entry),
+		"tc_menu_id" => $app['dao.creature']->getTCGossipMenuId($entry),
+		"sun_menu_id" => $app['dao.creature']->getGossipMenuId($entry),
         "creature"	=> $creature,
     ));
 })->assert('entry', '\d+');

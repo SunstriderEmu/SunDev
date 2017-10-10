@@ -149,8 +149,16 @@
                         {% endif %}
                     </ul>
                 </li>
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-wrench"></span> Tools <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% if is_granted('ROLE_TOOLS_IMPORT_GAMEOBJECTS') %}
+                        <li><a href="{{ app.request.basepath }}/tools/import_gobjects">Import gobject</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
                 {% endif %}
-                <li><a href="http://wiki.sunstrider.tk"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
+                <li><a href="http://wiki.sunstrider.fr"><span class="glyphicon glyphicon-book"></span> Wiki</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}

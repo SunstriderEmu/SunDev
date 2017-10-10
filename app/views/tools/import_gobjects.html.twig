@@ -1,0 +1,38 @@
+{% extends "layout.html.twig" %}
+    {# {% block title %}{{ creature.name }} Texts - {{ parent() }}{% endblock %} #}
+    {% block head %}
+	
+    {% endblock %}
+    {% block content %}
+	<h1>Batch gameobject import from TC</h1>
+	<span>IG Command: <code>.debug spawnbatchobjects</code></span><br/>
+	{% set var = "Spawn a bunch of gameobjects objects from given file. 
+	This command will check wheter a close object is found on sunstrider and ignore the new one if one is found.
+	A preview gobject is spawned.
+	
+	Syntax: .debug spawnbatchobjects <filename> [permanent(0|1)]
+    filename: source file
+        First line must be map id
+        Each line in file must have format:
+        <entry> <x> <y> <z> <rot0> <rot1> <rot2> <rot3> <spawntime> <spawnmode>
+    permanent: Spawn them as permanent (write to db)" %}
+	<span>{{ var|nl2br }}</span>
+	<hr/>
+	{{ form_start(form, { 'attr': {'class': 'form-horizontal'} }) }}
+		{{  form_label(form.mapID, null, { 'label_attr':  {
+				'class': 'col-sm-5 control-label'
+				}}) 
+		}}
+		<div class="col-sm-4">
+			{{ form_errors(form.mapID) }}
+			{{ form_widget(form.mapID, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+		<div class="form-group">
+            <div class="col-sm-offset-5 col-sm-3">
+                <input type="submit" class="btn btn-primary" value="Generate File" />
+            </div>
+        </div>
+	{{ form_end(form) }}
+    {% endblock %}

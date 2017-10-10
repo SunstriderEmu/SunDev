@@ -44,12 +44,13 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		'ROLE_SUPERUSER'	=> array('ROLE_USER_LIST', 'ROLE_USER_ADD', 'ROLE_USER_EDIT', 'ROLE_USER_REMOVE'),
 		'ROLE_ACCOUNT'		=> array('ROLE_ACCOUNT_LIST', 'ROLE_ACCOUNT_ADD', 'ROLE_ACCOUNT_EDIT', 'ROLE_ACCOUNT_REMOVE', 'ROLE_ACCOUNT_COMMANDS'),
 		'ROLE_FULL'			=> array('ROLE_DEV', 'ROLE_TESTER'),
-		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_GO', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS', 'ROLE_SPELL'),
+		'ROLE_DEV' 			=> array('ROLE_CREATURE', 'ROLE_GO', 'ROLE_DUNGEONS_WRITE', 'ROLE_LOOT', 'ROLE_QUESTS_WRITE', 'ROLE_WAYPOINTS', 'ROLE_SPELL', 'ROLE_TOOLS'),
 		'ROLE_TESTER' 		=> array('ROLE_QUESTS_WRITE', 'ROLE_CLASSES', 'ROLE_DUNGEONS_WRITE'),
 		'ROLE_CREATURE' 	=> array('ROLE_CREATURE_SMARTAI', 'ROLE_CREATURE_STATS', 'ROLE_CREATURE_LOOT', 'ROLE_CREATURE_EQUIP', 'ROLE_CREATURE_TEXT', 'ROLE_CREATURE_IMMUNE', 'ROLE_CREATURE_GOSSIP', 'ROLE_CREATURE_FLAG_DYN', 'ROLE_CREATURE_FLAG_EXTRA', 'ROLE_CREATURE_FLAG_NPC', 'ROLE_CREATURE_FLAG_TYPE', 'ROLE_CREATURE_FLAG_UNIT'),
 		'ROLE_GO'			=> array('ROLE_GO_DATA', 'ROLE_GO_LOOT', 'ROLE_GO_SMARTAI'),
 		'ROLE_CLASSES' 		=> array('ROLE_CLASSES_DRUID', 'ROLE_CLASSES_HUNTER', 'ROLE_CLASSES_MAGE', 'ROLE_CLASSES_PALADIN', 'ROLE_CLASSES_PRIEST', 'ROLE_CLASSES_ROGUE', 'ROLE_CLASSES_SHAMAN', 'ROLE_CLASSES_WARLOCK', 'ROLE_CLASSES_WARRIOR'),
 		'ROLE_LOOT' 		=> array('ROLE_CREATURE_LOOT', 'ROLE_LOOT_DISENCHANT', 'ROLE_LOOT_FISHING', 'ROLE_GO_LOOT', 'ROLE_LOOT_ITEM', 'ROLE_LOOT_PICKPOCKET', 'ROLE_LOOT_PROSPECT', 'ROLE_LOOT_QUESTMAIL', 'ROLE_LOOT_REFERENCE', 'ROLE_LOOT_SKINNING'),
+		'ROLE_TOOLS'        => array('ROLE_TOOLS_IMPORT_GAMEOBJECTS'),
 	),
 	'security.access_rules' => array(
 		// Admin
@@ -123,6 +124,9 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		array('^/loot/questmail/[0-9]+$', 	'ROLE_LOOT_QUESTMAIL'),
 		array('^/loot/reference/[0-9]+$', 	'ROLE_LOOT_REFERENCE'),
 		array('^/loot/skinning/[0-9]+$', 	'ROLE_LOOT_SKINNING'),
+		
+		// Tools
+		array('^/tools/import_gobjects/', 	'ROLE_TOOLS_IMPORT_GAMEOBJECTS'),
 
 		// Review
 		array('^/dev', 			'ROLE_REVIEW_ADD', 		'POST'),
@@ -171,7 +175,9 @@ $app['dao.spell'] = $app->share(function ($app) {
 $app['dao.item'] = $app->share(function ($app) {
 	return new SUN\DAO\ItemDAO($app);
 });
-
+$app['dao.tools'] = $app->share(function ($app) {
+	return new SUN\DAO\ToolsDAO($app);
+});
 
 require_once __DIR__.'/config.php';
 
@@ -215,3 +221,4 @@ require_once __DIR__.'/controllers/Spell.php';
 require_once __DIR__.'/controllers/User.php';
 require_once __DIR__.'/controllers/Account.php';
 require_once __DIR__.'/controllers/Waypoints.php';
+require_once __DIR__.'/controllers/Tools.php';

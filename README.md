@@ -8,7 +8,7 @@ SunDev is developed with the micro-framework Silex.
 # Installation
 - Clone this repository into a folder of your choice.
 - Run `composer update` at the root of the SunDev folder.
-- Install the following databases, included in repository (TODOOO):
+- Install the following databases, included in repository:
     - dbc
     - suntools
     - world: your live world

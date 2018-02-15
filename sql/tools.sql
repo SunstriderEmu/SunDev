@@ -1226,7 +1226,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (38,	'ACTION_SET_IN_COMBAT_WITH_ZONE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (39,	'ACTION_CALL_FOR_HELP',	'Radius',	'Say text',	NULL,	NULL,	NULL,	NULL,	NULL),
 (40,	'ACTION_SET_SHEATH',	'Sheath state',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(41,	'ACTION_FORCE_DESPAWN',	'Time to despawn(ms)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(41,	'ACTION_FORCE_DESPAWN',	'Time to despawn(ms)',	'Time to forced respawn(ms)',	NULL,	NULL,	NULL,	NULL,	NULL),
 (42,	'ACTION_SET_INVINCIBILITY_HP_LEVEL',	'Flat value',	'% value',	NULL,	NULL,	NULL,	NULL,	NULL),
 (43,	'ACTION_MOUNT_TO_ENTRY_OR_MODEL',	'Creature entry',	'Creature model',	NULL,	NULL,	NULL,	NULL,	NULL),
 (44,	'ACTION_SET_INGAME_PHASE_MASK',	'Phasemask',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),

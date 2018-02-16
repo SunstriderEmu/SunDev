@@ -1235,7 +1235,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (47,	'ACTION_SET_VISIBILITY',	'Visible',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (48,	'ACTION_SET_ACTIVE',	'Active',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (49,	'ACTION_ATTACK_START',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(50,	'ACTION_SUMMON_GO',	'Gameobject entry',	'Duration (ms)',	NULL,	NULL,	NULL,	NULL,	NULL),
+(50,	'ACTION_SUMMON_GO',	'Gameobject entry',	'Duration (ms)', 'Summon type (GOSummonType)',	NULL,	NULL,	NULL,	NULL),
 (51,	'ACTION_KILL_UNIT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (52,	'ACTION_ACTIVATE_TAXI',	'Taxi id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (53,	'ACTION_WP_START',	'Movement',	'Waypoint entry',	'Repeat path',	'Quest id',	'Despawn time after path',	'Reactstate',	NULL),

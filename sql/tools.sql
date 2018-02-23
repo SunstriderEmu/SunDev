@@ -1313,6 +1313,13 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (125,	'ACTION_TRIGGER_RANDOM_TIMED_EVENT',	'id min range',	'id max range',	NULL,	NULL,	NULL,	NULL,	NULL),
 (126,	'ACTION_REMOVE_ALL_GAMEOBJECTS ',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Remove gobjects spawned by this object'),
 (127,	'ACTION_STOP_MOTION',	'stopMovement',	'movementExpired',	NULL,	NULL,	NULL,	NULL,	NULL),
+(128,	'ACTION_PLAY_ANIMKIT (unused)',	NULL, NULL, NULL, NULL, NULL,	NULL,	NULL),
+(129,	'ACTION_SCENE_PLAY (unused)',	NULL, NULL,	NULL, NULL,	NULL,	NULL,	NULL),
+(130,	'ACTION_SCENE_CANCEL (unused)',	NULL, NULL,	NULL, NULL,	NULL,	NULL,	NULL),
+(131,	'ACTION_SPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
+(132,	'ACTION_DESPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
+(132,	'ACTION_RESPAWN_BY_SPAWNID',	'spawnType', 'spawnId',	NULL,	NULL,	NULL,	NULL,	NULL),
+
 (150,	'ACTION_SET_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
 (151,	'ACTION_REMOVE_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
 (152,	'ACTION_LOAD_PATH',	'Path ID',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1428,6 +1435,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (75,	'EVENT_DISTANCE_CREATURE',	'Guid',	'Entry',	'Distance',	'Repeat Timer',	NULL),
   (76,	'EVENT_DISTANCE_GAMEOBJECT',	'Guid',	'Entry',	'Distance',	'Repeat Timer',	NULL),
   (77,	'EVENT_COUNTER_SET',	'Counter ID',	'Value',	'CooldownMin',	'CooldownMax',	NULL),
+  
   (100,	'EVENT_FRIENDLY_KILLED',	'MaxRange(0-60)',	'Entry(0=any)',	'Guid(0=any)',	NULL,	NULL),
   (101,	'EVENT_VICTIM_NOT_IN_LOS',	'Check timer',	'Reverts(0/1)',	NULL,	NULL,	NULL),
   (102,	'EVENT_ATTACKED_UNIT_DIED',	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1483,13 +1491,15 @@ INSERT INTO `smartai_targets` (`id`, `name`, `param1`, `param2`, `param3`, `targ
   (19,	'TARGET_CLOSEST_CREATURE',	'Entry',	'MaxDist(0-100)',	'Dead',	NULL,	NULL,	NULL,	NULL,	NULL),
   (20,	'TARGET_CLOSEST_GAMEOBJECT',	'Entry',	'MaxDist(0-100)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (21,	'TARGET_CLOSEST_PLAYER',	'MaxDist',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-  (22,	'TARGET_ACTION_INVOKER_VEHICLE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+  (22,	'TARGET_ACTION_INVOKER_VEHICLE (unused)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (23,	'TARGET_OWNER_OR_SUMMONER',	'ownerOfOwner',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (24,	'TARGET_THREAT_LIST',	'maxDist',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (25,	'TARGET_CLOSEST_ENEMY',	'MaxDist',	'Player only',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (26,	'TARGET_CLOSEST_FRIENDLY',	'MaxDist',	'Player only',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (27,	'TARGET_LOOT_RECIPIENTS',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'All players that have tagged this creature (for kill credit)'),
   (28,	'TARGET_FARTHEST',	'maxDist',	'playerOnly',	'isInLos',	NULL,	NULL,	NULL,	NULL,	NULL),
+  (29,	'TARGET_VEHICLE_ACCESSORY (unused)',	NULL, NULL, NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+  
   (101,	'TARGET_PLAYER_CASTING_DISTANCE',	'MaxRange',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Target any player currently casting'),
   (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL);
 

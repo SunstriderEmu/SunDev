@@ -1255,7 +1255,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (67,	'ACTION_CREATE_TIMED_EVENT',	'Event id',	'InitialMin',	'InitialMax',	'RepeatMin',	'RepeatMax',	'Chance',	NULL),
 (68,	'ACTION_PLAYMOVIE',	'Movie entry',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (69,	'ACTION_MOVE_TO_POS',	'Point id (0 any)',	'Transport',	'Disable Pathfinding',	'Contact Distance',	NULL,	NULL,	NULL),
-(70,	'ACTION_RESPAWN_TARGET',	'Respawn time (s)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(70,	'ACTION_ENABLE_TEMP_GOBJ',	'despawnTimer (s)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (71,	'ACTION_EQUIP',	'Equip template entry',	'Slotmask',	'Item entry 1',	'Item entry 2',	'Item entry 3',	NULL,	NULL),
 (72,	'ACTION_CLOSE_GOSSIP',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (73,	'ACTION_TRIGGER_TIMED_EVENT',	'Event id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),

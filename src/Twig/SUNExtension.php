@@ -46,7 +46,7 @@ class SUNExtension extends \Twig_Extension
 			"getObjectType" 		=> new \Twig_Filter_Method($this, "getObjectType"),
 			"getFamily" 			=> new \Twig_Filter_Method($this, "getFamily"),
 			"getUnitClass" 			=> new \Twig_Filter_Method($this, "getUnitClass"),
-			"getInhabitType" 		=> new \Twig_Filter_Method($this, "getInhabitType"),
+			"getMovementType" 		=> new \Twig_Filter_Method($this, "getMovementType"),
 			"getGossipOptionIcon" 	=> new \Twig_Filter_Method($this, "getGossipOptionIcon"),
 			"getFaction" 			=> new \Twig_Filter_Method($this, "getFaction"),
 			"getReviewComment" 		=> new \Twig_Filter_Method($this, "getReviewComment"),
@@ -205,7 +205,7 @@ class SUNExtension extends \Twig_Extension
 		}
 	}
 
-	public function getInhabitType($type) {
+	public function getMovementType($type) {
 		switch($type) {
 			case 1: echo "Groud"; break;
 			case 2: echo "Water"; break;

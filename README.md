@@ -24,7 +24,8 @@ SunDev is developed with the micro-framework Silex.
             ServerName dev.sunstrider.com
         </VirtualHost>
         
-    Example of Nginx config
+    Example of Nginx config  
+
         server {
             listen        127.0.0.1:80;
 

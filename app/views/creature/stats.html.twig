@@ -126,12 +126,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="select-inhabit" class="col-sm-4 control-label">Inhabit</label>
+                        <label for="select-movement" class="col-sm-4 control-label">Movement</label>
                         <div class="col-sm-8">
-                            <select multiple id="select-inhabit" class="form-control" style="height: 64px;">
-                                <option value="1"{% if creature.InhabitType b-and 1 %} selected{% endif %}>Ground</option>
-                                <option value="2"{% if creature.InhabitType b-and 2 %} selected{% endif %}>Water</option>
-                                <option value="4"{% if creature.InhabitType b-and 4 %} selected{% endif %}>Flying</option>
+                            <select multiple id="select-movement" class="form-control" style="height: 64px;">
+                                <option value="1"{% if creature.movementType b-and 1 %} selected{% endif %}>Ground</option>
+                                <option value="2"{% if creature.movementType b-and 2 %} selected{% endif %}>Water</option>
+                                <option value="4"{% if creature.movementType b-and 4 %} selected{% endif %}>Flying</option>
+                                <option value="8"{% if creature.movementType b-and 8 %} selected{% endif %}>Rooted</option>
                             </select>
                         </div>
                     </div>
@@ -406,7 +407,7 @@
             var SelectRank = $('#select-rank');
             var SelectType = $('#select-type');
             var SelectFamily = $('#select-family');
-            var SelectInhabit = $('#select-inhabit');
+            var SelectMovement = $('#select-movement');
             var SelectExp = $('#select-exp');
             var SelectClass = $('#select-class');
 
@@ -495,12 +496,12 @@
                 Creature.ScriptName = $(this).val();
             });
 
-            SelectInhabit.change(function(){
+            SelectMovement.change(function(){
                 var value = $(this).val();
                 var total = 0;
                 for (i = 0; i < value.length; i++)
                     total = total + parseInt(value[i]);
-                Creature.InhabitType = total;
+                Creature.Movement = total;
             });
 
             function getStats(Stats, unitclass, level, type) {
@@ -621,7 +622,7 @@
 
             function generateData(Creature) {
                 var Data = {
-                    info: [ Creature.AIName.toString(), Creature.ScriptName.toString(), Creature.rank, Creature.type, Creature.family, Creature.InhabitType, Creature.mingold, Creature.maxgold ],
+                    info: [ Creature.AIName.toString(), Creature.ScriptName.toString(), Creature.rank, Creature.type, Creature.family, Creature.mingold, Creature.maxgold ],
                     modifiers: [ Creature.exp, Creature.unit_class, Creature.minlevel, Creature.maxlevel, Creature.HealthModifier, Creature.ManaModifier, Creature.ArmorModifier, Creature.DamageModifier, Creature.BaseAttackTime, Creature.RangeAttackTime, Creature.BaseVariance, Creature.RangeVariance ],
                     resistance: [ Creature.resistance1, Creature.resistance2, Creature.resistance3, Creature.resistance4, Creature.resistance5, Creature.resistance6 ]
                     };

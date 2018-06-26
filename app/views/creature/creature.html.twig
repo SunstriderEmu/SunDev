@@ -67,10 +67,12 @@
                             <td>{{ creature.maxgold|getGold }}</td>
                         </tr>
                         {% endif %}
+                        {% if false %}
                         <tr>
-                            <td><strong>Inhabit Type</strong></td>
-                            <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.InhabitType|getInhabitType }}</td>
+                            <td><strong>Movement Type</strong></td>
+                            <td>{{ creature.Movement|getMovementType }}</td>
                         </tr>
+                        {% endif %}
                         <tr>
                             <td><strong>Total</strong></td>
                             <td{% if creature.mingold != creature.maxgold %} colspan="2"{% endif %}>{{ creature.total }}</td>

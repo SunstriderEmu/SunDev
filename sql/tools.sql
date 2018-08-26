@@ -1270,7 +1270,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (82,	'ACTION_ADD_NPC_FLAG',	'Flags',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (83,	'ACTION_REMOVE_NPC_FLAG',	'Flags',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (84,	'ACTION_SIMPLE_TALK',	'Group ID',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(85,	'ACTION_INVOKER_CAST',	'Spell ID',	'Cast Flags',	NULL,	NULL,	NULL,	NULL,	NULL),
+(85,	'ACTION_SELF_CAST',	'Spell ID',	'Cast Flags',	NULL,	NULL,	NULL,	NULL,	NULL),
 (86,	'ACTION_CROSS_CAST',	'Spell ID',	'Cast Flags',	'Target type of caster',	'Target param1 of caster',	'Target param2 of caster',	'Target param3 of caster',	NULL),
 (87,	'ACTION_CALL_RANDOM_TIMED_ACTIONLIST',	'Script entry 1',	'Script entry 2',	'Script entry 3',	'Script entry 4',	'Script entry 5',	'Script entry 6',	NULL),
 (88,	'ACTION_RANDOM_RANGE_TIMED_ACTIONLIST',	'Script entry 1',	'Script entry 2',	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1318,7 +1318,8 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (130,	'ACTION_SCENE_CANCEL (unused)',	NULL, NULL,	NULL, NULL,	NULL,	NULL,	NULL),
 (131,	'ACTION_SPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
 (132,	'ACTION_DESPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
-(132,	'ACTION_RESPAWN_BY_SPAWNID',	'spawnType', 'spawnId',	NULL,	NULL,	NULL,	NULL,	NULL),
+(133,	'ACTION_DESPAWN_SPAWNGROUP',	'spawnType', 'min spawnId',	NULL, NULL,	NULL,	NULL,	NULL),
+(134,	'ACTION_INVOKER_CAST',	'Spell ID',	'Cast Flags',	NULL,	NULL,	NULL,	NULL,	NULL),
 
 (150,	'ACTION_SET_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
 (151,	'ACTION_REMOVE_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),

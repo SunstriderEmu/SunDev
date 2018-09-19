@@ -15,7 +15,7 @@ class CreatureDAO extends DAO
 
         $creature['gender'] = $this->getGender($entry);
 
-        $total = $this->getDb('test')->fetchAssoc('SELECT COUNT(*) as count, map from creature WHERE id = ?', array($entry));
+        $total = $this->getDb('test')->fetchAssoc('SELECT COUNT(*) as count, map FROM creature c JOIN creature_entry ce ON ce.spawnID = c.spawnID WHERE ce.entry = ?', array($entry));
         $creature['total'] = $total['count'];
 
         $zone = $this->getDb('dbc')->fetchAssoc('SELECT name FROM dbc_areatable WHERE ref_map = ?', array($total['map']));
@@ -105,7 +105,7 @@ class CreatureDAO extends DAO
 
     public function findCreatureGuidName(Creature $creature)
     {
-        $name = $this->getDb('test')->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_template ct ON ct.entry = c.id WHERE guid = ?', array($creature->getGuid()));
+        $name = $this->getDb('test')->fetchAssoc('SELECT ct.name FROM creature c JOIN creature_entry ce ON ce.spawnID = c.spawnID JOIN creature_template ct ON ce.entry = c.id WHERE c.spawnID = ?', array($creature->getGuid()));
         $creature->setName($name['name']);
         return $creature;
     }

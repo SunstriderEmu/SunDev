@@ -13,9 +13,10 @@ class DungeonDAO extends DAO {
 											    h_stats, h_resistances, h_immunities, h_respawn,
 											    equipment, gossip, emote, smartai, comment, tester
 										  FROM {$this->app['dbs.options']['test']['dbname']}.creature c
-										  JOIN {$this->app['dbs.options']['test']['dbname']}.creature_template ct ON ct.entry = c.id
+										  JOIN {$this->app['dbs.options']['test']['dbname']}.creature_entry ce ON ce.spawnID = c.spawnID
+										  JOIN {$this->app['dbs.options']['test']['dbname']}.creature_template ct ON ct.entry = ce.entry
 										  LEFT JOIN dungeons_test dt ON ct.entry = dt.entry
-										  WHERE c.map = ? GROUP BY c.id", array($dungeon));
+										  WHERE c.map = ? GROUP BY ce.entry", array($dungeon));
 		$creatures = [];
 		foreach($fetch as $creature) {
 			$creatures[$creature['entry']] = new Creature($creature);

@@ -2797,6 +2797,7 @@
                     '   <option value="4">CAGED_GO_PART</option>' +
                     '   <option value="5">CAGED_NPC_PART</option>' +
                     '   <option value="6">CASTER_SUN</option>' +
+                    '   <option value="7">CASTER_SUN_ROOT</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
 
@@ -3715,6 +3716,13 @@
                             ActionParam3.html('RepeatMin');
                             ActionParam4.html('RepeatMax');
                             ActionParam5.html('Cast flags');
+                            ActionParam6.html('');
+                            break;
+                        case "7":
+                            ActionParam2.html('Spell ID');
+                            ActionParam3.html('Repeat');
+                            ActionParam4.html('Root Spell ID');
+                            ActionParam5.html('Root Spell Repeat');
                             ActionParam6.html('');
                             break;
                         default:

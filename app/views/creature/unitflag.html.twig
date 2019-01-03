@@ -31,38 +31,38 @@
                 <input id="mask" type="number" class="form-control" value="{{ flag }}" /><br />
             </div>
             <ul id="flag" class="col-md-3">
-                <li id="1">UNIT_FLAG_SERVER_CONTROLLED</li>
-                <li id="2">UNIT_FLAG_NON_ATTACKABLE</li>
-                <li id="4">UNIT_FLAG_DISABLE_MOVE</li>
-                <li id="8">UNIT_FLAG_PVP_ATTACKABLE</li>
-                <li id="16">UNIT_FLAG_RENAME</li>
-                <li id="32">UNIT_FLAG_PREPARATION</li>
-                <li id="64">UNIT_FLAG_UNK_6</li>
-                <li id="128">UNIT_FLAG_NOT_ATTACKABLE_1</li>
-                <li id="256">UNIT_FLAG_IMMUNE_TO_PC</li>
-                <li id="512">UNIT_FLAG_IMMUNE_TO_NPC</li>
-                <li id="1024">UNIT_FLAG_LOOTING</li>
-                <li id="2048">UNIT_FLAG_PET_IN_COMBAT</li>
-                <li id="4096">UNIT_FLAG_PVP</li>
-                <li id="8192">UNIT_FLAG_SILENCED</li>
-                <li id="16384">UNIT_FLAG_UNK_14</li>
-                <li id="32768">UNIT_FLAG_UNK_15</li>
-                <li id="65536">UNIT_FLAG_NOT_PL_SPELL_TARGET</li>
-                <li id="131072">UNIT_FLAG_PACIFIED</li>
-                <li id="262144">UNIT_FLAG_STUNNED</li>
-                <li id="524288">UNIT_FLAG_IN_COMBAT</li>
-                <li id="1048576">UNIT_FLAG_TAXI_FLIGHT</li>
-                <li id="2097152">UNIT_FLAG_DISARMED</li>
-                <li id="4194304">UNIT_FLAG_CONFUSED</li>
-                <li id="8388608">UNIT_FLAG_FLEEING</li>
-                <li id="16777216">UNIT_FLAG_PLAYER_CONTROLLED</li>
-                <li id="33554432">UNIT_FLAG_NOT_SELECTABLE</li>
-                <li id="67108864">UNIT_FLAG_SKINNABLE</li>
-                <li id="134217728">UNIT_FLAG_MOUNT</li>
-                <li id="268435456">UNIT_FLAG_UNK_28</li>
-                <li id="536870912">UNIT_FLAG_UNK_29</li>
-                <li id="1073741824">UNIT_FLAG_SHEATHE</li>
-                <li id="2147483648">UNIT_FLAG_UNK_31</li>
+                <li class="1">UNIT_FLAG_SERVER_CONTROLLED</li>
+                <li class="2">UNIT_FLAG_NON_ATTACKABLE</li>
+                <li class="4">UNIT_FLAG_DISABLE_MOVE</li>
+                <li class="8">UNIT_FLAG_PVP_ATTACKABLE</li>
+                <li class="16">UNIT_FLAG_RENAME</li>
+                <li class="32">UNIT_FLAG_PREPARATION</li>
+                <li class="64">UNIT_FLAG_UNK_6</li>
+                <li class="128">UNIT_FLAG_NOT_ATTACKABLE_1</li>
+                <li class="256">UNIT_FLAG_IMMUNE_TO_PC</li>
+                <li class="512">UNIT_FLAG_IMMUNE_TO_NPC</li>
+                <li class="1024">UNIT_FLAG_LOOTING</li>
+                <li class="2048">UNIT_FLAG_PET_IN_COMBAT</li>
+                <li class="4096">UNIT_FLAG_PVP</li>
+                <li class="8192">UNIT_FLAG_SILENCED</li>
+                <li class="16384">UNIT_FLAG_UNK_14</li>
+                <li class="32768">UNIT_FLAG_UNK_15</li>
+                <li class="65536">UNIT_FLAG_NOT_PL_SPELL_TARGET</li>
+                <li class="131072">UNIT_FLAG_PACIFIED</li>
+                <li class="262144">UNIT_FLAG_STUNNED</li>
+                <li class="524288">UNIT_FLAG_IN_COMBAT</li>
+                <li class="1048576">UNIT_FLAG_TAXI_FLIGHT</li>
+                <li class="2097152">UNIT_FLAG_DISARMED</li>
+                <li class="4194304">UNIT_FLAG_CONFUSED</li>
+                <li class="8388608">UNIT_FLAG_FLEEING</li>
+                <li class="16777216">UNIT_FLAG_PLAYER_CONTROLLED</li>
+                <li class="33554432">UNIT_FLAG_NOT_SELECTABLE</li>
+                <li class="67108864">UNIT_FLAG_SKINNABLE</li>
+                <li class="134217728">UNIT_FLAG_MOUNT</li>
+                <li class="268435456">UNIT_FLAG_UNK_28</li>
+                <li class="536870912">UNIT_FLAG_UNK_29</li>
+                <li class="1073741824">UNIT_FLAG_SHEATHE</li>
+                <li class="2147483648">UNIT_FLAG_UNK_31</li>
             </ul>
             <ul class="col-md-6">
                 <li>Server controlled</li>
@@ -102,84 +102,21 @@
     {% endblock %}
     {% block script %}
         <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/flags.js"></script>
         <script type="text/javascript">
             var Info = { "entryorguid": {{ entry }}, "source_type": 21 };
 
             var Mask = $('#mask');
-            check(Mask.val());
+            var Ul = 'flag';
+            check(Ul, Mask.val());
 
             $('ul#flag > li').click(function() {
-                var Immunity = parseInt($(this).attr('id'));
-                var Immunities = parseInt(Mask.val());
-                if( $(this).hasClass('active')) {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').removeClass('active');
-                        Mask.val(0);
-                    } else {
-                        $(this).removeClass('active');
-                        $('ul#flag > li[id="2147483647"]').removeClass('active');
-                        Mask.val(Immunities - Immunity);
-                    }
-                } else {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').addClass('active');
-                        Mask.val(Immunity);
-                    } else {
-                        $(this).addClass('active');
-                        Mask.val(Immunities + Immunity);
-                    }
-                }
-                if(Mask.val() == 0) {
-                    $('ul#flag > li').removeClass('active');
-                }
-
-                if(Mask.val() == 2147483647) {
-                    $('ul#flag > li').addClass('active');
-                }
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
             });
             Mask.bind("keyup change", function() {
                 var Binary = Hex(Mask.val());
-                check(Binary);
+                check(Ul,Binary);
             });
-
-            function check(Binary) {
-                if(Binary & 0x1) { $('ul#flag > li[id="1"]').addClass('active'); } else { $('ul#flag > li[id="1"]').removeClass('active'); }
-                if(Binary & 0x2) { $('ul#flag > li[id="2"]').addClass('active'); } else { $('ul#flag > li[id="2"]').removeClass('active'); }
-                if(Binary & 0x4) { $('ul#flag > li[id="4"]').addClass('active'); } else { $('ul#flag > li[id="4"]').removeClass('active'); }
-                if(Binary & 0x8) { $('ul#flag > li[id="8"]').addClass('active'); } else { $('ul#flag > li[id="8"]').removeClass('active'); }
-                if(Binary & 0x10) { $('ul#flag > li[id="16"]').addClass('active'); } else { $('ul#flag > li[id="16"]').removeClass('active'); }
-                if(Binary & 0x20) { $('ul#flag > li[id="32"]').addClass('active'); } else { $('ul#flag > li[id="32"]').removeClass('active'); }
-                if(Binary & 0x40) { $('ul#flag > li[id="64"]').addClass('active'); } else { $('ul#flag > li[id="64"]').removeClass('active'); }
-                if(Binary & 0x80) { $('ul#flag > li[id="128"]').addClass('active'); } else { $('ul#flag > li[id="128"]').removeClass('active'); }
-                if(Binary & 0x100) { $('ul#flag > li[id="256"]').addClass('active'); } else { $('ul#flag > li[id="256"]').removeClass('active'); }
-                if(Binary & 0x200) { $('ul#flag > li[id="512"]').addClass('active'); } else { $('ul#flag > li[id="512"]').removeClass('active'); }
-                if(Binary & 0x400) { $('ul#flag > li[id="1024"]').addClass('active'); } else { $('ul#flag > li[id="1024"]').removeClass('active'); }
-                if(Binary & 0x800) { $('ul#flag > li[id="2048"]').addClass('active'); } else { $('ul#flag > li[id="2048"]').removeClass('active'); }
-                if(Binary & 0x1000) { $('ul#flag > li[id="4096"]').addClass('active'); } else { $('ul#flag > li[id="4096"]').removeClass('active'); }
-                if(Binary & 0x2000) { $('ul#flag > li[id="8192"]').addClass('active'); } else { $('ul#flag > li[id="8192"]').removeClass('active'); }
-                if(Binary & 0x4000) { $('ul#flag > li[id="16384"]').addClass('active'); } else { $('ul#flag > li[id="16384"]').removeClass('active'); }
-                if(Binary & 0x8000) { $('ul#flag > li[id="32768"]').addClass('active'); } else { $('ul#flag > li[id="32768"]').removeClass('active'); }
-                if(Binary & 0x10000) { $('ul#flag > li[id="65536"]').addClass('active'); } else { $('ul#flag > li[id="65536"]').removeClass('active'); }
-                if(Binary & 0x20000) { $('ul#flag > li[id="131072"]').addClass('active'); } else { $('ul#flag > li[id="131072"]').removeClass('active'); }
-                if(Binary & 0x40000) { $('ul#flag > li[id="262144"]').addClass('active'); } else { $('ul#flag > li[id="262144"]').removeClass('active'); }
-                if(Binary & 0x80000) { $('ul#flag > li[id="524288"]').addClass('active'); } else { $('ul#flag > li[id="524288"]').removeClass('active'); }
-                if(Binary & 0x100000) { $('ul#flag > li[id="1048576"]').addClass('active'); } else { $('ul#flag > li[id="1048576"]').removeClass('active'); }
-                if(Binary & 0x200000) { $('ul#flag > li[id="2097152"]').addClass('active'); } else { $('ul#flag > li[id="2097152"]').removeClass('active'); }
-                if(Binary & 0x400000) { $('ul#flag > li[id="4194304"]').addClass('active'); } else { $('ul#flag > li[id="4194304"]').removeClass('active'); }
-                if(Binary & 0x800000) { $('ul#flag > li[id="8388608"]').addClass('active'); } else { $('ul#flag > li[id="8388608"]').removeClass('active'); }
-                if(Binary & 0x1000000) { $('ul#flag > li[id="16777216"]').addClass('active'); } else { $('ul#flag > li[id="16777216"]').removeClass('active'); }
-                if(Binary & 0x2000000) { $('ul#flag > li[id="33554432"]').addClass('active'); } else { $('ul#flag > li[id="33554432"]').removeClass('active'); }
-                if(Binary & 0x4000000) { $('ul#flag > li[id="67108864"]').addClass('active'); } else { $('ul#flag > li[id="67108864"]').removeClass('active'); }
-                if(Binary & 0x8000000) { $('ul#flag > li[id="134217728"]').addClass('active'); } else { $('ul#flag > li[id="134217728"]').removeClass('active'); }
-                if(Binary & 0x10000000) { $('ul#flag > li[id="268435456"]').addClass('active'); } else { $('ul#flag > li[id="268435456"]').removeClass('active'); }
-                if(Binary & 0x20000000) { $('ul#flag > li[id="536870912"]').addClass('active'); } else { $('ul#flag > li[id="536870912"]').removeClass('active'); }
-                if(Binary & 0x40000000) { $('ul#flag > li[id="1073741824"]').addClass('active'); } else { $('ul#flag > li[id="1073741824"]').removeClass('active'); }
-                if(Binary & 0x80000000) { $('ul#flag > li[id="2147483648"]').addClass('active'); } else { $('ul#flag > li[id="2147483648"]').removeClass('active'); }
-            }
-
-            function Hex(d) {
-                return "0x" + (+d).toString(16).toUpperCase();
-            }
 
             $('#apply').click(function () {
                 apply(Mask.val(), Info);

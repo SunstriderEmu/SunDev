@@ -1,0 +1,211 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ spell.name }}({{ spell.entry }}) - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .qflags ul > li {
+                display: block;
+                padding: 10px 15px;
+                margin-bottom: -1px;
+                border: 1px solid #dddddd;
+            }
+            .qflags ul > li:hover {
+                background: #f5f5f5;
+            }
+            .qflags .active {
+                color: #fff;
+                background: #337ab7!important;
+                border-color: #337ab7!important;
+            }
+            .well > .table {
+                margin-bottom: 0;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <div class="row">
+                <h2>{{ spell.name }}</h2>
+                <div class="well col-md-3" style="margin-right: 15px">
+                    <strong>INFORMATION</strong>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td><strong>Proc Per Minute Rate</strong></td>
+                            <td>{{ spell.ppmRate }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom Chance</strong></td>
+                            <td>{{ spell.CustomChance }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cooldown</strong></td>
+                            <td>{{ spell.Cooldown }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4 qflags">
+                    <h3>SchoolMask</h3>
+                    Mask:
+                    <input id="schoolMask" type="number" class="form-control" value="{{ spell.SchoolMask }}" /><br />
+                    <div class="row">
+                        <ul id="school">
+                            <li class="1">Physical</li>
+                            <li class="2">Holy</li>
+                            <li class="4">Fire</li>
+                            <li class="8">Nature</li>
+                            <li class="16">Frost</li>
+                            <li class="32">Shadow</li>
+                            <li class="64">Arcane</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 qflags">
+                    <h3>Proc Flags</h3>
+                    Mask:
+                    <input id="mask" type="number" class="form-control" value="{{ spell.procFlags }}" /><br />
+                    <div class="row">
+                        <ul id="flag" class="col-md-5">
+                            <li class="1">PROC_FLAG_KILLED</li>
+                            <li class="2">PROC_FLAG_KILL</li>
+                            <li class="4">PROC_FLAG_SUCCESSFUL_MELEE_HIT</li>
+                            <li class="8">PROC_FLAG_TAKEN_MELEE_HIT</li>
+                            <li class="16">PROC_FLAG_SUCCESSFUL_MELEE_SPELL_HIT</li>
+                            <li class="32">PROC_FLAG_TAKEN_MELEE_SPELL_HIT</li>
+                            <li class="64">PROC_FLAG_SUCCESSFUL_RANGED_HIT</li>
+                            <li class="128">PROC_FLAG_TAKEN_RANGED_HIT</li>
+                            <li class="256">PROC_FLAG_SUCCESSFUL_RANGED_SPELL_HIT</li>
+                            <li class="512">PROC_FLAG_TAKEN_RANGED_SPELL_HIT</li>
+                            <li class="1024">PROC_FLAG_SUCCESSFUL_POSITIVE_AOE_HIT</li>
+                            <li class="2048">PROC_FLAG_TAKEN_POSITIVE_AOE</li>
+                            <li class="4096">PROC_FLAG_SUCCESSFUL_AOE_SPELL_HIT</li>
+                            <li class="8192">PROC_FLAG_TAKEN_AOE_SPELL_HIT</li>
+                            <li class="16384">PROC_FLAG_SUCCESSFUL_POSITIVE_SPELL</li>
+                            <li class="32768">PROC_FLAG_TAKEN_POSITIVE_SPELL</li>
+                            <li class="65536">PROC_FLAG_SUCCESSFUL_NEGATIVE_SPELL_HIT</li>
+                            <li class="131072">PROC_FLAG_TAKEN_NEGATIVE_SPELL_HIT</li>
+                            <li class="262144">PROC_FLAG_ON_DO_PERIODIC</li>
+                            <li class="524288">PROC_FLAG_ON_TAKE_PERIODIC</li>
+                            <li class="1048576">PROC_FLAG_TAKEN_ANY_DAMAGE</li>
+                            <li class="2097152">PROC_FLAG_ON_TRAP_ACTIVATION</li>
+                            <li class="4194304">PROC_FLAG_TAKEN_OFFHAND_HIT</li>
+                            <li class="8388608">PROC_FLAG_SUCCESSFUL_OFFHAND_HIT</li>
+                        </ul>
+                        <ul class="col-md-7">
+                            <li>Killed by aggressor</li>
+                            <li>Kill target (in most cases need XP/Honor reward, see Unit::IsTriggeredAtSpellProcEvent for additinoal check)</li>
+                            <li>Successful melee auto attack</li>
+                            <li>Taken damage from melee auto attack hit</li>
+                            <li>Successful attack by Spell that use melee weapon</li>
+                            <li>Taken damage by Spell that use melee weapon</li>
+                            <li>Successful Ranged auto attack</li>
+                            <li>Taken damage from ranged auto attack</li>
+                            <li>Successful Ranged attack by Spell that use ranged weapon</li>
+                            <li>Taken damage by Spell that use ranged weapon</li>
+                            <li>Successful AoE (not 100% sure unused)</li>
+                            <li>Taken AoE (not 100% sure unused)</li>
+                            <li>Successful AoE damage spell hit (not 100% sure unused)</li>
+                            <li>Taken AoE damage spell hit (not 100% sure unused)</li>
+                            <li>Successful cast positive spell (by default only on healing)</li>
+                            <li>Taken positive spell hit (by default only on healing)</li>
+                            <li>Successful negative spell cast (by default only on damage)</li>
+                            <li>Taken negative spell (by default only on damage)</li>
+                            <li>Successful do periodic (damage / healing, determined by PROC_EX_PERIODIC_POSITIVE or negative if no procEx)</li>
+                            <li>Taken spell periodic (damage / healing, determined by PROC_EX_PERIODIC_POSITIVE or negative if no procEx)</li>
+                            <li>Taken any damage</li>
+                            <li>On trap activation</li>
+                            <li>Taken off-hand melee attacks(not used)</li>
+                            <li>Successful off-hand melee attacks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 qflags">
+                    <h3>Proc Ex</h3>
+                    Mask:
+                    <input id="mask2" type="number" class="form-control" value="{{ spell.procEx }}" /><br />
+                    <div class="row">
+                        <ul id="sflag" class="col-md-5">
+                            <li class="1">PROC_EX_NORMAL_HIT</li>
+                            <li class="2">PROC_EX_CRITICAL_HIT</li>
+                            <li class="4">PROC_EX_MISS</li>
+                            <li class="8">PROC_EX_RESIST</li>
+                            <li class="16">PROC_EX_DODGE</li>
+                            <li class="32">PROC_EX_PARRY</li>
+                            <li class="64">PROC_EX_BLOCK</li>
+                            <li class="128">PROC_EX_EVADE</li>
+                            <li class="256">PROC_EX_IMMUNE</li>
+                            <li class="512">PROC_EX_DEFLECT</li>
+                            <li class="1024">PROC_EX_ABSORB</li>
+                            <li class="2048">PROC_EX_REFLECT</li>
+                            <li class="4096">PROC_EX_INTERRUPT</li>
+                            <li class="8192">PROC_EX_RESERVED1</li>
+                            <li class="16384">PROC_EX_RESERVED2</li>
+                            <li class="32768">PROC_EX_RESERVED3</li>
+                            <li class="65536">PROC_EX_EX_TRIGGER_ALWAYS</li>
+                            <li class="131072">PROC_EX_EX_ONE_TIME_TRIGGER</li>
+                            <li class="262144">PROC_EX_PERIODIC_POSITIVE</li>
+                        </ul>
+                        <ul class="col-md-7">
+                            <li>If set only from normal hit (only damage spells)</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>Melee hit result can be Interrupt (not used)</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>/</li>
+                            <li>If set trigger always ( no matter another flags) used for drop charges</li>
+                            <li>If set trigger always but only one time (not used)</li>
+                            <li>For periodic heal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script src="{{ app.request.basepath }}/js/flags.js"></script>
+        <script>
+            var schoolMask = $('#schoolMask');
+            var Mask = $('#mask');
+            var Mask2 = $('#mask2');
+            check('flag', Mask.val());
+            check('sflag', Mask2.val());
+
+            $('ul#school > li').click(function() {
+                refreshMask(this, schoolMask, parseInt($(this).attr('class')), parseInt(schoolMask.val()));
+            });
+            $('ul#flag > li').click(function() {
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
+            });
+            $('ul#sflag > li').click(function() {
+                refreshMask(this, Mask2, parseInt($(this).attr('class')), parseInt(Mask2.val()));
+            });
+
+            schoolMask.bind("keyup change", function() {
+                var Binary = Hex(schoolMask.val());
+                check('school', Binary);
+            });
+
+            Mask.bind("keyup change", function() {
+                var Binary = Hex(Mask.val());
+                check('flag', Binary);
+            });
+            Mask2.bind("keyup change", function() {
+                var Binary = Hex(Mask2.val());
+                check('sflag', Binary);
+            });
+        </script>
+    {% endblock %}

@@ -167,6 +167,7 @@
                                 <td>{{ creature.melee.minlevel.max|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.melee.minlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% if creature.ranged is defined %}
                             <tr>
                                 <td>Ranged</td>
                                 <td>{{ creature.ranged.minlevel.base|number_format(1, '.', ',') }}</td>
@@ -175,6 +176,7 @@
                                 <td>{{ creature.ranged.minlevel.max|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.ranged.minlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% endif %}
                             {% if creature.minlevel != creature.maxlevel %}
                             <tr>
                                 <td rowspan="2" style="vertical-align: middle;"><strong>Level {{ creature.maxlevel }}</strong></td>
@@ -185,6 +187,7 @@
                                 <td>{{ creature.melee.maxlevel.max|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.melee.maxlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% if creature.ranged is defined %}
                             <tr>
                                 <td>Ranged</td>
                                 <td>{{ creature.ranged.maxlevel.base|number_format(1, '.', ',') }}</td>
@@ -193,6 +196,7 @@
                                 <td>{{ creature.ranged.maxlevel.max|number_format(1, '.', ',') }}</td>
                                 <td>{{ creature.ranged.maxlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% endif %}
                             {% endif %}
                         </tbody>
                     </table>

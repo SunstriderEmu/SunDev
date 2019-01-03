@@ -115,6 +115,9 @@
                     {% if is_granted('ROLE_WAYPOINTS') %}
                         <li><a href="{{ app.request.basepath }}/waypoints">Waypoints</a></li>
                     {% endif %}
+                    {% if is_granted('ROLE_CONDITION') %}
+                        <li><a href="{{ app.request.basepath }}/condition">Condition</a></li>
+                    {% endif %}
                     </ul>
                 </li>
                 {% endif %}
@@ -145,7 +148,7 @@
                         {% endif %}
                         {% if is_granted('ROLE_QUESTS_READ')
                            or is_granted('ROLE_QUESTS_WRITE') %}
-                        <li><a href="{{ app.request.basepath }}/quest">Quest</a></li>
+                        <li><a href="{{ app.request.basepath }}/test/quest">Quest</a></li>
                         {% endif %}
                     </ul>
                 </li>

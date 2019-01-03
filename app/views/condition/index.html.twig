@@ -1,0 +1,307 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Condition - {{ parent() }}{% endblock %}
+    {% block head %}{% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>SunCondition</h2>
+            <h4>Find the condition</h4>
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="find-entry">
+                </div>
+            </form>
+            <div class="col-md-12 row">
+                <table class="table table-stripped">
+                    <thead>
+                    <th>Type</th>
+                    <th>Group</th>
+                    <th>Entry</th>
+                    <th>Id</th>
+                    <th>ElseGroup</th>
+                    <th>Condition</th>
+                    <th>Value1</th>
+                    <th>Value2</th>
+                    <th>Value3</th>
+                    <th>Negative</th>
+                    <th>Comment</th>
+                    <th>Comment</th>
+                    <th></th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+          $('#find-entry').on('keyup change', function(){
+            $('table tbody').html('');
+            $.ajax({
+              type: "GET",
+              url: '{{ app.request.basepath }}/condition/search/'+$(this).val(),
+              dataType: 'json',
+              success: function (data) {
+                  console.log(data);
+                $.each(data, function () {
+                  $('table tbody').append('<tr>' +
+                    '<td><span title="'+this.SourceTypeOrReferenceId+'">'+getSourceType(this.SourceTypeOrReferenceId)+'</span></td>' +
+                    '<td>'+this.SourceGroup+'</td>' +
+                    '<td>'+this.SourceEntry+'</td>' +
+                    '<td>'+this.SourceId+'</td>' +
+                    '<td>'+this.ElseGroup+'</td>' +
+                    '<td><span title="'+this.ConditionTypeOrReference+'">'+getConditionType(this.ConditionTypeOrReference)+'</span></td>' +
+                    '<td>'+this.ConditionValue1+'</td>' +
+                    '<td>'+this.ConditionValue2+'</td>' +
+                    '<td>'+this.ConditionValue3+'</td>' +
+                    '<td>'+this.NegativeCondition+'</td>' +
+                    '<td>'+this.Comment+'</td>' +
+                    '<td>'+generateComment(this)+'</td>' +
+                    '<td><a href="{{ app.request.basepath }}/condition/edit/'+this.id+'" class="btn btn-primary">Edit</a></td>' +
+                    '<td><a href="{{ app.request.basepath }}/condition/remove/'+this.id+'" class="btn btn-danger">Remove</a></td>' +
+                    '</tr>');
+                });
+              }
+            });
+          });
+          function getSourceType(source_type)
+          {
+            switch(parseInt(source_type))
+            {
+              case 1: return 'CREATURE_LOOT_TEMPLATE'; break;
+              case 2: return 'DISENCHANT_LOOT_TEMPLATE'; break;
+              case 3: return 'FISHING_LOOT_TEMPLATE'; break;
+              case 4: return 'GAMEOBJECT_LOOT_TEMPLATE'; break;
+              case 5: return 'ITEM_LOOT_TEMPLATE'; break;
+              case 6: return 'MAIL_LOOT_TEMPLATE'; break;
+              case 7: return 'MILLING_LOOT_TEMPLATE'; break;
+              case 8: return 'PICKPOCKETING_LOOT_TEMPLATE'; break;
+              case 9: return 'PROSPECTING_LOOT_TEMPLATE'; break;
+              case 10: return 'REFERENCE_LOOT_TEMPLATE'; break;
+              case 11: return 'SKINNING_LOOT_TEMPLATE'; break;
+              case 12: return 'SPELL_LOOT_TEMPLATE'; break;
+              case 13: return 'SPELL_IMPLICIT_TARGET'; break;
+              case 14: return 'GOSSIP_MENU'; break;
+              case 15: return 'GOSSIP_MENU_OPTION'; break;
+              case 16: return 'CREATURE_TEMPLATE_VEHICLE'; break;
+              case 17: return 'SPELL'; break;
+              case 18: return 'SPELL_CLICK_EVENT'; break;
+              case 19: return 'QUEST_ACCEPT'; break;
+              case 20: return 'QUEST_SHOW_MARK'; break;
+              case 21: return 'VEHICLE_SPELL'; break;
+              case 22: return 'SMART_EVENT'; break;
+              case 23: return 'NPC_VENDOR'; break;
+              case 24: return 'SPELL_PROC'; break;
+              default: return 'ERROR';
+            }
+          }
+          function getConditionType(source_type)
+          {
+            switch(parseInt(source_type))
+            {
+              case 1: return 'AURA'; break;
+              case 2: return 'ITEM'; break;
+              case 3: return 'ITEM_EQUIPPED'; break;
+              case 4: return 'ZONEID'; break;
+              case 5: return 'REPUTATION_RANK'; break;
+              case 6: return 'TEAM'; break;
+              case 7: return 'SKILL'; break;
+              case 8: return 'QUEST_REWARDED'; break;
+              case 9: return 'QUEST_TAKEN'; break;
+              case 10: return 'DRUNKEN_STATE'; break;
+              case 11: return 'WORLD_STATE'; break;
+              case 12: return 'ACTIVE_EVENT'; break;
+              case 13: return 'INSTANCE_INFO'; break;
+              case 14: return 'QUEST_NONE'; break;
+              case 15: return 'CLASS'; break;
+              case 16: return 'RACE'; break;
+              case 17: return 'ACHIEVEMENT'; break;
+              case 18: return 'TITLE'; break;
+              case 19: return 'SPAWNMASK'; break;
+              case 20: return 'GENDER'; break;
+              case 21: return 'UNIT_STATE'; break;
+              case 22: return 'MAPID'; break;
+              case 23: return 'AREAID'; break;
+              case 24: return 'CREATURE_TYPE'; break;
+              case 25: return 'SPELL'; break;
+              case 26: return 'PHASEMASK'; break;
+              case 27: return 'LEVEL'; break;
+              case 28: return 'QUEST_COMPLETE'; break;
+              case 29: return 'NEAR_CREATURE'; break;
+              case 30: return 'NEAR_GAMEOBJECT'; break;
+              case 31: return 'OBJECT_ENTRY_GUID'; break;
+              case 32: return 'TYPE_MASK'; break;
+              case 33: return 'RELATION_TO'; break;
+              case 34: return 'REACTION_TO'; break;
+              case 35: return 'DISTANCE_TO'; break;
+              case 36: return 'ALIVE'; break;
+              case 37: return 'HP_VAL'; break;
+              case 38: return 'HP_PCT'; break;
+              case 39: return 'REALM_ACHIEVEMENT'; break;
+              case 40: return 'IN_WATER'; break;
+              case 41: return 'TERRAIN_SWAP'; break;
+              case 42: return 'STAND_STATE'; break;
+              case 43: return 'DAILY_QUEST_DONE'; break;
+              case 44: return 'CHARMED'; break;
+              case 45: return 'PET_TYPE'; break;
+              case 46: return 'TAXI'; break;
+              case 47: return 'QUEST_STATE'; break;
+              default: return 'ERROR'; break;
+            }
+          }
+          function generateComment(condition)
+          {
+              //debugger;
+              var Comment;
+              Comment = generateTypeComment(condition) +': ' +generateConditionComment(condition);
+              return Comment;
+          }
+          function generateTypeComment(condition)
+          {
+              switch(parseInt(condition.SourceTypeOrReferenceId))
+              {
+                  case 1:
+                  case 2:
+                  case 3:
+                  case 4:
+                  case 5:
+                  case 6:
+                  case 7:
+                  case 8:
+                  case 9:
+                  case 10:
+                  case 11:
+                  case 12:
+                      return 'Add <a href="https://wowhead.com/item='+ condition.SourceEntry +'">'+ condition.SourceEntry +'</a> In Loot '+ condition.SourceGroup;
+                      break;
+                  case 13:
+                      var effects;
+                      switch(parseInt(condition.SourceGroup))
+                      {
+                          case 1: effects = '1'; break;
+                          case 2: effects = '2'; break;
+                          case 3: effects = '1 and 2'; break;
+                          case 4: effects = '3'; break;
+                          case 5: effects = '1 and 3'; break;
+                          case 6: effects = '2 and 3'; break;
+                          case 7: effects = '1, 2 and 3'; break;
+                      }
+                      return 'Spell <a href="https://wowhead.com/spell='+ condition.SourceEntry +'">'+ condition.SourceEntry +'</a> - Effects '+ effects + ' Targets';
+                  case 14:
+                      return 'Show Gossip Menu '+ condition.SourceGroup +' Text '+ condition.SourceEntry;
+                      break;
+                  case 15:
+                      return 'Show Gossip Menu '+ condition.SourceGroup +' Option '+ condition.SourceEntry;
+                      break;
+                  case 16: return 'UNUSED 16'; break;
+                  case 17:
+                      return 'Spell <a href="https://wowhead.com/spell='+ condition.SourceEntry +'">'+ condition.SourceEntry +'</a>';
+                      break;
+                  case 18: return 'UNUSED 18'; break;
+                  case 19:
+                      return 'Accept Quest <a href="https://wowhead.com/quest='+ condition.SourceEntry +'">'+ condition.SourceEntry +'</a>';
+                      break;
+                  case 20: return 'UNUSED 20'; break;
+                  case 21: return 'UNUSED 21'; break;
+                  case 22:
+                      var sourceType;
+                      var link = '{{ app.request.basepath }}/';
+                      switch(parseInt(condition.SourceId))
+                      {
+                          case 0: sourceType = 'Creature';          link += sourceType.toLowerCase() + parseInt(condition.SourceEntry) > 0 ? '/entry/' : '/guid/' + condition.SourceEntry + 'smartai'; break;
+                          case 1: sourceType = 'GameObject';        link += sourceType.toLowerCase() + parseInt(condition.SourceEntry) > 0 ? '/entry/' : '/guid/' + condition.SourceEntry + 'smartai'; break;
+                          case 2: sourceType = 'AreaTrigger';       link += sourceType.toLowerCase() + '/' + condition.SourceEntry + '/smartai'; break;
+                          case 9: sourceType = 'TimedActionList';   link += 'smartai/script' + condition.SourceEntry; break;
+                          default: sourceType= 'error';
+                      }
+                      return sourceType + ' <a href="'+ link +'">'+ condition.SourceEntry +'</a> Event '+ parseInt(condition.SourceGroup - 1);
+                      break;
+                  case 23: return 'NPC_VENDOR'; break;
+                  case 24: return 'SPELL_PROC'; break;
+                  default: return 'ERROR';
+              }
+          }
+          function generateConditionComment(condition)
+          {
+              switch(parseInt(condition.ConditionTypeOrReference))
+              {
+                  case 1:
+                      return (condition.NegativeCondition === '0' ? 'Has' : 'Has Not') + ' Aura <a href="https://wowhead.com/spell='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a> Effect '+ condition.ConditionValue2;
+                      break;
+                  case 2:
+                      return (condition.NegativeCondition === '0' ? 'Has' : 'Has Not') + ' Item <a href="https://wowhead.com/item='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a> * '+ condition.ConditionValue2 +' '+ (condition.ConditionValue3 === '1' ? 'In Bank' : '');
+                      break;
+                  case 3:
+                      return (condition.NegativeCondition === '0' ? 'Has' : 'Has Not') + ' Item <a href="https://wowhead.com/item='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a> Equipped';
+                      break;
+                  case 4:
+                      return (condition.NegativeCondition === '0' ? 'Is in' : 'Is not in') + ' Zone <a href="https://wowhead.com/zone='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a>';
+                      break;
+                  case 5:
+                      var Binary = "0x" + Hex(condition.ConditionValue2);
+                      var rank = "";
+                      rank = generateBitComment('', rank, Binary, 0x1, 'Hated');
+                      rank = generateBitComment('', rank, Binary, 0x2, 'Hostile');
+                      rank = generateBitComment('', rank, Binary, 0x4, 'Unfriendly');
+                      rank = generateBitComment('', rank, Binary, 0x8, 'Neutral');
+                      rank = generateBitComment('', rank, Binary, 0x10, 'Friendly');
+                      rank = generateBitComment('', rank, Binary, 0x20, 'Honored');
+                      rank = generateBitComment('', rank, Binary, 0x40, 'Revered');
+                      rank = generateBitComment('', rank, Binary, 0x80, 'Exalted');
+                      return (condition.NegativeCondition === '0' ? 'Is '+ rank : 'Is not '+replaceComma(rank) )+ ' Zone <a href="https://wowhead.com/zone='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a>';
+                      break;
+                  case 8:
+                      return (condition.NegativeCondition === '0' ? 'Has' : 'Has not') + ' Rewarded Quest <a href="https://wowhead.com/quest='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a>';
+                      break;
+                  case 9:
+                      return (condition.NegativeCondition === '0' ? 'Was' : 'Was not') + ' Taken Quest <a href="https://wowhead.com/quest='+ condition.ConditionValue1 +'">'+ condition.ConditionValue1 +'</a>';
+                      break;
+                  case 31:
+                      switch(parseInt(condition.ConditionValue1))
+                      {
+                          case 3:   return "Creature " + condition.ConditionValue2 + (condition.ConditionValue3 > 0 ? ' Guid ' + condition.ConditionValue3 :  '');  break;
+                          case 4:   return "Player";  break;
+                          case 5:   return "GameObject " + condition.ConditionValue2 + (condition.ConditionValue3 > 0 ? ' Guid ' + condition.ConditionValue3 :  '');  break;
+                          case 7:   return "Corpse";  break;
+                          default:  return "wrong ConditionValue1";
+                      }
+                  default:
+                      return 'error';
+
+              }
+          }
+
+          function Hex(d) {
+              return (+d).toString(16).toUpperCase();
+          }
+          function generateBitComment(Start, Comment, Binary, Mask, String) {
+              if (Mask & Binary) {
+                  if (Comment != Start)
+                      Comment += ", " + String;
+                  else
+                      Comment += String;
+              }
+              return Comment;
+          }
+          // Replace the last comma with " and "
+          function replaceComma(string) {
+              if (string.indexOf(",") === -1)
+                  return string;
+              var pos = string.lastIndexOf(',');
+              return string.substring(0, pos) + ' and ' + string.substring(pos + 1);
+          }
+        </script>
+        <script type="text/javascript" src="http://static.wowhead.com/widgets/power.js"></script>
+        <script type="text/javascript">
+            /**
+             * WoWHead
+             */
+            var wowhead_tooltips = {
+                "iconizelinks": true,
+                "renamelinks": true,
+                "droppedby": true,
+                "dropchance": true
+            }
+        </script>
+    {% endblock %}

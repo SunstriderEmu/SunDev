@@ -7,7 +7,7 @@ function review(data, info) {
             info: JSON.stringify(info)
         },
         success: function (data) {
-            console.log(Date() + " - " + data);
+            console.log(data);
         },
         error: function (xhr, err) {
             console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
@@ -24,7 +24,7 @@ function apply(data, info) {
             info: JSON.stringify(info)
         },
         success: function (data) {
-            console.log(Date() + " - " + data);
+            console.log(data);
         },
         error: function (xhr, err) {
             console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
@@ -41,7 +41,7 @@ function validate(data, info) {
             info: JSON.stringify(info)
         },
         success: function (data) {
-            console.log(Date() + " - " + data);
+            console.log(data);
         },
         error: function (xhr, err) {
             console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
@@ -58,7 +58,7 @@ function refuse(data, info) {
             info: JSON.stringify(info)
         },
         success: function (data) {
-            console.log(Date() + " - " + data);
+            console.log(data);
         },
         error: function (xhr, err) {
             console.log("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);

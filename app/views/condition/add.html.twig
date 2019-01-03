@@ -1,0 +1,473 @@
+{% extends "layout.html.twig" %}
+    {% block title %}Condition - {{ parent() }}{% endblock %}
+    {% block head %}{% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <h2>SunCondition</h2>
+            <h4>Add a condition</h4>
+            <fieldset>
+                <legend>Source</legend>
+                <div class="col-md-2">
+                    <label>Type</label>
+                    <select class="form-control" id="source_type">
+                        <option value="0">NONE</option>
+                        <option value="1">CREATURE_LOOT_TEMPLATE</option>
+                        <option value="2">DISENCHANT_LOOT_TEMPLATE</option>
+                        <option value="3">FISHING_LOOT_TEMPLATE</option>
+                        <option value="4">GAMEOBJECT_LOOT_TEMPLATE</option>
+                        <option value="5">ITEM_LOOT_TEMPLATE</option>
+                        <option value="6">MAIL_LOOT_TEMPLATE</option>
+                        <option value="7">MILLING_LOOT_TEMPLATE</option>
+                        <option value="8">PICKPOCKETING_LOOT_TEMPLATE</option>
+                        <option value="9">PROSPECTING_LOOT_TEMPLATE</option>
+                        <option value="10">REFERENCE_LOOT_TEMPLATE</option>
+                        <option value="11">SKINNING_LOOT_TEMPLATE</option>
+                        <option value="12">SPELL_LOOT_TEMPLATE</option>
+                        <option value="13">SPELL_IMPLICIT_TARGET</option>
+                        <option value="14">GOSSIP_MENU</option>
+                        <option value="15">GOSSIP_MENU_OPTION</option>
+                        <option value="16">CREATURE_TEMPLATE_VEHICLE</option>
+                        <option value="17">SPELL</option>
+                        <option value="18">SPELL_CLICK_EVENT</option>
+                        <option value="19">QUEST_ACCEPT</option>
+                        <option value="20">QUEST_SHOW_MARK</option>
+                        <option value="21">VEHICLE_SPELL</option>
+                        <option value="22">SMART_EVENT</option>
+                        <option value="23">NPC_VENDOR</option>
+                        <option value="24">SPELL_PROC</option>
+                    </select>
+                </div>
+                <div id="source-details">
+                </div>
+            </fieldset>
+            <br />
+            <fieldset>
+                <legend>Condition</legend>
+                <div class="col-md-2">
+                    <label>Type</label>
+                    <select class="form-control" id="condition_type">
+                        <option value="0">NONE</option>
+                        <option value="1">AURA</option>
+                        <option value="2">ITEM</option>
+                        <option value="3">ITEM_EQUIPPED</option>
+                        <option value="4">ZONEID</option>
+                        <option value="5">REPUTATION_RANK</option>
+                        <option value="6">TEAM</option>
+                        <option value="7">SKILL</option>
+                        <option value="8">QUEST_REWARDED</option>
+                        <option value="9">QUEST_TAKEN</option>
+                        <option value="10">DRUNKEN_STATE</option>
+                        <option value="11">WORLD_STATE</option>
+                        <option value="12">ACTIVE_EVENT</option>
+                        <option value="13">INSTANCE_INFO</option>
+                        <option value="14">QUEST_NONE</option>
+                        <option value="15">CLASS</option>
+                        <option value="16">RACE</option>
+                        <option value="17">ACHIEVEMENT</option>
+                        <option value="18">TITLE</option>
+                        <option value="19">SPAWNMASK</option>
+                        <option value="20">GENDER</option>
+                        <option value="21">UNIT_STATE</option>
+                        <option value="22">MAPID</option>
+                        <option value="23">AREAID</option>
+                        <option value="24">CREATURE_TYPE</option>
+                        <option value="25">SPELL</option>
+                        <option value="26">PHASEMASK</option>
+                        <option value="27">LEVEL</option>
+                        <option value="28">QUEST_COMPLETE</option>
+                        <option value="29">NEAR_CREATURE</option>
+                        <option value="30">NEAR_GAMEOBJECT</option>
+                        <option value="31">OBJECT_ENTRY_GUID</option>
+                        <option value="32">TYPE_MASK</option>
+                        <option value="33">RELATION_TO</option>
+                        <option value="34">REACTION_TO</option>
+                        <option value="35">DISTANCE_TO</option>
+                        <option value="36">ALIVE</option>
+                        <option value="37">HP_VAL</option>
+                        <option value="38">HP_PCT</option>
+                        <option value="39">REALM_ACHIEVEMENT</option>
+                        <option value="40">IN_WATER</option>
+                        <option value="41">TERRAIN_SWAP</option>
+                        <option value="42">STAND_STATE</option>
+                        <option value="43">DAILY_QUEST_DONE</option>
+                        <option value="44">CHARMED</option>
+                        <option value="45">PET_TYPE</option>
+                        <option value="46">TAXI</option>
+                        <option value="47">QUEST_STATE</option>
+                    </select>
+                </div>
+                <div id="condition-details">
+                </div>
+            </fieldset>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script type="text/javascript">
+            SourceType = {
+              CREATURE_LOOT_TEMPLATE: 1,
+              DISENCHANT_LOOT_TEMPLATE: 2,
+              FISHING_LOOT_TEMPLATE: 3,
+              GAMEOBJECT_LOOT_TEMPLATE: 4,
+              ITEM_LOOT_TEMPLATE: 5,
+              MAIL_LOOT_TEMPLATE: 6,
+              MILLING_LOOT_TEMPLATE: 7,
+              PICKPOCKETING_LOOT_TEMPLATE: 8,
+              PROSPECTING_LOOT_TEMPLATE: 9,
+              REFERENCE_LOOT_TEMPLATE: 10,
+              SKINNING_LOOT_TEMPLATE: 11,
+              SPELL_LOOT_TEMPLATE: 12,
+              SPELL_IMPLICIT_TARGET: 13,
+              GOSSIP_MENU: 14,
+              GOSSIP_MENU_OPTION: 15,
+              CREATURE_TEMPLATE_VEHICLE: 16,
+              SPELL: 17,
+              SPELL_CLICK_EVENT: 18,
+              QUEST_ACCEPT: 19,
+              QUEST_SHOW_MARK: 20,
+              VEHICLE_SPELL: 21,
+              SMART_EVENT: 22,
+              NPC_VENDOR: 23,
+              SPELL_PROC: 24
+            };
+            ConditionType = {
+              AURA: 1,
+              ITEM: 2,
+              ITEM_EQUIPPED: 3,
+              ZONEID: 4,
+              REPUTATION_RANK: 5,
+              TEAM: 6,
+              SKILL: 7,
+              QUEST_REWARDED: 8,
+              QUEST_TAKEN: 9,
+              DRUNKEN_STATE: 10,
+              WORLD_STATE: 11,
+              ACTIVE_EVENT: 12,
+              INSTANCE_INFO: 13,
+              QUEST_NONE: 14,
+              CLASS: 15,
+              RACE: 16,
+              ACHIEVEMENT: 17,
+              TITLE: 18,
+              SPAWNMASK: 19,
+              GENDER: 20,
+              UNIT_STATE: 21,
+              MAPID: 22,
+              AREAID: 23,
+              CREATURE_TYPE: 24,
+              SPELL: 25,
+              PHASEMASK: 26,
+              LEVEL: 27,
+              QUEST_COMPLETE: 28,
+              NEAR_CREATURE: 29,
+              NEAR_GAMEOBJECT: 30,
+              OBJECT_ENTRY_GUID: 31,
+              TYPE_MASK: 32,
+              RELATION_TO: 33,
+              REACTION_TO: 34,
+              DISTANCE_TO: 35,
+              ALIVE: 36,
+              HP_VAL: 37,
+              HP_PCT: 38,
+              REALM_ACHIEVEMENT: 39,
+              IN_WATER: 40,
+              TERRAIN_SWAP: 41,
+              STAND_STATE: 42,
+              DAILY_QUEST_DONE: 43,
+              CHARMED: 44,
+              PET_TYPE: 45,
+              TAXI: 46,
+              QUEST_STATE: 47
+            };
+            $('#source_type').change(function () {
+              switch(parseInt($(this).val()))
+              {
+                case SourceType.CREATURE_LOOT_TEMPLATE:
+                case SourceType.DISENCHANT_LOOT_TEMPLATE:
+                case SourceType.FISHING_LOOT_TEMPLATE:
+                case SourceType.GAMEOBJECT_LOOT_TEMPLATE:
+                case SourceType.ITEM_LOOT_TEMPLATE:
+                case SourceType.MAIL_LOOT_TEMPLATE:
+                case SourceType.MILLING_LOOT_TEMPLATE:
+                case SourceType.PICKPOCKETING_LOOT_TEMPLATE:
+                case SourceType.PROSPECTING_LOOT_TEMPLATE:
+                case SourceType.REFERENCE_LOOT_TEMPLATE:
+                case SourceType.SKINNING_LOOT_TEMPLATE:
+                case SourceType.SPELL_LOOT_TEMPLATE:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Loot or Reference loot entry</label><input type="number" id="source-group" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Item ID</label><input type="number" id="source-entry" class="form-control"></div>');
+                    break;
+                case SourceType.SPELL_IMPLICIT_TARGET:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Effect(s)</label><select multiple id="source-group" class="form-control"><option value="1">EFFECT_0</option><option value="2">EFFECT_1</option><option value="4">EFFECT_2</option></select></div>' +
+                        '<div class="col-md-2"><label>Spell ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Victim</option><option value="1">Caster</option></select></div');
+                  break;
+                case SourceType.GOSSIP_MENU:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Menu ID</label><input type="number" id="source-group" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Text ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Player</option><option value="1">WorldObject</option></select></div');
+                    break;
+                case SourceType.GOSSIP_MENU_OPTION:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Menu ID</label><input type="number" id="source-group" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Option ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Player</option><option value="1">WorldObject</option></select></div');
+                  break;
+                case SourceType.CREATURE_TEMPLATE_VEHICLE:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Menu ID</label><input type="number" id="source-group" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Option ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Player</option><option value="1">WorldObject</option></select></div');
+                  break;
+                case SourceType.SPELL:
+                    $('#source-details')
+                      .html('<div class="col-md-2"><label>Spell ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                        '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Caster</option><option value="1">Victim</option></select></div');
+                  break;
+                case SourceType.SPELL_CLICK_EVENT:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>Creature ID(npc_spellclick_spells.npc_entry)</label><input type="number" id="source-group" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Spell ID(npc_spellclick_spells.spell_id)</label><input type="number" id="source-entry" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Clicker</option><option value="1">Clickee</option></select></div');
+                  break;
+                case SourceType.QUEST_ACCEPT:
+                case SourceType.QUEST_SHOW_MARK:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>Quest ID</label><input type="number" id="source-entry" class="form-control"></div>');
+                  break;
+                case SourceType.VEHICLE_SPELL:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>Creature ID</label><input type="number" id="source-group" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Spell ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Player</option><option value="1">Vehicle</option></select></div');
+                  break;
+                case SourceType.SMART_EVENT:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>ID</label><input type="number" id="source-group" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>EntryOrGuid</label><input type="number" id="source-entry" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>SourceType</label><select id="source-id" class="form-control"><option value="0">Creature</option><option value="1">GameObject</option><option value="2">AreaTrigger</option><option value="9">Timed Actionlist</option></select></div>' +
+                      '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Invoker</option><option value="1">Object</option></select></div');
+                  break;
+                case SourceType.NPC_VENDOR:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>NPC ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Item ID</label><input type="number" id="source-entry" class="form-control"></div>');
+                  break;
+                case SourceType.SPELL_PROC:
+                  $('#source-details')
+                    .html('<div class="col-md-2"><label>Spell ID</label><input type="number" id="source-entry" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Target</label><select id="condition-target" class="form-control"><option value="0">Actor</option><option value="1">ActionTarget</option></select></div');
+                  break;
+                default: $('#source-details').html(''); return;
+              }
+            });
+            $('#condition_type').change(function () {
+              switch(parseInt($(this).val()))
+              {
+                case ConditionType.AURA:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Spell ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Effect(s)</label><select multiple id="cv2" class="form-control"><option value="1">EFFECT_0</option><option value="2">EFFECT_1</option><option value="4">EFFECT_2</option></select></div>');
+                  break;
+                case ConditionType.ITEM:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Item ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Count</label><input type="number" id="cv2" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>In bank</label><select id="cv3" class="form-control"><option value="0">No</option><option value="1">Yes</option></select></div>');
+                  break;
+                case ConditionType.ITEM_EQUIPPED:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Item ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.ZONEID:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Zone ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.REPUTATION_RANK:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Faction ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Effect(s)</label><select multiple id="cv2" class="form-control">' +
+                      '<option value="1">Hated</option>' +
+                      '<option value="2">Hostile</option>' +
+                      '<option value="4">Unfriendly</option>' +
+                      '<option value="8">Neutral</option>' +
+                      '<option value="16">Friendly</option>' +
+                      '<option value="32">Honored</option>' +
+                      '<option value="64">Revered</option>' +
+                      '<option value="128">Exalted</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.TEAM:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Team ID</label><select multiple id="cv1" class="form-control">' +
+                      '<option value="469">Alliance</option>' +
+                      '<option value="67">Horde</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.SKILL:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Skill ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Skill rank</label><input type="number" id="cv2" min="1" max="300" class="form-control"></div>');
+                  break;
+                case ConditionType.QUEST_REWARDED:
+                case ConditionType.QUEST_TAKEN:
+                case ConditionType.QUEST_NONE:
+                case ConditionType.QUEST_COMPLETE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Quest ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.DRUNKEN_STATE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Team ID</label><select multiple id="cv1" class="form-control">' +
+                      '<option value="0">Sober</option>' +
+                      '<option value="1">Tipsy</option>' +
+                      '<option value="2">Drunk</option>' +
+                      '<option value="3">Smashed</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.WORLD_STATE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Index</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Value</label><input type="number" id="cv2" class="form-control"></div>');
+                  break;
+                case ConditionType.ACTIVE_EVENT:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Event ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.INSTANCE_INFO:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Entry</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Data</label><input type="number" id="cv2" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Type</label><select multiple id="cv3" class="form-control">' +
+                      '<option value="0">INSTANCE_INFO_DATA</option>' +
+                      '<option value="1">INSTANCE_INFO_DATA64</option>' +
+                      '<option value="2">INSTANCE_INFO_BOSS_STATE</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.CLASS:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Classes</label><select multiple id="cv1" class="form-control">' +
+                      '<option value="1">Warrior</option>' +
+                      '<option value="2">Paladin</option>' +
+                      '<option value="4">Hunter</option>' +
+                      '<option value="8">Rogue</option>' +
+                      '<option value="16">Priest</option>' +
+                      '<option value="64">Shaman</option>' +
+                      '<option value="128">Mage</option>' +
+                      '<option value="256">Warlock</option>' +
+                      '<option value="1024">Druid</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.RACE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Classes</label><select multiple id="cv1" class="form-control">' +
+                      '<option value="1">Human</option>' +
+                      '<option value="2">Orc</option>' +
+                      '<option value="4">Dwarf</option>' +
+                      '<option value="8">Night Elf</option>' +
+                      '<option value="16">Undead</option>' +
+                      '<option value="32">Tauren</option>' +
+                      '<option value="64">Gnome</option>' +
+                      '<option value="128">Troll</option>' +
+                      '<option value="512">Blood Elf</option>' +
+                      '<option value="1024">Draenei</option>' +
+                      '<option value="2048">Fel Orc</option>' +
+                      '<option value="4096">Naga</option>' +
+                      '<option value="8192">Broken</option>' +
+                      '<option value="16384">Skeleton</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.ACHIEVEMENT:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Achievement ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.TITLE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Title ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.SPAWNMASK:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Spawnmask from Creature or GO</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.GENDER:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Classes</label><select id="cv1" class="form-control">' +
+                      '<option value="0">Make</option>' +
+                      '<option value="1">Female</option>' +
+                      '<option value="2">None</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.UNIT_STATE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>UnitState</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.MAPID:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Map ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.AREAID:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Area ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.CREATURE_TYPE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Creature Type</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.SPELL:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Spell ID</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.PHASEMASK:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Value</label><input type="number" id="cv1" class="form-control"></div>');
+                  break;
+                case ConditionType.LEVEL:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Value</label><input type="number" min="1" max="70" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Option</label><select id="cv2" class="form-control">' +
+                      '<option value="0">Level must be equal</option>' +
+                      '<option value="1">Level must be higher</option>' +
+                      '<option value="2">Level must be lower</option>' +
+                      '<option value="3">Level must be higher or equal</option>' +
+                      '<option value="4">Level must be lower or equal</option>' +
+                      '</select></div>');
+                  break;
+                case ConditionType.NEAR_CREATURE:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>Creature ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Distance</label><input type="number" id="cv2" class="form-control"></div>');
+                  break;
+                case ConditionType.NEAR_GAMEOBJECT:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>GameObject ID</label><input type="number" id="cv1" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>Distance</label><input type="number" id="cv2" class="form-control"></div>');
+                  break;
+                case ConditionType.OBJECT_ENTRY_GUID:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>TypeID</label><select id="cv1" class="form-control">' +
+                      '<option value="3">TYPEID_UNIT</option>' +
+                      '<option value="4">TYPEID_PLAYER</option>' +
+                      '<option value="5">TYPEID_GAMEOBJECT</option>' +
+                      '<option value="7">TYPEID_CORPSE</option>' +
+                      '</select></div>' +
+                      '<div class="col-md-2"><label>Creature or GO ID</label><input type="number" id="cv2" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>0 = Any object of given type / 1-500k: creature/gameobject GUID</label><input type="number" id="cv2" class="form-control"></div>');
+                  break;
+                case ConditionType.TYPE_MASK:
+                  $('#condition-details')
+                    .html('<div class="col-md-2"><label>TypeMask</label><select multiple id="cv1" class="form-control">' +
+                      '<option value="8">TYPEMASK_UNIT</option>' +
+                      '<option value="16">TYPEMASK_PLAYER</option>' +
+                      '<option value="32">TYPEMASK_GAMEOBJECT</option>' +
+                      '<option value="128">TYPEMASK_CORPSE</option>' +
+                      '</select></div>' +
+                      '<div class="col-md-2"><label>Creature or GO ID</label><input type="number" id="cv2" class="form-control"></div>' +
+                      '<div class="col-md-2"><label>0 = Any object of given type / 1-500k: creature/gameobject GUID</label><input type="number" id="cv2" class="form-control"></div>');
+                  break;
+                default: $('#condition-details').html(''); return;
+              }
+            });
+        </script>
+    {% endblock %}

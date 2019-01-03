@@ -13,7 +13,7 @@
                         <div class="input-group-addon" id="name"></div>
                     </div>
                 </div>
-                <button class="go btn btn-primary">Go!</button>
+                <button id="goEntry" class="go btn btn-primary">Go!</button>
             </form>
             <hr>
             <h4>Find the creature by name</h4>
@@ -52,6 +52,10 @@
                     if($('#find-entry').is(":focus"))
                         window.location = ('{{ app.request.basepath }}/creature/entry/'+$('#find-entry').val());
                 }
+            });
+            $('#goEntry').click(function(e) {
+                e.preventDefault();
+                window.location = ('{{ app.request.basepath }}/creature/entry/'+$('#find-entry').val())
             });
             $('#find-name').change(function(){
                 $.ajax({

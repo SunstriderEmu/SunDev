@@ -31,32 +31,32 @@
                 <input id="mask" type="number" class="form-control" value="{{ flag }}" /><br />
             </div>
             <ul id="flag" class="col-md-3">
-                <li id="0">UNIT_NPC_FLAG_NONE</li>
-                <li id="1">UNIT_NPC_FLAG_GOSSIP</li>
-                <li id="2">UNIT_NPC_FLAG_QUESTGIVER</li>
+                <li class="0">UNIT_NPC_FLAG_NONE</li>
+                <li class="1">UNIT_NPC_FLAG_GOSSIP</li>
+                <li class="2">UNIT_NPC_FLAG_QUESTGIVER</li>
                 <!--<li id="4">UNIT_NPC_FLAG_UNK1</li>
                 <li id="8">UNIT_NPC_FLAG_UNK2</li>-->
-                <li id="16">UNIT_NPC_FLAG_TRAINER</li>
-                <li id="32">UNIT_NPC_FLAG_TRAINER_CLASS</li>
-                <li id="64">UNIT_NPC_FLAG_TRAINER_PROFESSION</li>
-                <li id="128">UNIT_NPC_FLAG_VENDOR</li>
-                <li id="256">UNIT_NPC_FLAG_VENDOR_AMMO</li>
-                <li id="512">UNIT_NPC_FLAG_VENDOR_FOOD</li>
-                <li id="1024">UNIT_NPC_FLAG_VENDOR_POISON</li>
-                <li id="2048">UNIT_NPC_FLAG_VENDOR_REAGENT</li>
-                <li id="4096">UNIT_NPC_FLAG_REPAIR</li>
-                <li id="8192">UNIT_NPC_FLAG_FLIGHTMASTER</li>
-                <li id="16384">UNIT_NPC_FLAG_SPIRITHEALER</li>
-                <li id="32768">UNIT_NPC_FLAG_SPIRITGUIDE</li>
-                <li id="65536">UNIT_NPC_FLAG_INNKEEPER</li>
-                <li id="131072">UNIT_NPC_FLAG_BANKER</li>
-                <li id="262144">UNIT_NPC_FLAG_PETITIONER</li>
-                <li id="524288">UNIT_NPC_FLAG_TABARDDESIGNER</li>
-                <li id="1048576">UNIT_NPC_FLAG_BATTLEMASTER</li>
-                <li id="2097152">UNIT_NPC_FLAG_AUCTIONEER</li>
-                <li id="4194304">UNIT_NPC_FLAG_STABLEMASTER</li>
-                <li id="8388608">UNIT_NPC_FLAG_GUILD_BANKER</li>
-                <li id="16777216">UNIT_NPC_FLAG_SPELLCLICK</li>
+                <li class="16">UNIT_NPC_FLAG_TRAINER</li>
+                <li class="32">UNIT_NPC_FLAG_TRAINER_CLASS</li>
+                <li class="64">UNIT_NPC_FLAG_TRAINER_PROFESSION</li>
+                <li class="128">UNIT_NPC_FLAG_VENDOR</li>
+                <li class="256">UNIT_NPC_FLAG_VENDOR_AMMO</li>
+                <li class="512">UNIT_NPC_FLAG_VENDOR_FOOD</li>
+                <li class="1024">UNIT_NPC_FLAG_VENDOR_POISON</li>
+                <li class="2048">UNIT_NPC_FLAG_VENDOR_REAGENT</li>
+                <li class="4096">UNIT_NPC_FLAG_REPAIR</li>
+                <li class="8192">UNIT_NPC_FLAG_FLIGHTMASTER</li>
+                <li class="16384">UNIT_NPC_FLAG_SPIRITHEALER</li>
+                <li class="32768">UNIT_NPC_FLAG_SPIRITGUIDE</li>
+                <li class="65536">UNIT_NPC_FLAG_INNKEEPER</li>
+                <li class="131072">UNIT_NPC_FLAG_BANKER</li>
+                <li class="262144">UNIT_NPC_FLAG_PETITIONER</li>
+                <li class="524288">UNIT_NPC_FLAG_TABARDDESIGNER</li>
+                <li class="1048576">UNIT_NPC_FLAG_BATTLEMASTER</li>
+                <li class="2097152">UNIT_NPC_FLAG_AUCTIONEER</li>
+                <li class="4194304">UNIT_NPC_FLAG_STABLEMASTER</li>
+                <li class="8388608">UNIT_NPC_FLAG_GUILD_BANKER</li>
+                <li class="16777216">UNIT_NPC_FLAG_SPELLCLICK</li>
             </ul>
             <ul class="col-md-3">
                 <li>None</li>
@@ -90,85 +90,21 @@
     {% endblock %}
     {% block script %}
         <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/flags.js"></script>
         <script type="text/javascript">
             var Info = { "entryorguid": {{ entry }}, "source_type": 20 };
 
             var Mask = $('#mask');
-            check(Mask.val());
+            var Ul = 'flag';
+            check(Ul,Mask.val());
 
             $('ul#flag > li').click(function() {
-                var Immunity = parseInt($(this).attr('id'));
-                var Immunities = parseInt(Mask.val());
-                if( $(this).hasClass('active')) {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').removeClass('active');
-                        Mask.val(0);
-                    } else {
-                        $(this).removeClass('active');
-                        $('ul#flag > li[id="2147483647"]').removeClass('active');
-                        Mask.val(Immunities - Immunity);
-                    }
-                } else {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').addClass('active');
-                        Mask.val(Immunity);
-                    } else {
-                        $(this).addClass('active');
-                        Mask.val(Immunities + Immunity);
-                    }
-                }
-                if(Mask.val() == 0) {
-                    $('ul#flag > li').removeClass('active');
-                } else {
-                    $('ul#flag > li[id="0"]').removeClass('active');
-                }
-
-                if(Mask.val() == 2147483647) {
-                    $('ul#flag > li').addClass('active');
-                }
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
             });
             Mask.bind("keyup change", function() {
                 var Binary = Hex(Mask.val());
-                check(Binary);
+                check(Ul,Binary);
             });
-
-            $('ul#flag > li[id="0"]').click(function(){
-                Mask.val(0);
-                check(Mask.val());
-            });
-
-            function check(Binary) {
-                if(Binary == 0) { $('ul#flag > li[id="0"]').addClass('active'); } else { $('ul#flag > li[id="0"]').removeClass('active'); }
-                if(Binary & 0x1) { $('ul#flag > li[id="1"]').addClass('active'); } else { $('ul#flag > li[id="1"]').removeClass('active'); }
-                if(Binary & 0x2) { $('ul#flag > li[id="2"]').addClass('active'); } else { $('ul#flag > li[id="2"]').removeClass('active'); }
-                if(Binary & 0x4) { $('ul#flag > li[id="4"]').addClass('active'); } else { $('ul#flag > li[id="4"]').removeClass('active'); }
-                if(Binary & 0x8) { $('ul#flag > li[id="8"]').addClass('active'); } else { $('ul#flag > li[id="8"]').removeClass('active'); }
-                if(Binary & 0x10) { $('ul#flag > li[id="16"]').addClass('active'); } else { $('ul#flag > li[id="16"]').removeClass('active'); }
-                if(Binary & 0x20) { $('ul#flag > li[id="32"]').addClass('active'); } else { $('ul#flag > li[id="32"]').removeClass('active'); }
-                if(Binary & 0x40) { $('ul#flag > li[id="64"]').addClass('active'); } else { $('ul#flag > li[id="64"]').removeClass('active'); }
-                if(Binary & 0x80) { $('ul#flag > li[id="128"]').addClass('active'); } else { $('ul#flag > li[id="128"]').removeClass('active'); }
-                if(Binary & 0x100) { $('ul#flag > li[id="256"]').addClass('active'); } else { $('ul#flag > li[id="256"]').removeClass('active'); }
-                if(Binary & 0x200) { $('ul#flag > li[id="512"]').addClass('active'); } else { $('ul#flag > li[id="512"]').removeClass('active'); }
-                if(Binary & 0x400) { $('ul#flag > li[id="1024"]').addClass('active'); } else { $('ul#flag > li[id="1024"]').removeClass('active'); }
-                if(Binary & 0x800) { $('ul#flag > li[id="2048"]').addClass('active'); } else { $('ul#flag > li[id="2048"]').removeClass('active'); }
-                if(Binary & 0x1000) { $('ul#flag > li[id="4096"]').addClass('active'); } else { $('ul#flag > li[id="4096"]').removeClass('active'); }
-                if(Binary & 0x2000) { $('ul#flag > li[id="8192"]').addClass('active'); } else { $('ul#flag > li[id="8192"]').removeClass('active'); }
-                if(Binary & 0x4000) { $('ul#flag > li[id="16384"]').addClass('active'); } else { $('ul#flag > li[id="16384"]').removeClass('active'); }
-                if(Binary & 0x8000) { $('ul#flag > li[id="32768"]').addClass('active'); } else { $('ul#flag > li[id="32768"]').removeClass('active'); }
-                if(Binary & 0x10000) { $('ul#flag > li[id="65536"]').addClass('active'); } else { $('ul#flag > li[id="65536"]').removeClass('active'); }
-                if(Binary & 0x20000) { $('ul#flag > li[id="131072"]').addClass('active'); } else { $('ul#flag > li[id="131072"]').removeClass('active'); }
-                if(Binary & 0x40000) { $('ul#flag > li[id="262144"]').addClass('active'); } else { $('ul#flag > li[id="262144"]').removeClass('active'); }
-                if(Binary & 0x80000) { $('ul#flag > li[id="524288"]').addClass('active'); } else { $('ul#flag > li[id="524288"]').removeClass('active'); }
-                if(Binary & 0x100000) { $('ul#flag > li[id="1048576"]').addClass('active'); } else { $('ul#flag > li[id="1048576"]').removeClass('active'); }
-                if(Binary & 0x200000) { $('ul#flag > li[id="2097152"]').addClass('active'); } else { $('ul#flag > li[id="2097152"]').removeClass('active'); }
-                if(Binary & 0x400000) { $('ul#flag > li[id="4194304"]').addClass('active'); } else { $('ul#flag > li[id="4194304"]').removeClass('active'); }
-                if(Binary & 0x800000) { $('ul#flag > li[id="8388608"]').addClass('active'); } else { $('ul#flag > li[id="8388608"]').removeClass('active'); }
-                if(Binary & 0x1000000) { $('ul#flag > li[id="16777216"]').addClass('active'); } else { $('ul#flag > li[id="16777216"]').removeClass('active'); }
-            }
-
-            function Hex(d) {
-                return "0x" + (+d).toString(16).toUpperCase();
-            }
 
             $('#apply').click(function () {
                 apply(Mask.val(), Info);

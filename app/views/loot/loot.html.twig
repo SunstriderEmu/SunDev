@@ -49,31 +49,27 @@
                         <th>GroupID</th>
                         <th>MinCount</th>
                         <th>MaxCount</th>
-                        <th>Condition</th>
-                        <th>Condition 1</th>
-                        <th>Condition 2</th>
+                        <th>LootMode</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in loot.items %}
                     <tr>
-                        <td>{{ item.item }}</td>
+                        <td>{{ item.Item }}</td>
                         <td>
-                            {% if item.ChanceOrQuestChance > 0 and item.mincountOrRef < 0 %}
-                            <a href="{{ app.request.basepath }}/loot/reference/{{ item.item }}">Reference Loot {{ item.item }}</a>
+                            {% if item.Chance > 0 and item.MinCount < 0 %}
+                            <a href="{{ app.request.basepath }}/loot/reference/{{ item.Item }}">Reference Loot {{ item.Item }}</a>
                             {% else %}
-                            <a href="http://wowhead.com/item={{ item.item }}">{{ item.item|getItemName }}</a>
+                            <a href="http://wowhead.com/item={{ item.Item }}">{{ item.Item|getItemName }}</a>
                             {% endif %}
                         </td>
-                        <td>{{ item.ChanceOrQuestChance }}</td>
-                        <td>{{ item.groupid }}</td>
-                        <td>{{ item.mincountOrRef }}</td>
-                        <td>{{ item.maxcount }}</td>
-                        <td>{{ item.lootcondition }}</td>
-                        <td>{{ item.condition_value1 }}</td>
-                        <td>{{ item.condition_value2 }}</td>
-                        <td><span class="glyphicon glyphicon-remove" onclick="removeItem({{ item.item }})"></span></td>
+                        <td>{{ item.Chance }}</td>
+                        <td>{{ item.GroupId }}</td>
+                        <td>{{ item.MinCount }}</td>
+                        <td>{{ item.MaxCount }}</td>
+                        <td>{{ item.LootMode }}</td>
+                        <td><span class="glyphicon glyphicon-remove" onclick="removeItem({{ item.Item }})"></span></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -146,37 +142,27 @@
             Table.on('change', 'td:nth-child(3)', function() {
                 var ID = $(this).closest('tr').find('td:first-child').text();
                 var Value = $(this).find('input').val();
-                Loot.items[ID].ChanceOrQuestChance = Value;
+                Loot.items[ID].Chance = Value;
             });
             Table.on('change', 'td:nth-child(4)', function() {
                 var ID = $(this).closest('tr').find('td:first-child').text();
                 var Value = $(this).find('input').val();
-                Loot.items[ID].groupid = Value;
+                Loot.items[ID].GroupId = Value;
             });
             Table.on('change', 'td:nth-child(5)', function() {
                 var ID = $(this).closest('tr').find('td:first-child').text();
                 var Value = $(this).find('input').val();
-                Loot.items[ID].mincountOrRef = Value;
+                Loot.items[ID].MinCount = Value;
             });
             Table.on('change', 'td:nth-child(6)', function() {
                 var ID = $(this).closest('tr').find('td:first-child').text();
                 var Value = $(this).find('input').val();
-                Loot.items[ID].maxcount = Value;
+                Loot.items[ID].MaxCount = Value;
             });
             Table.on('change', 'td:nth-child(7)', function() {
                 var ID = $(this).closest('tr').find('td:first-child').text();
                 var Value = $(this).find('input').val();
-                Loot.items[ID].lootcondition = Value;
-            });
-            Table.on('change', 'td:nth-child(8)', function() {
-                var ID = $(this).closest('tr').find('td:first-child').text();
-                var Value = $(this).find('input').val();
-                Loot.items[ID].condition_value1 = Value;
-            });
-            Table.on('change', 'td:nth-child(9)', function() {
-                var ID = $(this).closest('tr').find('td:first-child').text();
-                var Value = $(this).find('input').val();
-                Loot.items[ID].condition_value2 = Value;
+                Loot.items[ID].LootMode = Value;
             });
 
             function removeItem(id) {
@@ -188,8 +174,8 @@
                 console.log(Loot);
                 var Data = [];
                 $.each(Loot.items, function(key, value){
-                    if(this.ChanceOrQuestChance)
-                        Data.push([this.item, this.ChanceOrQuestChance, this.groupid, this.mincountOrRef, this.maxcount, this.lootcondition, this.condition_value1, this.condition_value2 ]);
+                    if(this.Chance)
+                        Data.push([this.Item, this.Chance, this.GroupId, this.MinCount, this.MaxCount, this.LootMode]);
                 });
                 return Data;
             }
@@ -209,13 +195,11 @@
                 var New = {
                     "entry": "{{ loot.id }}",
                     "item": "0",
-                    "ChanceOrQuestChance": "100",
-                    "groupid": "0",
-                    "mincountOrRef": "1",
-                    "maxcount": "1",
-                    "lootcondition": "0",
-                    "condition_value1": "0",
-                    "condition_value2": "0"
+                    "Chance": "100",
+                    "GroupId": "0",
+                    "MinCount": "1",
+                    "MaxCount": "1",
+                    "LootMode": "0",
                 };
                 Loot.items[0] = New;
                 $('<tr>' +

@@ -44,12 +44,14 @@ class CreatureDAO extends DAO
         $creature['melee']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000)) * (1 + $creature['BaseVariance']);
         $creature['melee']['minlevel']['avg']   = ($creature['melee']['minlevel']['min'] + $creature['melee']['minlevel']['max']) / 2 / ($creature['BaseAttackTime'] / 1000);
 
-        $creature['ranged']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
-        $creature['ranged']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
-        $creature['ranged']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
-        $creature['ranged']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
-        $creature['ranged']['minlevel']['avg']   = ($creature['ranged']['minlevel']['min'] + $creature['ranged']['minlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
-
+        if ($creature['RangeAttackTime']) {
+            $creature['ranged']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
+            $creature['ranged']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
+            $creature['ranged']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
+            $creature['ranged']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
+            $creature['ranged']['minlevel']['avg']   = ($creature['ranged']['minlevel']['min'] + $creature['ranged']['minlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
+        }
+        
         if($creature['minlevel'] != $creature['maxlevel']) {
             $creature['melee']['maxlevel']['base']  = $creature['DamageModifier'] * $maxStats[$base_damage];
             $creature['melee']['maxlevel']['ap']    = $creature['DamageModifier'] * ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000);
@@ -199,11 +201,11 @@ class CreatureDAO extends DAO
 	public function getTCGossipMenuSQL($tc_menu_id, &$requests, &$free_menu_id, &$sun_text_id)
 	{
 		//Get initial menu id
-		array_push($requests, "-- Menu ${free_menu_id}");
+		array_push($requests, "-- Menu {$free_menu_id}");
 		$result_gossip_menu = $this->getDb('trinity')->fetchAssoc('SELECT gm.MenuID, gm.TextID, gt.* FROM gossip_menu gm JOIN npc_text gt ON gm.TextID = gt.ID WHERE gm.MenuID = ?', array($tc_menu_id));
 		$text_id = $result_gossip_menu['TextID'];
-		if(sizeof($result_gossip_menu) == 0)
-			return "Menu ${tc_menu_id} exists but not found in gossip menu (or text ${text_id} not found)";
+		if(empty($result_gossip_menu))
+			return "Menu {$tc_menu_id} exists but not found in gossip menu (or text {$text_id} not found)";
 		//Create requests
 		$sun_text_id++;
 		array_push($requests, "DELETE FROM gossip_text WHERE ID = $sun_text_id;");
@@ -367,14 +369,13 @@ class CreatureDAO extends DAO
 	
 	public function getEquipment($entry)
 	{
-		$getInfos  = $this->getDb('test')->fetchAssoc('SELECT name, equipment_id FROM creature_template WHERE entry = ?', array(intval($entry)));
+		$getInfos  = $this->getDb('test')->fetchAssoc('SELECT name FROM creature_template WHERE entry = ?', array(intval($entry)));
 		$itemInfos = [
-			"name"          => $getInfos['name'],
-			"equipmentID"   => $getInfos['equipment_id'],
+			"name"          => $getInfos['name']
 		];
 
-		$getEquipment  = $this->getDb('test')->fetchAll('SELECT id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3 FROM creature_equip_template WHERE entry = ?', array($getInfos['equipment_id']));
-		foreach($getEquipment as $equipment) {
+		$getEquipment  = $this->getDb('test')->fetchAll('SELECT id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3 FROM creature_equip_template WHERE creatureID = ?', array(intval($entry)));
+        foreach($getEquipment as $equipment) {
 			$itemInfos['id'][$equipment['id']] = [
 				"mainhand"     => [
 					"displayid"     => $equipment['equipmodel1'],
@@ -392,7 +393,7 @@ class CreatureDAO extends DAO
 					"slot"          => $equipment['equipslot3']
 				]
 			];
-		}
+        }
 		return $itemInfos;
 	}
 }

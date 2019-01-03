@@ -1,0 +1,119 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ spell.spellName }}({{ spell.entry }}) - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .qflags ul > li {
+                display: block;
+                padding: 10px 15px;
+                margin-bottom: -1px;
+                border: 1px solid #dddddd;
+            }
+            .qflags ul > li:hover {
+                                      background: #f5f5f5;
+                                  }
+            .qflags .active {
+                color: #fff;
+                background: #337ab7!important;
+                border-color: #337ab7!important;
+            }
+            .well > .table {
+                margin-bottom: 0;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <div class="row">
+                <h2>{{ spell.spellName }}</h2>
+                <div class="well col-md-2" style="margin-right: 15px">
+                    <strong>INFORMATION</strong>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td><strong>Area</strong></td>
+                            <td>{{ spell.area }} - {{ area.name }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Aura</strong></td>
+                            <td>{{ spell.aura_spell }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 qflags">
+                    <h3>Quest Start</h3>
+                    <p>
+                        <a href="https://wowhead.com/quest={{ spell.quest_start }}">{{ spell.quest_start_name }}</a>
+                    </p>
+                    Mask:
+                    <input id="mask" type="number" class="form-control" value="{{ spell.quest_start_status }}" /><br />
+                    <div class="row">
+                        <ul id="flag" class="col-md-4">
+                            <li class="1">QUEST_STATUS_NONE</li>
+                            <li class="2">QUEST_STATUS_COMPLETE</li>
+                            <li class="4">QUEST_STATUS_UNAVAILABLE</li>
+                            <li class="8">QUEST_STATUS_INCOMPLETE</li>
+                            <li class="16">QUEST_STATUS_AVAILABLE</li>
+                            <li class="32">QUEST_STATUS_FAILED</li>
+                            <li class="64">QUEST_STATUS_REWARDED</li>
+                        </ul>
+                        <ul class="col-md-8">
+                            <li>Player does not have or had quest at all. He could accept it, but he did not (yet).</li>
+                            <li>Player fulfilled objectives, but did not hand it in yet.</li>
+                            <li>(Not used)</li>
+                            <li>Player did not fulfill objectives yet</li>
+                            <li>(Not used)</li>
+                            <li>Player failed to fulfill objectives for any reason, e.g. time limit</li>
+                            <li>Player handed quest in and this is sort of a post-quest interaction</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 qflags">
+                    <h3>Quest End</h3>
+                    <p>
+                        <a href="https://wowhead.com/quest={{ spell.quest_end }}">{{ spell.quest_end_name }}</a>
+                    </p>
+                    Mask:
+                    <input id="mask2" type="number" class="form-control" value="{{ spell.quest_end_status }}" /><br />
+                    <div class="row">
+                        <ul id="sflag" class="col-md-8">
+                            <li class="1">QUEST_STATUS_NONE</li>
+                            <li class="2">QUEST_STATUS_COMPLETE</li>
+                            <li class="4">QUEST_STATUS_UNAVAILABLE</li>
+                            <li class="8">QUEST_STATUS_INCOMPLETE</li>
+                            <li class="16">QUEST_STATUS_AVAILABLE</li>
+                            <li class="32">QUEST_STATUS_FAILED</li>
+                            <li class="64">QUEST_STATUS_REWARDED</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script src="{{ app.request.basepath }}/js/flags.js"></script>
+        <script>
+            var Mask = $('#mask');
+            var Mask2 = $('#mask2');
+            check('flag', Mask.val());
+            check('sflag', Mask2.val());
+
+            $('ul#flag > li').click(function() {
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
+            });
+            $('ul#sflag > li').click(function() {
+                refreshMask(this, Mask2, parseInt($(this).attr('class')), parseInt(Mask2.val()));
+            });
+
+            Mask.bind("keyup change", function() {
+                var Binary = Hex(Mask.val());
+                check('flag', Binary);
+            });
+            Mask2.bind("keyup change", function() {
+                var Binary = Hex(Mask2.val());
+                check('sflag', Binary);
+            });
+        </script>
+    {% endblock %}

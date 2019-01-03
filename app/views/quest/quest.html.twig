@@ -1,0 +1,186 @@
+{% extends "layout.html.twig" %}
+    {% block title %}{{ quest.Title }}({{ quest.entry }}) - {{ parent() }}{% endblock %}
+    {% block head %}
+        <style type="text/css">
+            .qflags ul > li {
+                display: block;
+                padding: 10px 15px;
+                margin-bottom: -1px;
+                border: 1px solid #dddddd;
+            }
+            .qflags ul#'+listId+' > li:hover {
+                background: #f5f5f5;
+            }
+            .qflags .active {
+                color: #fff;
+                background: #337ab7!important;
+                border-color: #337ab7!important;
+            }
+            .well > .table {
+                margin-bottom: 0;
+            }
+        </style>
+    {% endblock %}
+    {% block content %}
+        <div class="col-md-12">
+            <div class="row">
+                <h2>{{ quest.Title }}</h2>
+                <div class="well col-md-2" style="margin-right: 15px">
+                    <strong>INFORMATION</strong>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td><strong>Entry</strong></td>
+                            <td><a href="https://wowhead.com/quest={{ quest.entry }}">{{ quest.entry }}</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Min Level</strong></td>
+                            <td>{{ quest.MinLevel }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quest Level</strong></td>
+                            <td>{{ quest.QuestLevel }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Faction</strong></td>
+                            <td>{{ quest.RequiredRaces|getFaction }}</td>
+                        </tr>
+                        {% if quest.PrevQuestId != 0 %}
+                            <tr>
+                                <td><strong>Previous Quest</strong></td>
+                                <td><a href="https://wowhead.com/quest={{ quest.PrevQuestId }}">{{ quest.PrevQuestId }}</a></td>
+                            </tr>
+                        {% endif %}
+                        {% if quest.NextQuestId != 0 %}
+                            <tr>
+                                <td><strong>Next Quest</strong></td>
+                                <td><a href="https://wowhead.com/quest={{ quest.NextQuestId }}">{{ quest.NextQuestId }}</a></td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="well col-md-6">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a></li>
+                        <li role="presentation"><a href="#objectives" aria-controls="objectives" role="tab" data-toggle="tab">Objectives</a></li>
+                        <li role="presentation"><a href="#reward" aria-controls="reward" role="tab" data-toggle="tab">Reward</a></li>
+                        <li role="presentation"><a href="#request" aria-controls="request" role="tab" data-toggle="tab">Request</a></li>
+                        <li role="presentation"><a href="#end" aria-controls="end" role="tab" data-toggle="tab">End</a></li>
+                        <li role="presentation"><a href="#obj1" aria-controls="obj1" role="tab" data-toggle="tab">Obj1</a></li>
+                        <li role="presentation"><a href="#obj2" aria-controls="obj2" role="tab" data-toggle="tab">Obj2</a></li>
+                        <li role="presentation"><a href="#obj3" aria-controls="obj3" role="tab" data-toggle="tab">Obj3</a></li>
+                        <li role="presentation"><a href="#obj4" aria-controls="obj4" role="tab" data-toggle="tab">Obj4</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="details">
+                            {{ quest.Details }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="objectives">
+                            {{ quest.Objectives }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="reward">
+                            {{ quest.OfferRewardText }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="request">
+                            {{ quest.RequestItemsText }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="end">
+                            {{ quest.EndText }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="obj1">
+                            {{ quest.ObjectiveText1 }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="obj2">
+                            {{ quest.ObjectiveText2 }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="obj3">
+                            {{ quest.ObjectiveText3 }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="obj4">
+                            {{ quest.ObjectiveText4 }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 qflags">
+                    <h3>Flags</h3>
+                    Mask:
+                    <input id="mask" type="number" class="form-control" value="{{ quest.QuestFlags }}" /><br />
+                    <div class="row">
+                        <ul id="flag" class="col-md-4">
+                            <li class="1">QUEST_FLAGS_STAY_ALIVE</li>
+                            <li class="2">QUEST_FLAGS_PARTY_ACCEPT</li>
+                            <li class="4">QUEST_FLAGS_EXPLORATION</li>
+                            <li class="8">QUEST_FLAGS_SHARABLE</li>
+                            <li class="32">QUEST_FLAGS_EPIC</li>
+                            <li class="64">QUEST_FLAGS_RAID</li>
+                            <li class="128">QUEST_FLAGS_TBC</li>
+                            <li class="256">QUEST_FLAGS_UNK2</li>
+                            <li class="512">QUEST_FLAGS_HIDDEN_REWARDS</li>
+                            <li class="1024">QUEST_FLAGS_AUTO_REWARDED</li>
+                            <li class="2048">QUEST_FLAGS_TBC_RACES</li>
+                            <li class="4096">QUEST_FLAGS_DAILY</li>
+                        </ul>
+                        <ul class="col-md-8">
+                            <li>Not used currently</li>
+                            <li>If player in party, all players that can accept this quest will receive confirmation box to accept quest</li>
+                            <li>Not used currently</li>
+                            <li>Can be shared</li>
+                            <li>Not used currently</li>
+                            <li>Not used currently</li>
+                            <li>Not used currently</li>
+                            <li>Not used currently</li>
+                            <li>Items and money rewarded only sent in SMSG_QUESTGIVER_OFFER_REWARD</li>
+                            <li>These quests are automatically rewarded on quest complete and they will never appear in quest log client side.</li>
+                            <li>Not used currently: Blood elf/Draenei starting zone quests</li>
+                            <li>Used to know quest is Daily one</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 qflags">
+                    <h3>Special Flags</h3>
+                    Mask:
+                    <input id="mask2" type="number" class="form-control" value="{{ quest.SpecialFlags }}" /><br />
+                    <div class="row">
+                        <ul id="sflag" class="col-md-8">
+                            <li class="1">QUEST_TRINITY_FLAGS_REPEATABLE</li>
+                            <li class="2">QUEST_TRINITY_FLAGS_EXPLORATION_OR_EVENT</li>
+                        </ul>
+                        <ul class="col-md-4">
+                            <li>Repeatable</li>
+                            <li>If reequired area explore</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+    {% block script %}
+        <script src="{{ app.request.basepath }}/js/flags.js"></script>
+        <script>
+            var Mask = $('#mask');
+            var Mask2 = $('#mask2');
+            check('flag', Mask.val());
+            check('sflag', Mask2.val());
+
+            $('ul#flag > li').click(function() {
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
+            });
+            $('ul#sflag > li').click(function() {
+                refreshMask(this, Mask2, parseInt($(this).attr('class')), parseInt(Mask2.val()));
+            });
+
+            Mask.bind("keyup change", function() {
+                var Binary = Hex(Mask.val());
+                check('flag', Binary);
+            });
+            Mask2.bind("keyup change", function() {
+                var Binary = Hex(Mask2.val());
+                check('sflag', Binary);
+            });
+        </script>
+    {% endblock %}

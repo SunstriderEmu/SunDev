@@ -4,5 +4,4 @@
 /var/*
 /cache/*
 /vendor/*
-/composer.lock
 /composer.phar

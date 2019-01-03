@@ -104,6 +104,9 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 		// Spell
 		array('^/spell', 	'ROLE_SPELL'),
 
+		// Condition
+		array('^/condition', 'ROLE_CONDITION'),
+
 		// Quest
 		array('^/quest', 	array('ROLE_QUESTS_WRITE', 'ROLE_QUESTS_READ')),
 
@@ -208,6 +211,7 @@ if($app['debug'] == false) {
 require_once __DIR__.'/controllers/API.php';
 require_once __DIR__.'/controllers/AreaTrigger.php';
 require_once __DIR__.'/controllers/Creature.php';
+require_once __DIR__.'/controllers/Condition.php';
 require_once __DIR__.'/controllers/Home.php';
 require_once __DIR__.'/controllers/GameObject.php';
 require_once __DIR__.'/controllers/Item.php';
@@ -217,6 +221,7 @@ require_once __DIR__.'/controllers/Class.php';
 require_once __DIR__.'/controllers/Dungeon.php';
 require_once __DIR__.'/controllers/Loot.php';
 require_once __DIR__.'/controllers/Quest.php';
+require_once __DIR__.'/controllers/TestQuest.php';
 require_once __DIR__.'/controllers/Spell.php';
 require_once __DIR__.'/controllers/User.php';
 require_once __DIR__.'/controllers/Account.php';

@@ -292,19 +292,14 @@
             switch (Lines[id].event_type) {
                 case "0":
                     return "In Combat";
-                    break;
                 case "1":
                     return "Out of Combat";
-                    break;
                 case "2":
                     return "Between " + EventParam1 + "-" + EventParam2 + "% HP";
-                    break;
                 case "3":
                     return "Between " + EventParam1 + "-" + EventParam2 + "% MP";
-                    break;
                 case "4":
                     return "On Aggro";
-                    break;
                 case "5":
                     if (EventParam3 == "0" && EventParam4 > "0")
                         return "On '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam4) + "</a>' Killed";
@@ -313,58 +308,40 @@
                     else {
                         return "On Killed Unit";
                     }
-                    break;
                 case "6":
                     return "On Death";
-                    break;
                 case "7":
                     return "On Evade";
-                    break;
                 case "8":
                     return "On Spellhit '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    break;
                 case "9":
                     return "Within " + EventParam1 + "-" + EventParam2 + " Range";
-                    break;
                 case "10":
                     return "Within " + EventParam1 + "-" + EventParam2 + " Range OOC LoS";
-                    break;
                 case "11":
                     return "On Respawn";
-                    break;
                 case "12":
                     return "Target Between " + EventParam1 + "-" + EventParam2 + "% HP";
-                    break;
                 case "13":
                     return "On Victim Casting '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    break;
                 case "14":
                     return "On Friendly at '" + EventParam1 + "' HP";
-                    break;
                 case "15":
                     return "On Friendly CCed";
-                    break;
                 case "16":
                     return "On Friendly Missing Buff '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    break;
                 case "17":
                     return "On Summon '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>'";
-                    break;
                 case "18":
                     return "Target Between " + EventParam1 + "-" + EventParam2 + "% MP";
-                    break;
                 case "19":
                     return "On Quest '<a href='http://wowhead.com/quest=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Accepted";
-                    break;
                 case "20":
                     return "On Quest '<a href='http://wowhead.com/quest=" + EventParam1 + "'>" + getQuestName(EventParam1) + "</a>' Rewarded";
-                    break;
                 case "21":
                     return "On Reached Home";
-                    break;
                 case "22":
                     return "On Received Emote " + EventParam1;
-                    break;
                 case "23":
                     if (EventParam2 > "0")
                         return "On Has Aura '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
@@ -374,7 +351,6 @@
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
                     }
-                    break;
                 case "24":
                     if (EventParam2 > "0")
                         return "On Target Buffed With '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
@@ -384,115 +360,78 @@
                         alert("Error:\nLine " + id + ": 'Stacks' is negative.");
                         return "Error: Param2 is negative";
                     }
-                    break;
                 case "25":
                     return "On Reset";
-                    break;
                 case "26":
                     return "In Combat LoS";
-                    break;
                 case "27":
                     return "On Passenger Boarded";
-                    break;
                 case "28":
                     return "On Passenger Removed";
-                    break;
                 case "29":
                     return "On " + (EventParam1 == 1 ? "Remove " : "") + "Charmed";
-                    break;
                 case "30":
                     return "On Target Charmed";
-                    break;
                 case "31":
                     return "On Target Spellhit '<a href='http://wowhead.com/spell=" + EventParam1 + "'>" + getSpellName(EventParam1) + "</a>'";
-                    break;
                 case "32":
                     return "On Damaged Between " + EventParam1 + "-" + EventParam2;
-                    break;
                 case "33":
                     return "On Damaged Target Between " + EventParam1 + "-" + EventParam2;
-                    break;
                 case "34":
                     return "On Reached Point " + EventParam2;
-                    break;
                 case "35":
                     return "On Summoned '<a href='http://wowhead.com/npc=" + EventParam1 + "'>" + getCreatureName(EventParam1) + "</a>' Despawned";
-                    break;
                 case "36":
                     return "On Corpse Removed";
-                    break;
                 case "37":
                     return "On AI Initialize";
-                    break;
                 case "38":
                     return "On Data Set " + EventParam1 + " " + EventParam2;
-                    break;
                 case "39":
                     return "On Waypoint " + EventParam1 + " Started";
-                    break;
                 case "40":
                     return "On Waypoint " + EventParam1 + " Reached";
-                    break;
                 case "41":
                     return "On Transport Player Added";
-                    break;
                 case "42":
                     return "On Transport Creature Added";
-                    break;
                 case "43":
                     return "On Transport Remove Player";
-                    break;
                 case "44":
                     return "On Transport Relocate";
-                    break;
                 case "45":
                     return "On Instance Player Enter";
-                    break;
                 case "46":
                     return "On Trigger";
-                    break;
                 case "47":
                     return "On Quest Accepted";
-                    break;
                 case "48":
                     return "On Quest Objective Completed";
-                    break;
                 case "49":
                     return "On Quest Completed";
-                    break;
                 case "50":
                     return "On Quest Rewarded";
-                    break;
                 case "51":
                     return "On Quest Failed";
-                    break;
                 case "52":
                     return "On Text " + EventParam1 + " Over";
-                    break;
                 case "53":
                     return "On Received Heal Between " + EventParam1 + "-" + EventParam2;
-                    break;
                 case "54":
                     return "On Just Summoned";
-                    break;
                 case "55":
                     return "On Waypoint " + EventParam1 + " Paused";
-                    break;
                 case "56":
                     return "On Waypoint " + EventParam1 + " Resumed";
-                    break;
                 case "57":
                     return "On Waypoint " + EventParam1 + " Stopped";
-                    break;
                 case "58":
                     return "On Waypoint " + EventParam1 + " Ended";
-                    break;
                 case "59":
                     return "On Timed Event " + EventParam1 + " Triggered";
-                    break;
                 case "60":
                     return "On Update";
-                    break;
                 case "61":
                     if (Lines[id].link == Lines[id].id) {
                         alert('Error\nLine ' + Lines[id].id + ': if you link the line to itself, the line will never be triggered!');
@@ -503,58 +442,40 @@
                     if (Event == "")
                         return "MISSING LINK";
                     return generateEventComment(Event);
-                    break;
                 case "62":
                     return "On Gossip " + EventParam1 + (EventParam3 == 1 ? "" : " Option " + EventParam2) + " Selected";
-                    break;
                 case "63":
                     return "On Just Created";
-                    break;
                 case "64":
                     return "On Gossip Hello";
-                    break;
                 case "65":
                     return "On Follow Complete";
-                    break;
                 case "66":
                     return "On Dummy Effect";
-                    break;
                 case "67":
                     return "On Behind Target";
-                    break;
                 case "68":
                     return "On Game Event " + EventParam1 + " Started";
-                    break;
                 case "69":
                     return "On Game Event " + EventParam1 + " Ended";
-                    break;
                 case "70":
                     return "On GO State Changed";
-                    break;
                 case "71":
                     return "On Event " + EventParam1 + " Inform";
-                    break;
                 case "72":
                     return "On Action " + EventParam1 + " Done";
-                    break;
                 case "73":
                     return "On Spellclick";
-                    break;
                 case "74":
                     return "On Friendly Between " + EventParam1 + "-" + EventParam2 + "% HP";
-                    break;
                 case "75":
                     return "On " + EventParam3 + "m To " + getCreatureName(EventParam2);
-                    break;
                 case "76":
                     return "On " + EventParam3 + "m To " + getGOName(EventParam2);
-                    break;
                 case "77":
                     return "On Counter Set " + EventParam1;
-                    break;
                 case "100":
                     return "On Friendly Killed In " + EventParam1 + " Range";
-                    break;
                 case "101":
                     if (EventParam2 == "0")
                         return "On Victim Not In LoS";
@@ -564,13 +485,10 @@
                         alert("Error:\nLine " + id + ": 'Reverts' must be either 0 or 1.");
                         return "Error: Param2 is not 0 or 1.";
                     }
-                    break;
                 case "102":
                     return "On Victim Died";
-                    break;
                 case "103":
                     return "On Enter Phase " + EventParam1;
-                    break;
                 case "104":
                     var Comment = "On GO State Loot ";
                     var Binary = "0x" + Hex(EventParam1);
@@ -613,7 +531,6 @@
                     Comment = generateBitComment('On Affected By ', Comment, Binary, 0x20000000, 'Immune Shield');
                     Comment = generateBitComment('On Affected By ', Comment, Binary, 0x40000000, 'Sapped');
                     return replaceComma(Comment);
-                    break;
             }
         }
         function generateActionComment(id) {
@@ -715,7 +632,7 @@
                     }
                     break;
                 case "15":
-                    return "Quest Credit ''<a href='http://wowhead.com/quest" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
+                    return "Quest Credit ''<a href='http://wowhead.com/quest=" + ActionParam1 + "'>" + getQuestName(ActionParam1) + "</a>'";
                     break;
                 case "16":
                     return "Unused Action Type 16";
@@ -2075,7 +1992,7 @@
                         '   <option value="268435456">DISCOVERY</option>' +
                         '   <option value="536870912">IMMUNE_SHIELD</option>' +
                         '   <option value="1073741824">SAPPED</option>' +
-                        '</select>').appendTo(ActionParam2DIV);
+                        '</select>').appendTo(EventParam2DIV);
                     var NPCFlags = '#action_param2_val';
                     var Binary = "0x" + Hex(Lines[id].action_param2);
                     selectByte(NPCFlags, 0x0, Binary, 1);
@@ -2740,7 +2657,7 @@
                     $('<select class="form-control" id="action_param1_val">' +
                     '   <option value="0">Unarmed</option>' +
                     '   <option value="1">Melee</option>' +
-                    '   <option value="1">Ranged</option>' +
+                    '   <option value="2">Ranged</option>' +
                     '</select>').appendTo(ActionParam1DIV);
                     $('#action_param1_val').val(Lines[id].action_param1);
                     displayActionValDefault(2, id);
@@ -4072,7 +3989,7 @@
             var Data;
             $.ajax({
                 type: 'GET',
-                url: '/quest/' + id + '/name',
+                url: '/test/quest/' + id + '/name',
                 async: false,
                 dataType: 'text',
                 'success': function (data) {

@@ -129,10 +129,10 @@
                         <label for="select-movement" class="col-sm-4 control-label">Movement</label>
                         <div class="col-sm-8">
                             <select multiple id="select-movement" class="form-control" style="height: 64px;">
-                                <option value="1"{% if creature.movementType b-and 1 %} selected{% endif %}>Ground</option>
-                                <option value="2"{% if creature.movementType b-and 2 %} selected{% endif %}>Water</option>
-                                <option value="4"{% if creature.movementType b-and 4 %} selected{% endif %}>Flying</option>
-                                <option value="8"{% if creature.movementType b-and 8 %} selected{% endif %}>Rooted</option>
+                                <option value="1"{% if creature.MovementType b-and 1 %} selected{% endif %}>Ground</option>
+                                <option value="2"{% if creature.MovementType b-and 2 %} selected{% endif %}>Water</option>
+                                <option value="4"{% if creature.MovementType b-and 4 %} selected{% endif %}>Flying</option>
+                                <option value="8"{% if creature.MovementType b-and 8 %} selected{% endif %}>Rooted</option>
                             </select>
                         </div>
                     </div>
@@ -323,6 +323,7 @@
                                 <td id="damage-min-melee-max">{{ creature.melee.minlevel.max|number_format(1, '.', ',') }}</td>
                                 <td id="damage-min-melee-avg">{{ creature.melee.minlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% if creature.ranged is defined %}
                             <tr>
                                 <td>Ranged</td>
                                 <td id="damage-min-ranged-ap">{{ creature.ranged.minlevel.ap|number_format(1, '.', ',') }}</td>
@@ -330,6 +331,7 @@
                                 <td id="damage-min-ranged-max">{{ creature.ranged.minlevel.max|number_format(1, '.', ',') }}</td>
                                 <td id="damage-min-ranged-avg">{{ creature.ranged.minlevel.avg|number_format(1, '.', ',') }}</td>
                             </tr>
+                            {% endif %}
                             <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
                                 <td id="damage-max-level" rowspan="2" style="vertical-align: middle;"><strong>Lvl {{ creature.maxlevel }}</strong></td>
                                 <td>Melee</td>
@@ -339,6 +341,7 @@
                                 <td id="damage-max-melee-max">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.max|number_format(1, '.', ',') }}{% endif %}</td>
                                 <td id="damage-max-melee-avg">{% if creature.minlevel != creature.maxlevel %}{{ creature.melee.maxlevel.avg|number_format(1, '.', ',') }}{% endif %}</td>
                             </tr>
+                            {% if creature.ranged is defined %}
                             <tr class="max" {% if creature.minlevel == creature.maxlevel %}style="display: none;"{% endif %}>
                                 <td>Ranged</td>
                                 <td id="damage-max-ranged-ap">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.ap|number_format(1, '.', ',') }}{% endif %}</td>
@@ -346,6 +349,7 @@
                                 <td id="damage-max-ranged-max">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.max|number_format(1, '.', ',') }}{% endif %}</td>
                                 <td id="damage-max-ranged-avg">{% if creature.minlevel != creature.maxlevel %}{{ creature.ranged.maxlevel.avg|number_format(1, '.', ',') }}{% endif %}</td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -621,6 +625,7 @@
             }
 
             function generateData(Creature) {
+                console.log(Creature);
                 var Data = {
                     info: [ Creature.AIName.toString(), Creature.ScriptName.toString(), Creature.rank, Creature.type, Creature.family, Creature.mingold, Creature.maxgold ],
                     modifiers: [ Creature.exp, Creature.unit_class, Creature.minlevel, Creature.maxlevel, Creature.HealthModifier, Creature.ManaModifier, Creature.ArmorModifier, Creature.DamageModifier, Creature.BaseAttackTime, Creature.RangeAttackTime, Creature.BaseVariance, Creature.RangeVariance ],

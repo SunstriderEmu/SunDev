@@ -31,32 +31,32 @@
                 <input id="mask" type="number" class="form-control" value="{{ flag }}" /><br />
             </div>
             <ul id="flag" class="col-md-4">
-                <li id="0">CREATURE_TYPEFLAGS_NONE</li>
-                <li id="1">CREATURE_TYPEFLAGS_TAMEABLE</li>
-                <li id="2">CREATURE_TYPEFLAGS_GHOST</li>
-                <li id="4">CREATURE_TYPEFLAGS_BOSS</li>
-                <li id="8">CREATURE_TYPEFLAGS_DO_NOT_PLAY_WOUND_PARRY_ANIMATION</li>
-                <li id="16">CREATURE_TYPEFLAGS_HIDE_FACTION_TOOLTIP</li>
-                <li id="32">CREATURE_TYPEFLAGS_UNK6</li>
-                <li id="64">CREATURE_TYPEFLAGS_SPELL_ATTACKABLE</li>
-                <li id="128">CREATURE_TYPEFLAGS_DEAD_INTERACT</li>
-                <li id="256">CREATURE_TYPEFLAGS_HERBLOOT</li>
-                <li id="512">CREATURE_TYPEFLAGS_MININGLOOT</li>
-                <li id="1024">CREATURE_TYPEFLAGS_DONT_LOG_DEATH</li>
-                <li id="2048">CREATURE_TYPEFLAGS_MOUNTED_COMBAT</li>
-                <li id="4096">CREATURE_TYPEFLAGS_AID_PLAYERS</li>
-                <li id="8192">CREATURE_TYPEFLAGS_IS_PET_BAR_USED</li>
-                <li id="16384">CREATURE_TYPEFLAGS_MASK_UID</li>
-                <li id="32768">CREATURE_TYPEFLAGS_ENGINEERLOOT</li>
-                <li id="65536">CREATURE_TYPEFLAGS_EXOTIC</li>
-                <li id="131072">CREATURE_TYPEFLAGS_USE_DEFAULT_COLLISION_BOX</li>
-                <li id="262144">CREATURE_TYPEFLAGS_IS_SIEGE_WEAPON</li>
-                <li id="5242886">CREATURE_TYPEFLAGS_PROJECTILE_COLLISION</li>
-                <li id="1048576">CREATURE_TYPEFLAGS_HIDE_NAMEPLATE</li>
-                <li id="2097152">CREATURE_TYPEFLAGS_DO_NOT_PLAY_MOUNTED_ANIMATIONS</li>
-                <li id="4194304">CREATURE_TYPEFLAGS_IS_LINK_ALL</li>
-                <li id="8388608">CREATURE_TYPEFLAGS_INTERACT_ONLY_WITH_CREATOR</li>
-                <li id="134217728">CREATURE_TYPEFLAGS_FORCE_GOSSIP</li>
+                <li class="0">CREATURE_TYPEFLAGS_NONE</li>
+                <li class="1">CREATURE_TYPEFLAGS_TAMEABLE</li>
+                <li class="2">CREATURE_TYPEFLAGS_GHOST</li>
+                <li class="4">CREATURE_TYPEFLAGS_BOSS</li>
+                <li class="8">CREATURE_TYPEFLAGS_DO_NOT_PLAY_WOUND_PARRY_ANIMATION</li>
+                <li class="16">CREATURE_TYPEFLAGS_HIDE_FACTION_TOOLTIP</li>
+                <li class="32">CREATURE_TYPEFLAGS_UNK6</li>
+                <li class="64">CREATURE_TYPEFLAGS_SPELL_ATTACKABLE</li>
+                <li class="128">CREATURE_TYPEFLAGS_DEAD_INTERACT</li>
+                <li class="256">CREATURE_TYPEFLAGS_HERBLOOT</li>
+                <li class="512">CREATURE_TYPEFLAGS_MININGLOOT</li>
+                <li class="1024">CREATURE_TYPEFLAGS_DONT_LOG_DEATH</li>
+                <li class="2048">CREATURE_TYPEFLAGS_MOUNTED_COMBAT</li>
+                <li class="4096">CREATURE_TYPEFLAGS_AID_PLAYERS</li>
+                <li class="8192">CREATURE_TYPEFLAGS_IS_PET_BAR_USED</li>
+                <li class="16384">CREATURE_TYPEFLAGS_MASK_UID</li>
+                <li class="32768">CREATURE_TYPEFLAGS_ENGINEERLOOT</li>
+                <li class="65536">CREATURE_TYPEFLAGS_EXOTIC</li>
+                <li class="131072">CREATURE_TYPEFLAGS_USE_DEFAULT_COLLISION_BOX</li>
+                <li class="262144">CREATURE_TYPEFLAGS_IS_SIEGE_WEAPON</li>
+                <li class="5242886">CREATURE_TYPEFLAGS_PROJECTILE_COLLISION</li>
+                <li class="1048576">CREATURE_TYPEFLAGS_HIDE_NAMEPLATE</li>
+                <li class="2097152">CREATURE_TYPEFLAGS_DO_NOT_PLAY_MOUNTED_ANIMATIONS</li>
+                <li class="4194304">CREATURE_TYPEFLAGS_IS_LINK_ALL</li>
+                <li class="8388608">CREATURE_TYPEFLAGS_INTERACT_ONLY_WITH_CREATOR</li>
+                <li class="134217728">CREATURE_TYPEFLAGS_FORCE_GOSSIP</li>
             </ul>
             <ul class="col-md-5">
                 <li>None</li>
@@ -90,85 +90,21 @@
     {% endblock %}
     {% block script %}
         <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/flags.js"></script>
         <script type="text/javascript">
             var Info = { "entryorguid": {{ entry }}, "source_type": 24 };
 
             var Mask = $('#mask');
-            check(Mask.val());
+            var Ul = 'flag';
+            check(Ul,Mask.val());
 
             $('ul#flag > li').click(function() {
-                var Immunity = parseInt($(this).attr('id'));
-                var Immunities = parseInt(Mask.val());
-                if( $(this).hasClass('active')) {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').removeClass('active');
-                        Mask.val(0);
-                    } else {
-                        $(this).removeClass('active');
-                        $('ul#flag > li[id="2147483647"]').removeClass('active');
-                        Mask.val(Immunities - Immunity);
-                    }
-                } else {
-                    if(Immunity == 2147483647) {
-                        $('ul#flag > li').addClass('active');
-                        Mask.val(Immunity);
-                    } else {
-                        $(this).addClass('active');
-                        Mask.val(Immunities + Immunity);
-                    }
-                }
-                if(Mask.val() == 0) {
-                    $('ul#flag > li').removeClass('active');
-                } else {
-                    $('ul#flag > li[id="0"]').removeClass('active');
-                }
-
-                if(Mask.val() == 2147483647) {
-                    $('ul#flag > li').addClass('active');
-                }
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
             });
             Mask.bind("keyup change", function() {
                 var Binary = Hex(Mask.val());
-                check(Binary);
+                check(Ul,Binary);
             });
-
-            $('ul#flag > li[id="0"]').click(function(){
-                Mask.val(0);
-                check(Mask.val());
-            });
-
-            function check(Binary) {
-                if(Binary == 0) { $('ul#flag > li[id="0"]').addClass('active'); } else { $('ul#flag > li[id="0"]').removeClass('active'); }
-                if(Binary & 0x1) { $('ul#flag > li[id="1"]').addClass('active'); } else { $('ul#flag > li[id="1"]').removeClass('active'); }
-                if(Binary & 0x2) { $('ul#flag > li[id="2"]').addClass('active'); } else { $('ul#flag > li[id="2"]').removeClass('active'); }
-                if(Binary & 0x4) { $('ul#flag > li[id="4"]').addClass('active'); } else { $('ul#flag > li[id="4"]').removeClass('active'); }
-                if(Binary & 0x8) { $('ul#flag > li[id="8"]').addClass('active'); } else { $('ul#flag > li[id="8"]').removeClass('active'); }
-                if(Binary & 0x10) { $('ul#flag > li[id="16"]').addClass('active'); } else { $('ul#flag > li[id="16"]').removeClass('active'); }
-                if(Binary & 0x20) { $('ul#flag > li[id="32"]').addClass('active'); } else { $('ul#flag > li[id="32"]').removeClass('active'); }
-                if(Binary & 0x40) { $('ul#flag > li[id="64"]').addClass('active'); } else { $('ul#flag > li[id="64"]').removeClass('active'); }
-                if(Binary & 0x80) { $('ul#flag > li[id="128"]').addClass('active'); } else { $('ul#flag > li[id="128"]').removeClass('active'); }
-                if(Binary & 0x100) { $('ul#flag > li[id="256"]').addClass('active'); } else { $('ul#flag > li[id="256"]').removeClass('active'); }
-                if(Binary & 0x200) { $('ul#flag > li[id="512"]').addClass('active'); } else { $('ul#flag > li[id="512"]').removeClass('active'); }
-                if(Binary & 0x400) { $('ul#flag > li[id="1024"]').addClass('active'); } else { $('ul#flag > li[id="1024"]').removeClass('active'); }
-                if(Binary & 0x800) { $('ul#flag > li[id="2048"]').addClass('active'); } else { $('ul#flag > li[id="2048"]').removeClass('active'); }
-                if(Binary & 0x1000) { $('ul#flag > li[id="4096"]').addClass('active'); } else { $('ul#flag > li[id="4096"]').removeClass('active'); }
-                if(Binary & 0x2000) { $('ul#flag > li[id="8192"]').addClass('active'); } else { $('ul#flag > li[id="8192"]').removeClass('active'); }
-                if(Binary & 0x4000) { $('ul#flag > li[id="16384"]').addClass('active'); } else { $('ul#flag > li[id="16384"]').removeClass('active'); }
-                if(Binary & 0x8000) { $('ul#flag > li[id="32768"]').addClass('active'); } else { $('ul#flag > li[id="32768"]').removeClass('active'); }
-                if(Binary & 0x10000) { $('ul#flag > li[id="65536"]').addClass('active'); } else { $('ul#flag > li[id="65536"]').removeClass('active'); }
-                if(Binary & 0x20000) { $('ul#flag > li[id="131072"]').addClass('active'); } else { $('ul#flag > li[id="131072"]').removeClass('active'); }
-                if(Binary & 0x40000) { $('ul#flag > li[id="262144"]').addClass('active'); } else { $('ul#flag > li[id="262144"]').removeClass('active'); }
-                if(Binary & 0x80000) { $('ul#flag > li[id="524288"]').addClass('active'); } else { $('ul#flag > li[id="524288"]').removeClass('active'); }
-                if(Binary & 0x100000) { $('ul#flag > li[id="1048576"]').addClass('active'); } else { $('ul#flag > li[id="1048576"]').removeClass('active'); }
-                if(Binary & 0x200000) { $('ul#flag > li[id="2097152"]').addClass('active'); } else { $('ul#flag > li[id="2097152"]').removeClass('active'); }
-                if(Binary & 0x400000) { $('ul#flag > li[id="4194304"]').addClass('active'); } else { $('ul#flag > li[id="4194304"]').removeClass('active'); }
-                if(Binary & 0x800000) { $('ul#flag > li[id="8388608"]').addClass('active'); } else { $('ul#flag > li[id="8388608"]').removeClass('active'); }
-                if(Binary & 0x80000000) { $('ul#flag > li[id="134217728"]').addClass('active'); } else { $('ul#flag > li[id="134217728"]').removeClass('active'); }
-            }
-
-            function Hex(d) {
-                return "0x" + (+d).toString(16).toUpperCase();
-            }
 
             $('#apply').click(function () {
                 apply(Mask.val(), Info);

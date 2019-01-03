@@ -195,4 +195,14 @@ class QuestDAO extends DAO
 		$quest = $this->getDb('local')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
 		return $quest['Title'];
 	}
+
+	public function find($id)
+    {
+        return $this->getDb('local')->fetchAssoc('SELECT * FROM quest_template WHERE entry = ?', array($id));
+    }
+
+    public function search($name)
+    {
+        return $this->getDb('test')->fetchAll("SELECT entry, Title, RequiredRaces as race FROM quest_template WHERE Title LIKE ?", array("%{$name}%"));
+    }
 }

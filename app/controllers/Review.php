@@ -37,7 +37,7 @@ $app->post('/dev/apply', function(Request $request) use($app) {
 	$data['review']->user = $app['security.token_storage']->getToken()->getUser()->getId();
 	$app['dao.review']->createReview($data['review']);
 
-	return "Script applied on test";
+	return "\nScript applied on test";
 });
 
 

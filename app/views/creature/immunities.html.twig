@@ -30,43 +30,42 @@
                 Mask:
                 <input id="mask" type="number" class="form-control" value="{{ immunities }}" /><br />
                 <button id="cc" class="btn btn-primary">Crowd Control</button>
+                <button id="all" class="btn btn-primary">All</button>
             </div>
             <ul id="immunities" class="col-md-3">
-                <li id="2147483647">MECHANIC_ALL</li>
-                <li id="1">MECHANIC_CHARM</li>
-                <li id="2">MECHANIC_DISORIENTED</li>
-                <li id="4">MECHANIC_DISARM</li>
-                <li id="8">MECHANIC_DISTRACT</li>
-                <li id="16">MECHANIC_FEAR</li>
-                <li id="32">MECHANIC_GRIP</li>
-                <li id="64">MECHANIC_ROOT</li>
-                <li id="128">MECHANIC_PACIFY</li>
-                <li id="256">MECHANIC_SILENCE</li>
-                <li id="512">MECHANIC_SLEEP</li>
-                <li id="1024">MECHANIC_SNARE</li>
-                <li id="2048">MECHANIC_STUN</li>
-                <li id="4096">MECHANIC_FREEZE</li>
-                <li id="8192">MECHANIC_KNOCKOUT</li>
-                <li id="16384">MECHANIC_BLEED</li>
-                <li id="32768">MECHANIC_BANDAGE</li>
-                <li id="65536">MECHANIC_POLYMORPH</li>
-                <li id="131072">MECHANIC_BANISH</li>
-                <li id="262144">MECHANIC_SHIELD</li>
-                <li id="524288">MECHANIC_SHACKLE</li>
-                <li id="1048576">MECHANIC_MOUNT</li>
-                <li id="2097152">MECHANIC_INFECTED</li>
-                <li id="4194304">MECHANIC_TURN</li>
-                <li id="8388608">MECHANIC_HORROR</li>
-                <li id="16777216">MECHANIC_INVULNERABILITY</li>
-                <li id="33554432">MECHANIC_INTERRUPT</li>
-                <li id="67108864">MECHANIC_DAZE</li>
-                <li id="134217728">MECHANIC_DISCOVERY</li>
-                <li id="268435456">MECHANIC_IMMUNE_SHIELD</li>
-                <li id="536870912">MECHANIC_SAPPED</li>
-                <li id="1073741824">MECHANIC_ENRAGED</li>
+                <li class="1">MECHANIC_CHARM</li>
+                <li class="2">MECHANIC_DISORIENTED</li>
+                <li class="4">MECHANIC_DISARM</li>
+                <li class="8">MECHANIC_DISTRACT</li>
+                <li class="16">MECHANIC_FEAR</li>
+                <li class="32">MECHANIC_GRIP</li>
+                <li class="64">MECHANIC_ROOT</li>
+                <li class="128">MECHANIC_PACIFY</li>
+                <li class="256">MECHANIC_SILENCE</li>
+                <li class="512">MECHANIC_SLEEP</li>
+                <li class="1024">MECHANIC_SNARE</li>
+                <li class="2048">MECHANIC_STUN</li>
+                <li class="4096">MECHANIC_FREEZE</li>
+                <li class="8192">MECHANIC_KNOCKOUT</li>
+                <li class="16384">MECHANIC_BLEED</li>
+                <li class="32768">MECHANIC_BANDAGE</li>
+                <li class="65536">MECHANIC_POLYMORPH</li>
+                <li class="131072">MECHANIC_BANISH</li>
+                <li class="262144">MECHANIC_SHIELD</li>
+                <li class="524288">MECHANIC_SHACKLE</li>
+                <li class="1048576">MECHANIC_MOUNT</li>
+                <li class="2097152">MECHANIC_INFECTED</li>
+                <li class="4194304">MECHANIC_TURN</li>
+                <li class="8388608">MECHANIC_HORROR</li>
+                <li class="16777216">MECHANIC_INVULNERABILITY</li>
+                <li class="33554432">MECHANIC_INTERRUPT</li>
+                <li class="67108864">MECHANIC_DAZE</li>
+                <li class="134217728">MECHANIC_DISCOVERY</li>
+                <li class="268435456">MECHANIC_IMMUNE_SHIELD</li>
+                <li class="536870912">MECHANIC_SAPPED</li>
+                <li class="1073741824">MECHANIC_ENRAGED</li>
             </ul>
             <ul class="col-md-3">
-                <li>All</li>
                 <li>Charmed</li>
                 <li>Disoriented</li>
                 <li>Disarmed</li>
@@ -103,88 +102,36 @@
     {% endblock %}
     {% block script %}
         <script type="text/javascript" src="{{ app.request.basepath }}/js/dev.js"></script>
+        <script type="text/javascript" src="{{ app.request.basepath }}/js/flags.js"></script>
         <script type="text/javascript">
             var Info = { "entryorguid": {{ entry }}, "source_type": 26 };
 
             var Mask = $('#mask');
-            check(Mask.val());
+            check('immunities',Mask.val());
 
             $('ul#immunities > li').click(function() {
-                var Immunity = parseInt($(this).attr('id'));
-                var Immunities = parseInt(Mask.val());
-                if( $(this).hasClass('active')) {
-                    if(Immunity == 2147483647) {
-                        $('ul#immunities > li').removeClass('active');
-                        Mask.val(0);
-                    } else {
-                        $(this).removeClass('active');
-                        $('ul#immunities > li[id="2147483647"]').removeClass('active');
-                        Mask.val(Immunities - Immunity);
-                    }
-                } else {
-                    if(Immunity == 2147483647) {
-                        $('ul#immunities > li').addClass('active');
-                        Mask.val(Immunity);
-                    } else {
-                        $(this).addClass('active');
-                        Mask.val(Immunities + Immunity);
-                    }
-                }
-                if(Mask.val() == 0) {
-                    $('ul#immunities > li').removeClass('active');
-                }
-                if(Mask.val() == 2147483647) {
-                    $('ul#immunities > li').addClass('active');
-                }
+                refreshMask(this, Mask, parseInt($(this).attr('class')), parseInt(Mask.val()));
             });
             Mask.bind("keyup change", function() {
                 var Binary = Hex(Mask.val());
-                check(Binary);
+                check('immunities',Binary);
             });
 
             $('#cc').click(function(){
-                Mask.val(617299807);
-                check(Mask.val());
+                if(Mask.val() == 617299807)
+                    Mask.val(0);
+                else
+                    Mask.val(617299807);
+                check('immunities',Mask.val());
             });
 
-            function check(Binary) {
-                if(Binary & 0x1) { $('ul#immunities > li[id="1"]').addClass('active'); } else { $('ul#immunities > li[id="1"]').removeClass('active'); }
-                if(Binary & 0x2) { $('ul#immunities > li[id="2"]').addClass('active'); } else { $('ul#immunities > li[id="2"]').removeClass('active'); }
-                if(Binary & 0x4) { $('ul#immunities > li[id="4"]').addClass('active'); } else { $('ul#immunities > li[id="4"]').removeClass('active'); }
-                if(Binary & 0x8) { $('ul#immunities > li[id="8"]').addClass('active'); } else { $('ul#immunities > li[id="8"]').removeClass('active'); }
-                if(Binary & 0x10) { $('ul#immunities > li[id="16"]').addClass('active'); } else { $('ul#immunities > li[id="16"]').removeClass('active'); }
-                if(Binary & 0x20) { $('ul#immunities > li[id="32"]').addClass('active'); } else { $('ul#immunities > li[id="32"]').removeClass('active'); }
-                if(Binary & 0x40) { $('ul#immunities > li[id="64"]').addClass('active'); } else { $('ul#immunities > li[id="64"]').removeClass('active'); }
-                if(Binary & 0x80) { $('ul#immunities > li[id="128"]').addClass('active'); } else { $('ul#immunities > li[id="128"]').removeClass('active'); }
-                if(Binary & 0x100) { $('ul#immunities > li[id="256"]').addClass('active'); } else { $('ul#immunities > li[id="256"]').removeClass('active'); }
-                if(Binary & 0x200) { $('ul#immunities > li[id="512"]').addClass('active'); } else { $('ul#immunities > li[id="512"]').removeClass('active'); }
-                if(Binary & 0x400) { $('ul#immunities > li[id="1024"]').addClass('active'); } else { $('ul#immunities > li[id="1024"]').removeClass('active'); }
-                if(Binary & 0x800) { $('ul#immunities > li[id="2048"]').addClass('active'); } else { $('ul#immunities > li[id="2048"]').removeClass('active'); }
-                if(Binary & 0x1000) { $('ul#immunities > li[id="4096"]').addClass('active'); } else { $('ul#immunities > li[id="4096"]').removeClass('active'); }
-                if(Binary & 0x2000) { $('ul#immunities > li[id="8192"]').addClass('active'); } else { $('ul#immunities > li[id="8192"]').removeClass('active'); }
-                if(Binary & 0x4000) { $('ul#immunities > li[id="16384"]').addClass('active'); } else { $('ul#immunities > li[id="16384"]').removeClass('active'); }
-                if(Binary & 0x8000) { $('ul#immunities > li[id="32768"]').addClass('active'); } else { $('ul#immunities > li[id="32768"]').removeClass('active'); }
-                if(Binary & 0x10000) { $('ul#immunities > li[id="65536"]').addClass('active'); } else { $('ul#immunities > li[id="65536"]').removeClass('active'); }
-                if(Binary & 0x20000) { $('ul#immunities > li[id="131072"]').addClass('active'); } else { $('ul#immunities > li[id="131072"]').removeClass('active'); }
-                if(Binary & 0x40000) { $('ul#immunities > li[id="262144"]').addClass('active'); } else { $('ul#immunities > li[id="262144"]').removeClass('active'); }
-                if(Binary & 0x80000) { $('ul#immunities > li[id="524288"]').addClass('active'); } else { $('ul#immunities > li[id="524288"]').removeClass('active'); }
-                if(Binary & 0x100000) { $('ul#immunities > li[id="1048576"]').addClass('active'); } else { $('ul#immunities > li[id="1048576"]').removeClass('active'); }
-                if(Binary & 0x200000) { $('ul#immunities > li[id="2097152"]').addClass('active'); } else { $('ul#immunities > li[id="2097152"]').removeClass('active'); }
-                if(Binary & 0x400000) { $('ul#immunities > li[id="4194304"]').addClass('active'); } else { $('ul#immunities > li[id="4194304"]').removeClass('active'); }
-                if(Binary & 0x800000) { $('ul#immunities > li[id="8388608"]').addClass('active'); } else { $('ul#immunities > li[id="8388608"]').removeClass('active'); }
-                if(Binary & 0x1000000) { $('ul#immunities > li[id="16777216"]').addClass('active'); } else { $('ul#immunities > li[id="16777216"]').removeClass('active'); }
-                if(Binary & 0x2000000) { $('ul#immunities > li[id="33554432"]').addClass('active'); } else { $('ul#immunities > li[id="33554432"]').removeClass('active'); }
-                if(Binary & 0x4000000) { $('ul#immunities > li[id="67108864"]').addClass('active'); } else { $('ul#immunities > li[id="67108864"]').removeClass('active'); }
-                if(Binary & 0x8000000) { $('ul#immunities > li[id="134217728"]').addClass('active'); } else { $('ul#immunities > li[id="134217728"]').removeClass('active'); }
-                if(Binary & 0x10000000) { $('ul#immunities > li[id="268435456"]').addClass('active'); } else { $('ul#immunities > li[id="268435456"]').removeClass('active'); }
-                if(Binary & 0x20000000) { $('ul#immunities > li[id="536870912"]').addClass('active'); } else { $('ul#immunities > li[id="536870912"]').removeClass('active'); }
-                if(Binary & 0x40000000) { $('ul#immunities > li[id="1073741824"]').addClass('active'); } else { $('ul#immunities > li[id="1073741824"]').removeClass('active'); }
-                if(Binary & 0x7FFFFFFF && Mask.val() == 2147483647) { $('ul#immunities > li[id="2147483647"]').addClass('active'); } else { $('ul#immunities > li[id="2147483647"]').removeClass('active'); }
-            }
-
-            function Hex(d) {
-                return "0x" + (+d).toString(16).toUpperCase();
-            }
+            $('#all').click(function(){
+                if(Mask.val() == 2147483647)
+                    Mask.val(0);
+                else
+                    Mask.val(2147483647);
+                check('immunities',Mask.val());
+            });
 
             $('#apply').click(function () {
                apply(Mask.val(), Info);

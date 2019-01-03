@@ -45,7 +45,6 @@ class DAO
                 case 1: // GO
                 case 2: // AreaTrigger
                 case 9: // Script
-                    $export = "\n";
                     switch($data['review']->source_type)
                     {
                         case 0:
@@ -53,11 +52,10 @@ class DAO
                             {
                                 $export .= "-- NPC {$data['review']->entryorguid}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE creature_template SET AIName='SmartAI', ScriptName='' WHERE entry = @ENTRY;\n";
                                 $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array(intval($data['review']->entryorguid)));
-
                             }
                             else
                             {
-                                $entry = $this->getDb($db)->fetchAssoc('SELECT id FROM creature WHERE guid = ?;', array(abs($data['review']->entryorguid)));
+                                $entry = $this->getDb($db)->fetchAssoc('SELECT entry as id FROM creature_entry WHERE spawnID = ?;', array(abs($data['review']->entryorguid)));
                                 $export .= "-- GUID {$data['review']->entryorguid} - ENTRY {$entry['id']}\nSET @ENTRY = {$data['review']->entryorguid};\nUPDATE creature_template SET AIName='SmartAI', ScriptName='' WHERE entry = {$entry['id']};";
                                 $this->getDb($db)->executeQuery('UPDATE creature_template SET AIName="SmartAI", ScriptName="" WHERE entry = ?;', array($entry['id']));
                             }
@@ -104,7 +102,7 @@ class DAO
                                               exp = ?, unit_class = ?, minlevel = ?, maxlevel = ?, HealthModifier = ?, ManaModifier = ?, ArmorModifier = ?, DamageModifier = ?, BaseAttackTime = ?, RangeAttackTime = ?, BaseVariance = ?, RangeVariance = ?,
                                               resistance1 = ?, resistance2 = ?, resistance3 = ?, resistance4 = ?, resistance5 = ?, resistance6 = ?
                                               WHERE entry = ?",
-                        array($data['script']->info[0], $data['script']->info[1], $data['script']->info[2], $data['script']->info[3], $data['script']->info[4], $data['script']->info[6], $data['script']->info[7],
+                        array($data['script']->info[0], $data['script']->info[1], $data['script']->info[2], $data['script']->info[3], $data['script']->info[4], $data['script']->info[5], $data['script']->info[6],
                             $data['script']->modifiers[0], $data['script']->modifiers[1], $data['script']->modifiers[2], $data['script']->modifiers[3], $data['script']->modifiers[4], $data['script']->modifiers[5], $data['script']->modifiers[6], $data['script']->modifiers[7], $data['script']->modifiers[8], $data['script']->modifiers[9], $data['script']->modifiers[10], $data['script']->modifiers[11],
                             $data['script']->resistance[0], $data['script']->resistance[1], $data['script']->resistance[2], $data['script']->resistance[3], $data['script']->resistance[4], $data['script']->resistance[5],
                             intval($data['review']->entryorguid)));
@@ -113,13 +111,13 @@ class DAO
 					if($data['review']->info1 == '0') {
 						$newEntry = $this->getDb($db)->fetchAssoc('SELECT (MAX(entry) + 1) as entry FROM creature_equip_template');
 						$data['review']->info1 = $newEntry['entry'];
-					}
-                    $this->getDb($db)->executeQuery("UPDATE creature_template SET equipment_id = ? WHERE entry = ?", array(intval($data['review']->info1), intval($data['review']->entryorguid)));
-                    $this->getDb($db)->executeQuery("DELETE FROM creature_equip_template WHERE entry = ?", array(intval($data['review']->info1)));
-                    $insert = "INSERT IGNORE INTO creature_equip_template (entry, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES ";
+                    }
+                    $this->getDb($db)->executeQuery("DELETE FROM creature_equip_template WHERE creatureID = ?", array(intval($data['review']->entryorguid)));
+                    $insert = "INSERT INTO creature_equip_template (creatureID, id, equipmodel1, equipmodel2, equipmodel3, equipinfo1, equipinfo2, equipinfo3, equipslot1, equipslot2, equipslot3) VALUES";
                     foreach($data['script'] as $line)
-                        $insert .= "({$data['review']->info1}, {$line[0]}, {$line[1]}, {$line[2]}, {$line[3]}, {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, {$line[9]}),";
-                    $insert = rtrim($insert, ',');
+                        $insert .= "\n({$data['review']->entryorguid}, {$line[0]}, {$line[1]}, {$line[2]}, {$line[3]}, {$line[4]}, {$line[5]}, {$line[6]}, {$line[7]}, {$line[8]}, {$line[9]}),";
+                    $insert = rtrim($insert, ',') . ';';
+                    echo $insert;
                     $this->getDb($db)->executeQuery($insert);
                     break;
                 case 12: // Text

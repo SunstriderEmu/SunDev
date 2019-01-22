@@ -14,14 +14,14 @@ SunDev is developed with the micro-framework Silex.
     - world: your live world
     - test_world: your ptr world (can be the same as world)
 - Create and edit `app/config.php` from `app/config.sample.php`
-- Edit your host file so that `dev.sunstrider.com` points to your server. For example:   
+- Edit your host file so that `dev.sunstrider.com.test` points to your server. For example:   
         `127.0.0.1 dev.sunstrider.com`
 - Create a virtual host in your web server config.
     Example of Apache config:
 
-        <VirtualHost dev.sunstrider.com:80>
+        <VirtualHost dev.sunstrider.com.test:80>
             DocumentRoot "D:/htdocs/SunDev/web"
-            ServerName dev.sunstrider.com
+            ServerName dev.sunstrider.com.test
         </VirtualHost>
         
     Example of Nginx config  
@@ -29,7 +29,7 @@ SunDev is developed with the micro-framework Silex.
         server {
             listen        127.0.0.1:80;
 
-            server_name     dev.sunstrider.com;
+            server_name     dev.sunstrider.com.test;
             root        "e:/web/www/dev.sunstrider.com/web";
 
 
@@ -52,7 +52,7 @@ SunDev is developed with the micro-framework Silex.
 
 # Usage
 ## Access
-Just go into the address you put into your host file, such as `dev.sunstrider.com`  
+Just go into the address you put into your host file, such as `dev.sunstrider.com.test`  
 The following admin user is already created in the database (user:password):
     - admin:admin
 

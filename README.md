@@ -29,7 +29,7 @@ SunDev is developed with the micro-framework Silex.
         server {
             listen        127.0.0.1:80;
 
-            server_name     dev.sunstrider.com.test;
+            server_name     dev.sunstrider.com;
             root        "e:/web/www/dev.sunstrider.com/web";
 
 

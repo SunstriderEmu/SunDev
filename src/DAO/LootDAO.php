@@ -10,7 +10,7 @@ class LootDAO extends DAO {
 		$loots = $this->getDb('test')->fetchAll('SELECT * FROM creature_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 		$creatures = $this->getDb('test')->fetchAll('SELECT entry, name FROM creature_template WHERE lootid = ? GROUP BY entry', array(intval($id)));
 
@@ -27,7 +27,7 @@ class LootDAO extends DAO {
 		$loots = $this->getDb('test')->fetchAll('SELECT * FROM disenchant_loot_template WHERE entry = ?', array(intval($id)));
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 		return [
 			"id"		=> $id,
@@ -41,7 +41,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -56,7 +56,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -71,7 +71,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -86,7 +86,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -101,7 +101,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -116,7 +116,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [
@@ -131,10 +131,10 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
-		$lootId = $this->getDb('test')->fetchAll('SELECT entry, COUNT(*) as count FROM creature_loot_template WHERE item = ? AND mincountOrRef < 0 and ChanceOrQuestChance > 0', array(intval($id)));
+		$lootId = $this->getDb('test')->fetchAll('SELECT entry, COUNT(*) as count FROM creature_loot_template WHERE item = ? AND MinCount < 0 and Chance > 0', array(intval($id)));
 		$entries = [];
 		foreach($lootId as $creature) {
 			$entries[] = $creature['entry'];
@@ -168,7 +168,7 @@ class LootDAO extends DAO {
 
 		$items= [];
 		foreach($loots as $item) {
-			$items[$item['item']] = $item;
+			$items[$item['Item']] = $item;
 		}
 
 		return [

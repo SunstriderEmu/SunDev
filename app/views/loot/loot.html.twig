@@ -58,7 +58,7 @@
                     <tr>
                         <td>{{ item.Item }}</td>
                         <td>
-                            {% if item.Chance > 0 and item.MinCount < 0 %}
+                            {% if item.Reference > 0 %}
                             <a href="{{ app.request.basepath }}/loot/reference/{{ item.Item }}">Reference Loot {{ item.Item }}</a>
                             {% else %}
                             <a href="http://wowhead.com/item={{ item.Item }}">{{ item.Item|getItemName }}</a>

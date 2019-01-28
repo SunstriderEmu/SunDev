@@ -1318,7 +1318,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (130,	'ACTION_SCENE_CANCEL (unused)',	NULL, NULL,	NULL, NULL,	NULL,	NULL,	NULL),
 (131,	'ACTION_SPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
 (132,	'ACTION_DESPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
-(133,	'ACTION_DESPAWN_SPAWNGROUP',	'spawnType', 'min spawnId',	NULL, NULL,	NULL,	NULL,	NULL),
+(133,	'ACTION_RESPAWN_BY_SPAWNID',	'spawnType', 'min spawnId',	NULL, NULL,	NULL,	NULL,	NULL),
 (134,	'ACTION_INVOKER_CAST',	'Spell ID',	'Cast Flags',	NULL,	NULL,	NULL,	NULL,	NULL),
 
 (150,	'ACTION_SET_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),

@@ -139,7 +139,8 @@ class DAO
                     $insert = rtrim($insert, ',');
                     $insertLocale = rtrim($insertLocale, ',');
                     $this->getDb($db)->executeQuery($insert);
-                    $this->getDb($db)->executeQuery($insertLocale);
+                    if ($line[3] != '')
+                        $this->getDb($db)->executeQuery($insertLocale);
                     echo $export.";\n";
                     break;
                 case 13: // Gossip

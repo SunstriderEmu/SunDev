@@ -1442,7 +1442,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (102,	'EVENT_ATTACKED_UNIT_DIED',	NULL,	NULL,	NULL,	NULL,	NULL),
   (103,	'EVENT_ENTER_PHASE',	'Phase',	NULL,	NULL,	NULL,	NULL),
   (104,	'EVENT_GO_LOOT_STATE_CHANGED',	'Loot state',	NULL,	NULL,	NULL,	NULL),
-  (105,	'EVENT_AFFECTED_BY_MECHANIC',	'Timer',	'Mechanic',	NULL,	NULL,	NULL);
+  (105,	'EVENT_AFFECTED_BY_MECHANIC',	'Timer',	'Mechanic',	NULL,	NULL,	NULL),
   (106,	'SMART_EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------

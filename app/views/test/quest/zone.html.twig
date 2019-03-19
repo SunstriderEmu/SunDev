@@ -164,10 +164,10 @@
                         {% endif %}
                     </td>
                     <td class="border testing">
-                        <div class="testeur" id="{{ quest.entry }}_test1" status="{% if quest.tester == 1 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 1)' title="Mikelus">M</div>
-                        <div class="testeur" id="{{ quest.entry }}_test2" status="{% if quest.tester == 2 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 2)' title="Potestas">P</div>
-                        <div class="testeur" id="{{ quest.entry }}_test4" status="{% if quest.tester == 4 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 4)' title="Vanquish">V</div>
-                        <div class="testeur" id="{{ quest.entry }}_test3" status="{% if quest.tester == 3 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 3)' title="Yukka">Y</div>
+                        <div class="testeur" id="{{ quest.entry }}_test1" status="{% if quest.tester == 1 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 1)' title="tester1">1</div>
+                        <div class="testeur" id="{{ quest.entry }}_test2" status="{% if quest.tester == 2 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 2)' title="tester2">2</div>
+                        <div class="testeur" id="{{ quest.entry }}_test3" status="{% if quest.tester == 3 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 3)' title="tester3">3</div>
+                        <div class="testeur" id="{{ quest.entry }}_test4" status="{% if quest.tester == 4 %}1{% else %}0{% endif %}" onclick='setTester({{ quest.entry }}, 4)' title="tester4">4</div>
                     </td>
                     <td status="{% if quest.startTxt != null %}{{ quest.startTxt }}{% else %}0{% endif %}" id="{{ quest.entry }}_1" onclick='testQuest({{ quest.entry }}, 1)' class="test"></td>
                     <td status="{% if quest.progTxt != null %}{{ quest.progTxt }}{% else %}0{% endif %}" id="{{ quest.entry }}_2" onclick='testQuest({{ quest.entry }}, 2)' class="test"></td>

@@ -525,9 +525,9 @@
                             };
 
                             if(SelectExp.val() == 0)
-                                Stats.min.damage = parseFloat(data.damage_base);
+                                Stats.min.damage = parseFloat(data.damage_base) * 2;
                             else
-                                Stats.min.damage = parseFloat(data['damage_exp'+SelectExp.val()]);
+                                Stats.min.damage = parseFloat(data['damage_exp'+SelectExp.val()]) * 2;
                         }
                         else {
                             Stats.max = {
@@ -541,9 +541,9 @@
                             };
 
                             if(SelectExp.val() == 0)
-                                Stats.max.damage = parseFloat(data.damage_base);
+                                Stats.max.damage = parseFloat(data.damage_base) * 2;
                             else
-                                Stats.max.damage = parseFloat(data['damage_exp'+SelectExp.val()]);
+                                Stats.max.damage = parseFloat(data['damage_exp'+SelectExp.val()]) * 2;
                         }
                         setStats(type);
                     }
@@ -590,8 +590,6 @@
             }
 
             function setStats(type) {
-                Stats[type].damage *= 2;
-
                 $('#base-'+type+'-level').html('<strong>Lvl '+Stats[type].level+'</strong>');
                 $('#base-'+type+'-health').html(Stats[type].health);
                 $('#base-'+type+'-mana').html(Stats[type].mana);
@@ -604,8 +602,8 @@
 
                 var AP  = Stats[type].ap / 2;
                 var RAP = Stats[type].rap / 2;
-                var APDamage        = (AP / 14) * BaseTimeAttack.val();
-                var RAPDamage       = (RAP / 14) * RangeTimeAttack.val();
+                var APDamage        = (AP / 14.0) * BaseTimeAttack.val();
+                var RAPDamage       = (RAP / 14.0) * RangeTimeAttack.val();
                 var MinMeleeDamage  = (Stats[type].damage + APDamage) * DamageModifier.val();
                 var MaxMeleeDamage  = MinMeleeDamage * (1 + parseFloat(BaseVariance.val()));
                 var MinRangedDamage = (Stats[type].damage + RAPDamage) * DamageModifier.val();

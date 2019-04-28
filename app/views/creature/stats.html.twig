@@ -405,7 +405,6 @@
             var Original = {{ creature|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
             var Creature = {{ creature|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
             var Info = { "entryorguid": {{ creature.entry }}, "source_type": 10 };
-            console.log(Creature);
 
             var SelectScript = $('#select-script');
             var SelectRank = $('#select-rank');
@@ -591,6 +590,8 @@
             }
 
             function setStats(type) {
+                Stats[type].damage *= 2;
+
                 $('#base-'+type+'-level').html('<strong>Lvl '+Stats[type].level+'</strong>');
                 $('#base-'+type+'-health').html(Stats[type].health);
                 $('#base-'+type+'-mana').html(Stats[type].mana);
@@ -601,10 +602,10 @@
                 $('#result-'+type+'-mana').text(Math.round(Stats[type].mana * ManaModifier.val()));
                 $('#result-'+type+'-armor').text(Math.round(Stats[type].armor * ArmorModifier.val() * 100) / 100);
 
-                var AP  = Stats[type].ap;
-                var RAP = Stats[type].rap;
-                var APDamage        = (AP / 14.0) * (BaseTimeAttack.val() / 1000);
-                var RAPDamage       = (RAP / 14.0) * (RangeTimeAttack.val() / 1000);
+                var AP  = Stats[type].ap / 2;
+                var RAP = Stats[type].rap / 2;
+                var APDamage        = (AP / 14) * BaseTimeAttack.val();
+                var RAPDamage       = (RAP / 14) * RangeTimeAttack.val();
                 var MinMeleeDamage  = (Stats[type].damage + APDamage) * DamageModifier.val();
                 var MaxMeleeDamage  = MinMeleeDamage * (1 + parseFloat(BaseVariance.val()));
                 var MinRangedDamage = (Stats[type].damage + RAPDamage) * DamageModifier.val();
@@ -615,23 +616,21 @@
                 $('#damage-'+type+'-melee-ap').text(Math.round(DamageModifier.val() * APDamage * 10) / 10);
                 $('#damage-'+type+'-melee-min').text(Math.round(MinMeleeDamage * 10) / 10);
                 $('#damage-'+type+'-melee-max').text(Math.round(MaxMeleeDamage * 10) / 10);
-                $('#damage-'+type+'-melee-avg').text(Math.round((MinMeleeDamage + MaxMeleeDamage) / 2 / (BaseTimeAttack.val() / 1000) * 10) / 10);
+                $('#damage-'+type+'-melee-avg').text(Math.round((MinMeleeDamage + MaxMeleeDamage) / 2 / BaseTimeAttack.val() * 10) / 10);
 
                 $('#damage-'+type+'-ranged-base').text(Math.round(Stats[type].damage * DamageModifier.val() * 10) / 10);
                 $('#damage-'+type+'-ranged-ap').text(Math.round(DamageModifier.val() * RAPDamage * 10) / 10);
                 $('#damage-'+type+'-ranged-min').text(Math.round(MinRangedDamage * 10) / 10);
                 $('#damage-'+type+'-ranged-max').text(Math.round(MaxRangedDamage * 10) / 10);
-                $('#damage-'+type+'-ranged-avg').text(Math.round((MinRangedDamage + MaxRangedDamage) / 2 / (RangeTimeAttack.val() / 1000) * 10) / 10);
+                $('#damage-'+type+'-ranged-avg').text(Math.round((MinRangedDamage + MaxRangedDamage) / 2 / RangeTimeAttack.val() * 10) / 10);
             }
 
             function generateData(Creature) {
-                console.log(Creature);
                 var Data = {
                     info: [ Creature.AIName.toString(), Creature.ScriptName.toString(), Creature.rank, Creature.type, Creature.family, Creature.mingold, Creature.maxgold ],
                     modifiers: [ Creature.exp, Creature.unit_class, Creature.minlevel, Creature.maxlevel, Creature.HealthModifier, Creature.ManaModifier, Creature.ArmorModifier, Creature.DamageModifier, Creature.BaseAttackTime, Creature.RangeAttackTime, Creature.BaseVariance, Creature.RangeVariance ],
                     resistance: [ Creature.resistance1, Creature.resistance2, Creature.resistance3, Creature.resistance4, Creature.resistance5, Creature.resistance6 ]
                     };
-                console.log(Data);
                 return Data;
             }
 
@@ -648,4 +647,4 @@
                 refuse(generateData(Creature), Info);
             });
         </script>
-    {% endblock %}
+    {% endblock %} 

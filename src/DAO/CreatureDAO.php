@@ -38,32 +38,42 @@ class CreatureDAO extends DAO
         else
             $base_damage = "damage_base";
 
+        // Update as of 2019/4/14
+        $minStats[$base_damage] *= 2;
+        $maxStats[$base_damage] *= 2;
+        $minStats['attackpower'] /= 2;
+        $maxStats['attackpower'] /= 2;
+        $minStats['rangedattackpower'] /= 2;
+        $maxStats['rangedattackpower'] /= 2;
+        $creature['BaseAttackTime'] /= 1000;
+        $creature['RangeAttackTime'] /= 1000;
+
         $creature['melee']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
-        $creature['melee']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000);
-        $creature['melee']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000));
-        $creature['melee']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000)) * (1 + $creature['BaseVariance']);
-        $creature['melee']['minlevel']['avg']   = ($creature['melee']['minlevel']['min'] + $creature['melee']['minlevel']['max']) / 2 / ($creature['BaseAttackTime'] / 1000);
+        $creature['melee']['minlevel']['ap']    = ($minStats['attackpower'] / 14) * $creature['BaseAttackTime'];
+        $creature['melee']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + $creature['melee']['minlevel']['ap']);
+        $creature['melee']['minlevel']['max']   = $creature['melee']['minlevel']['min'] * (1 + $creature['BaseVariance']);
+        $creature['melee']['minlevel']['avg']   = ($creature['melee']['minlevel']['min'] + $creature['melee']['minlevel']['max']) / 2 / ($creature['BaseAttackTime']);
 
         if ($creature['RangeAttackTime']) {
             $creature['ranged']['minlevel']['base']  = $creature['DamageModifier'] * $minStats[$base_damage];
-            $creature['ranged']['minlevel']['ap']    = $creature['DamageModifier'] * ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
-            $creature['ranged']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
-            $creature['ranged']['minlevel']['max']   = $creature['DamageModifier'] * ($minStats[$base_damage] + ($minStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
-            $creature['ranged']['minlevel']['avg']   = ($creature['ranged']['minlevel']['min'] + $creature['ranged']['minlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
+            $creature['ranged']['minlevel']['ap']    = ($minStats['rangedattackpower'] / 14) * $creature['RangeAttackTime'];
+            $creature['ranged']['minlevel']['min']   = $creature['DamageModifier'] * ($minStats[$base_damage] + $creature['ranged']['minlevel']['ap']);
+            $creature['ranged']['minlevel']['max']   = $creature['ranged']['minlevel']['min'] * (1 + $creature['RangeVariance']);
+            $creature['ranged']['minlevel']['avg']   = ($creature['ranged']['minlevel']['min'] + $creature['ranged']['minlevel']['max']) / 2 / ($creature['RangeAttackTime']);
         }
         
         if($creature['minlevel'] != $creature['maxlevel']) {
             $creature['melee']['maxlevel']['base']  = $creature['DamageModifier'] * $maxStats[$base_damage];
-            $creature['melee']['maxlevel']['ap']    = $creature['DamageModifier'] * ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000);
-            $creature['melee']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000));
-            $creature['melee']['maxlevel']['max']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['attackpower'] / 14) * ($creature['BaseAttackTime'] / 1000)) * (1 + $creature['BaseVariance']);
-            $creature['melee']['maxlevel']['avg']   = ($creature['melee']['maxlevel']['min'] + $creature['melee']['maxlevel']['max']) / 2 / ($creature['BaseAttackTime'] / 1000);
+            $creature['melee']['maxlevel']['ap']    = ($maxStats['attackpower'] / 14) * $creature['BaseAttackTime'];
+            $creature['melee']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + $creature['melee']['maxlevel']['ap']);
+            $creature['melee']['maxlevel']['max']   = $creature['melee']['maxlevel']['min'] * (1 + $creature['BaseVariance']);
+            $creature['melee']['maxlevel']['avg']   = ($creature['melee']['maxlevel']['min'] + $creature['melee']['maxlevel']['max']) / 2 / ($creature['BaseAttackTime']);
 
             $creature['ranged']['maxlevel']['base']  = $creature['DamageModifier'] * $maxStats[$base_damage];
-            $creature['ranged']['maxlevel']['ap']    = $creature['DamageModifier'] * ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000);
-            $creature['ranged']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000));
-            $creature['ranged']['maxlevel']['max']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + ($maxStats['rangedattackpower'] / 14) * ($creature['RangeAttackTime'] / 1000)) * (1 + $creature['RangeVariance']);
-            $creature['ranged']['maxlevel']['avg']   = ($creature['ranged']['maxlevel']['min'] + $creature['ranged']['maxlevel']['max']) / 2 / ($creature['RangeAttackTime'] / 1000);
+            $creature['ranged']['maxlevel']['ap']    = ($maxStats['rangedattackpower'] / 14) * $creature['RangeAttackTime'];
+            $creature['ranged']['maxlevel']['min']   = $creature['DamageModifier'] * ($maxStats[$base_damage] + $creature['ranged']['maxlevel']['ap']);
+            $creature['ranged']['maxlevel']['max']   = $creature['ranged']['maxlevel']['min'] * (1 + $creature['RangeVariance']);
+            $creature['ranged']['maxlevel']['avg']   = ($creature['ranged']['maxlevel']['min'] + $creature['ranged']['maxlevel']['max']) / 2 / ($creature['RangeAttackTime']);
         }
         return $creature;
     }

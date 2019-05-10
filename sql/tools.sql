@@ -1142,22 +1142,22 @@ DROP TABLE IF EXISTS `quest_test`;
 
 CREATE TABLE `quest_test` (
   `questid` int(11) NOT NULL,
-  `startTxt` int(11) NOT NULL,
-  `progTxt` int(11) NOT NULL,
-  `endTxt` int(11) NOT NULL,
-  `txtEvent` int(11) NOT NULL,
-  `pathEvent` int(11) NOT NULL,
-  `timeEvent` int(11) NOT NULL,
-  `Exp` int(11) NOT NULL,
-  `Stuff` int(11) NOT NULL,
-  `Gold` int(11) NOT NULL,
-  `emotNPC` int(11) NOT NULL,
-  `spellNPC` int(11) NOT NULL,
-  `placeNPC` int(11) NOT NULL,
-  `workObj` int(11) NOT NULL,
-  `baObj` int(11) NOT NULL,
-  `other` text NOT NULL,
-  `tester` int(1) NOT NULL
+  `startTxt` int(11) ,
+  `progTxt` int(11) ,
+  `endTxt` int(11) ,
+  `txtEvent` int(11) ,
+  `pathEvent` int(11) ,
+  `timeEvent` int(11) ,
+  `Exp` int(11) ,
+  `Stuff` int(11) ,
+  `Gold` int(11) ,
+  `emotNPC` int(11) ,
+  `spellNPC` int(11) ,
+  `placeNPC` int(11) ,
+  `workObj` int(11),
+  `baObj` int(11),
+  `other` text ,
+  `tester` int(1)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1186,7 +1186,7 @@ CREATE TABLE `smartai_actions` (
 
 INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `comment`) VALUES
 (0,	'ACTION_NONE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(1,	'ACTION_TALK',	'GroupId',	'Duration',	NULL,	NULL,	NULL,	NULL,	'Duration is not supported, keep 0.'),
+(1,	'ACTION_TALK',	'GroupId',	'Duration',	'useTalkTarget',	NULL,	NULL,	NULL,	'Duration is not supported, keep 0.'),
 (2,	'ACTION_SET_FACTION',	'FactionId',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (3,	'ACTION_MORPH_TO_ENTRY_OR_MODEL',	'Creature entry',	'Creature model',	NULL,	NULL,	NULL,	NULL,	NULL),
 (4,	'ACTION_SOUND',	'Sound id',	'Only to self',	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1333,7 +1333,8 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (159,	'ACTION_BREAK_FORMATION',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (162,	'ACTION_SET_EVENT_TEMPLATE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Internal event used for the templates. DO NOT USE.'),
 (163,	'ACTION_STORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Store a phase for future usage, value is persistent accross resets. Use with SMART_ACTION_RESTORE_PHASE after SMART_EVENT_RESET.'),
-(164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.');
+(164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.'),
+(165,	'ACTION_SET_DESPAWN_SUMMONS',	'set (0/1)', NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 
@@ -1424,7 +1425,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (63,	'EVENT_JUST_CREATED',	NULL,	NULL,	NULL,	NULL,	NULL),
   (64,	'EVENT_GOSSIP_HELLO',	'noReportUse',	NULL,	NULL,	NULL,	NULL),
   (65,	'EVENT_FOLLOW_COMPLETED',	NULL,	NULL,	NULL,	NULL,	NULL),
-  (66,	'EVENT_DUMMY_EFFECT',	'spellId',	'effectIndex',	NULL,	NULL,	NULL),
+  (66,	'EVENT_EVENT_PHASE_CHANGE',	'event phase mask',	NULL,	NULL,	NULL,	NULL),
   (67,	'EVENT_IS_BEHIND_TARGET',	'CooldownMin',	'CooldownMax',	NULL,	NULL,	NULL),
   (68,	'EVENT_GAME_EVENT_START',	'Game event entry',	NULL,	NULL,	NULL,	NULL),
   (69,	'EVENT_GAME_EVENT_END',	'Game event entry',	NULL,	NULL,	NULL,	NULL),
@@ -1443,7 +1444,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (103,	'EVENT_ENTER_PHASE',	'Phase',	NULL,	NULL,	NULL,	NULL),
   (104,	'EVENT_GO_LOOT_STATE_CHANGED',	'Loot state',	NULL,	NULL,	NULL,	NULL),
   (105,	'EVENT_AFFECTED_BY_MECHANIC',	'Timer',	'Mechanic',	NULL,	NULL,	NULL),
-  (106,	'SMART_EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	NULL,	NULL,	NULL,	NULL,	NULL);
+  (106,	'EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 

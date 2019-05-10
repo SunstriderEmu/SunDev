@@ -642,7 +642,7 @@
                     break;
                 case "18":
                 case "19":
-                    var Comment = "Set Unit Flag ";
+                    var Comment = (Lines[id].action_type == "18" ? "Set" : "Remove") + " Unit Flag";
                     var Binary = "0x" + Hex(ActionParam1);
                     Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x1, 'Server Controlled');
                     Comment = generateBitComment('Set Unit Flag ', Comment, Binary, 0x2, 'Non Attackable');
@@ -984,22 +984,16 @@
                     break;
                 case "75":
                     return "Add Aura '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
-                    break;
                 case "76":
                     return "Override Base Object Script";
-                    break;
                 case "77":
                     return "Reset Base Object Script";
-                    break;
                 case "78":
                     return "Reset All Scripts";
-                    break;
                 case "79":
                     return "Set Ranged Movement";
-                    break;
                 case "80":
                     return "Run Script <a href='/smartai/script/" + ActionParam1 + "'>" + ActionParam1 + "</a>";
-                    break;
                 case "81":
                 case "82":
                 case "83":
@@ -1032,25 +1026,18 @@
                     Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x1000000, 'Spellclick');
                     Comment = generateBitComment('Set NPC Flag ', Comment, Binary, 0x4000000, 'Mailbox');
                     return replaceComma(Comment);
-                    break;
                 case "84":
                     return "Say Line " + ActionParam1;
-                    break;
                 case "85":
                     return "Invoker Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
-                    break;
                 case "86":
                     return "Cross Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
-                    break;
                 case "87":
                     return "Run Random Script";
-                    break;
                 case "88":
                     return "Run Random Script Between " + ActionParam1 + " and " + ActionParam2;
-                    break;
                 case "89":
                     return "Start Random Movement";
-                    break;
                 case "90":
                 case "91":
                     Binary = "0x" + Hex(ActionParam1);
@@ -1086,13 +1073,10 @@
                         Comment = generateBitComment('Set Flag ', Comment, Binary, 0xFF, 'All');
                         return replaceComma(Comment);
                     }
-                    break;
                 case "92":
                     return "Interrupt Spell '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
-                    break;
                 case "93":
                     return "Send Custom Animation " + ActionParam1;
-                    break;
                 case "94":
                 case "95":
                 case "96":
@@ -1105,13 +1089,10 @@
                     Comment = generateBitComment('Set Flag ', Comment, Binary, 0x10, 'Special Info');
                     Comment = generateBitComment('Set Flag ', Comment, Binary, 0x20, 'Dead');
                     return replaceComma(Comment);
-                    break;
                 case "97":
                     return "Jump To Pos";
-                    break;
                 case "98":
                     return "Send Gossip Menu " + ActionParam1;
-                    break;
                 case "99":
                     switch (ActionParam1) {
                         case "0": return "Set Lootstate Not Ready"; break;
@@ -1120,13 +1101,10 @@
                         case "3": return "Set Lootstate Deactivated";  break;
                         default: return;
                     }
-                    break;
                 case "100":
                     return "Send Target " + ActionParam1;
-                    break;
                 case "101":
                     return "Set Home Position";
-                    break;
                 case "102":
                     if (ActionParam1 == "0") {
                         return "Set Health Regeneration Off";
@@ -1136,16 +1114,15 @@
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
-                    break;
                 case "103":
                     if (ActionParam1 == "0")
                         return "Set Root Off";
                     else if (ActionParam1 == "1")
                         return "Set Root On";
-                    else
+                    else {
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
-                    break;
+					}
                 case "104":
                 case "105":
                 case "106":
@@ -1160,10 +1137,8 @@
                     Comment = generateBitComment('Set Flag ', Comment, Binary, 0x40, 'Triggered');
                     Comment = generateBitComment('Set Flag ', Comment, Binary, 0x80, 'Vendor');
                     return replaceComma(Comment);
-                    break;
                 case "107":
                     return "Summon Group " + ActionParam1;
-                    break;
                 case "108":
                     switch (ActionParam1) {
                         case "0": return "Set Mana To " + ActionParam2; break;
@@ -1173,7 +1148,6 @@
                         case "5": return "Set Health To " + ActionParam2; break;
                         default: return;
                     }
-                    break;
                 case "109":
                     switch (ActionParam1) {
                         case "0": return "Add " + ActionParam2 + "Mana"; break;
@@ -1183,7 +1157,6 @@
                         case "5": return "Add " + ActionParam2 + "Health"; break;
                         default: return;
                     }
-                    break;
                 case "110":
                     switch (ActionParam1) {
                         case "0": return "Remove " + ActionParam2 + "Mana"; break;
@@ -1193,13 +1166,10 @@
                         case "5": return "Remove " + ActionParam2 + "Health"; break;
                         default: return;
                     }
-                    break;
                 case "111":
                     return "Stop Game Event " + ActionParam1;
-                    break;
                 case "112":
                     return "Start Game Event " + ActionParam1;
-                    break;
                 case "113":
                     if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0" && ActionParam6 != "0") {
                         return "Pick Closest Waypoint (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + "&" + ActionParam6 + ")";
@@ -1221,10 +1191,8 @@
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
-                    break;
                 case "114":
                     return "Move Offset " + Lines[id].target_z;
-                    break;
                 case "115":
                     if (ActionParam1 != "0" && ActionParam2 != "0" && ActionParam3 != "0" && ActionParam4 != "0" && ActionParam5 != "0")
                         return "Play Random Sound (" + ActionParam1 + "," + ActionParam2 + "," + ActionParam3 + "," + ActionParam4 + "," + ActionParam5 + ")";
@@ -1246,13 +1214,10 @@
                         alert("Error:\nLine " + id + ": something is wrong.");
                         return "Error";
                     }
-                    break;
                 case "116":
                     return "Delay Corpse " + ActionParam1 + "ms";
-                    break;
                 case "117":
                     return (ActionParam1 == 1 ? "Disable Evade" : "Enable Evade");
-                    break;
                 case "118":
                     switch(ActionParam1)
                     {
@@ -1540,28 +1505,20 @@
                     default: return "Error";
                   }
                   return Comment;
-                  break;
                 case "121":
                   return "Set Sight Dist To " + ActionParam1 + "m";
-                  break;
                 case "122":
                   return "Flee For " + ActionParam1 + "ms";
-                  break;
                 case "123":
                   return "Add " + (ActionParam1 - ActionParam2) + " Threat";
-                  break;
                 case "124":
                   return "Load Equipment #" + ActionParam1;
-                  break;
                 case "125":
                   return "Run SMART_EVENT Ids Between " + ActionParam1 + " and " + ActionParam2;
-                  break;
                 case "126":
                   return "Remove All Owned GameObjects";
-                  break;
                 case "127":
                   return "Set " + (ActionParam1 == 1 ? "Stop Moving" : "Allow Moving") + " And " + (ActionParam2 == 1 ? "Movement Expired" : "Movement OK");
-                  break;
                 case "150":
                 case "151":
                     Binary = "0x" + Hex(ActionParam1);
@@ -1584,19 +1541,14 @@
                         Comment = generateBitComment('Set Flag ', Comment, Binary, 0x40, 'Unknown 7');
                     }
                     return replaceComma(Comment);
-                    break;
                 case "152":
                     return "Load Path " + ActionParam1;
-                    break;
                 case "153":
                     return "Teleport Target On Self";
-                    break;
                 case "154":
                     return "Teleport On Target";
-                    break;
                 case "155":
                     return "Assist Target";
-                    break;
                 case "156":
                     if(ActionParam1 == "0")
                         return "Can Move Home";
@@ -1607,13 +1559,10 @@
                     break;
                 case "157":
                     return "Add Target To Formation";
-                    break;
                 case "158":
                     return "Remove Target From Formation";
-                    break;
                 case "159":
                     return "Remove The Formation";
-                    break;
                 case "160":
                     var Com = (ActionParam2 == 1 ? "Apply " : "Remove ") + "Immune";
                     switch (ActionParam1) {
@@ -1649,19 +1598,16 @@
                         case "1073741824": return Com += "Sapped"; break;
                         default: return 'Error';
                     }
-                    break;
                 case "161":
-                    return (ActionParam2 == 1 ? "Apply " : "Remove ") + getSpellName(ActionParam1);
-                    break;
+                    return (ActionParam2 > 0 ? "Apply " : "Remove ") + getSpellName(ActionParam1);
                 case "162":
                     return "DO NOT USE";
-                    break;
                 case "163":
                     return "Store Current Phase";
-                    break;
                 case "164":
                     return "Restore Phase";
-                    break;
+				case "165":
+					return (ActionParam1 > 0 ? "Allow" : "Disallow") + " despawning summons";
                 default:
                     return "Error in generateActionComment";
             }

@@ -1423,7 +1423,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (61,	'EVENT_LINK',	NULL,	NULL,	NULL,	NULL,	NULL),
   (62,	'EVENT_GOSSIP_SELECT',	'Gossip menu id',	'Gossip item id',	'Any',	NULL,	'Any: Ignore first two parameters and always trigger on gossip select'),
   (63,	'EVENT_JUST_CREATED',	NULL,	NULL,	NULL,	NULL,	NULL),
-  (64,	'EVENT_GOSSIP_HELLO',	'noReportUse',	NULL,	NULL,	NULL,	NULL),
+  (64,	'EVENT_GOSSIP_HELLO',	'filter',	NULL,	NULL,	NULL,	NULL),
   (65,	'EVENT_FOLLOW_COMPLETED',	NULL,	NULL,	NULL,	NULL,	NULL),
   (66,	'EVENT_EVENT_PHASE_CHANGE',	'event phase mask',	NULL,	NULL,	NULL,	NULL),
   (67,	'EVENT_IS_BEHIND_TARGET',	'CooldownMin',	'CooldownMax',	NULL,	NULL,	NULL),

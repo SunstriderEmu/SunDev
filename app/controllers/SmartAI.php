@@ -15,7 +15,7 @@ $app->get('/smartai/script/{script}', function($script) use($app) {
 	$creature 	= new SUN\Domain\Creature(["entry" => substr($script, 0, -2)]);
 	$creature->setName($app['dao.creature']->findCreatureEntryName($creature)->getName());
 	$lines		= $app['dao.smartai']->getScript($script);
-
+	
 	return $app['twig']->render('smartai/script/script.html.twig',
 		array(
 			"lines" 	=> $lines,

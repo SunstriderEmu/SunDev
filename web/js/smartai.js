@@ -1845,6 +1845,14 @@
                     displayEventValDefault(3, id);
                     displayEventValDefault(4, id);
                     break;
+				case "64":
+                    EventParam1DIV.empty();
+                    $(getHelloFilter('event', 1)).appendTo(EventParam1DIV);
+                    $('#event_param1_val').val(Lines[id].event_param1);
+                    displayEventValDefault(2, id);
+                    displayEventValDefault(3, id);
+                    displayEventValDefault(4, id);
+					break;
                 case "34":
                     EventParam1DIV.empty();
                     $('<select class="form-control" id="event_param1_val">' +
@@ -3802,6 +3810,15 @@
                 '</select>';
         }
 
+        function getHelloFilter(type, param)
+        {
+			return '<select class="form-control" id="'+type+'_param'+param+'_val">' +
+                '   <option value="0">Always</option>' +
+                '   <option value="1">OnGossipHello only</option>' +
+                '   <option value="2">OnReportUse only</option>' +
+                '</select>';
+		}
+		
         function getEmoteSelect(type, param)
         {
            return '<select class="form-control" id="'+type+'_param'+param+'_val">' +

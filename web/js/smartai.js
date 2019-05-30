@@ -1662,7 +1662,9 @@
                 "target_x": Lines[id].target_x,
                 "target_y": Lines[id].target_y,
                 "target_z": Lines[id].target_z,
-                "target_o": Lines[id].target_o
+                "target_o": Lines[id].target_o,
+				"patch_min": Lines[id].patch_min,
+				"patch_max": Lines[id].patch_max
             };
             displayLine(MaxID, $('table > tbody > tr:has(td:first-child:contains("' + MaxID + '"))'));
             RefreshTable();

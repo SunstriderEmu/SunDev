@@ -4,6 +4,8 @@ namespace SUN\Domain;
 class Line implements \JsonSerializable {
 	protected $entryorguid;
 	protected $id;
+	protected $patch_min;
+	protected $patch_max;
 	protected $source_type;
 	protected $comment;
 
@@ -55,6 +57,22 @@ class Line implements \JsonSerializable {
 
 	public function setId($id) {
 		$this->id = $id;
+	}
+	
+	public function getPatchMin() {
+		return $this->patch_min;
+	}
+
+	public function setPatchMin($patch) {
+		$this->patch_min = $patch;
+	}
+	
+	public function getPatchMax() {
+		return $this->patch_max;
+	}
+
+	public function setPatchMax($patch) {
+		$this->patch_max = $patch;
 	}
 
 	public function getSourceType() {
@@ -147,7 +165,6 @@ class Line implements \JsonSerializable {
 	public function setEventParam4($event_param4) {
 		$this->event_param4 = $event_param4;
 	}
-	
 	
 	/*
 	 * Action

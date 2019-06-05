@@ -1213,7 +1213,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (25,	'ACTION_FLEE_FOR_ASSIST',	'Say flee text',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (26,	'ACTION_CALL_GROUPEVENTHAPPENS',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (27,	'ACTION_CALL_CASTEDCREATUREORGO',	'Creature id',	'Spell id',	NULL,	NULL,	NULL,	NULL,	NULL),
-(28,	'ACTION_REMOVEAURASFROMSPELL',	'Spell id',	'Charges',	NULL,	NULL,	NULL,	NULL,	NULL),
+(28,	'ACTION_REMOVEAURASFROMSPELL',	'Spell id',	'Charges',	'onlyOwnedAuras',	NULL,	NULL,	NULL,	NULL),
 (29,	'ACTION_FOLLOW',	'Distance',	'Angle',	'End creature entry',	'Credit creature entry',	'Credit type',	NULL,	NULL),
 (30,	'ACTION_RANDOM_PHASE',	'Phase index 1',	'Phase index 2',	'Phase index 3',	'Phase index 4',	'Phase index 5',	'Phase index 6',	NULL),
 (31,	'ACTION_RANDOM_PHASE_RANGE',	'Phase index 1',	'Phase index 2',	NULL,	NULL,	NULL,	NULL,	NULL),

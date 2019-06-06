@@ -26,6 +26,7 @@
         var Events = informations.Events;
         var Actions = informations.Actions;
         var Targets = informations.Targets;
+        var Patch = 0;
 
         var Info = { "entryorguid": Entry, "source_type": Type };
         
@@ -124,11 +125,12 @@
             RefreshTableTr(4);
             RefreshTableTr(5);
             RefreshTableTr(6);
-            $('table > tbody > tr > td:nth-child(7)').off().on('click', 'span.glyphicon-plus', function () {
+            RefreshTableTr(7);
+            $('table > tbody > tr > td:nth-child(8)').off().on('click', 'span.glyphicon-plus', function () {
                 var id = $(this).closest('tr').find('td:first-child').text();
                 duplicateLine(id);
             });
-            $('table > tbody > tr > td:nth-child(7) > span.glyphicon-remove').click(function () {
+            $('table > tbody > tr > td:nth-child(8) > span.glyphicon-remove').click(function () {
                 var id = $(this).closest('tr').find('td:first-child').text();
                 deleteLine(id);
             });
@@ -1029,7 +1031,7 @@
                 case "84":
                     return "Say Line " + ActionParam1;
                 case "85":
-                    return "Invoker Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
+                    return "Self Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                 case "86":
                     return "Cross Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                 case "87":
@@ -1519,6 +1521,8 @@
                   return "Remove All Owned GameObjects";
                 case "127":
                   return "Set " + (ActionParam1 == 1 ? "Stop Moving" : "Allow Moving") + " And " + (ActionParam2 == 1 ? "Movement Expired" : "Movement OK");
+				case "134":
+				  return "Invoker Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                 case "150":
                 case "151":
                     Binary = "0x" + Hex(ActionParam1);
@@ -1628,6 +1632,7 @@
             '<td>' + Actions[Lines[id].action_type].name.slice(7) + '</td>' +
             '<td>' + Targets[Lines[id].target_type].name.slice(7) + '</td>' +
             '<td>' + Lines[id].comment + '</td>' +
+            '<td>' + Lines[id].patch_min + '</td>' +
             '<td class="options">' +
             '   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>' +
             '   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
@@ -1678,6 +1683,7 @@
             '<td>' + Actions[0].name.slice(7) + '</td>' +
             '<td>' + Targets[0].name.slice(7) + '</td>' +
             '<td>' + Name + ' -</td>' +
+            '<td>' + Patch + '</td>' +
             '<td class="options">' +
             '   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>' +
             '   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +

@@ -135,8 +135,8 @@ class QuestDAO extends DAO
                                        SUM(CASE WHEN baObj = :status THEN 1 ELSE 0 END)
                                        ) AS TotalCount
                                 FROM quest_test qtest
-                                JOIN {$this->app['dbs.options']['test']['dbname']}.quest_template qt ON qtest.questid = qt.entry
-                                WHERE ZoneOrSort = :zoneID", array("status" => $status, "zoneID" => $zoneID));
+                                JOIN {$this->app['dbs.options']['test']['dbname']}.quest_template qt ON qtest.questid = qt.ID
+                                WHERE QuestSortID = :zoneID", array("status" => $status, "zoneID" => $zoneID));
 		return $countStatus['TotalCount'];
 	}
 
@@ -148,13 +148,13 @@ class QuestDAO extends DAO
 
 	public function getQuestsCount($zoneID)
 	{
-		$totalQuest = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort = ? AND Title NOT LIKE "%BETA%"', array($zoneID));
+		$totalQuest = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE QuestSortID = ? AND LogTitle NOT LIKE "%BETA%"', array($zoneID));
 		return $totalQuest['count'];
 	}
 
 	public function getGlobalQuestsCount()
 	{
-		$total = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE ZoneOrSort IN(3457, 3703, 3483, 3562, 3713, 3714, 3836, 3521, 3717, 3716, 3715, 3607, 3519, 3791, 3790, 3789, 3792, 3518, 3522, 3923, 3523, 3847, 3849, 3848, 3845, 3520, 3959, 2367, 2366, 3606) AND Title NOT LIKE "%BETA%"');
+		$total = $this->getDb('world')->fetchAssoc('SELECT count(*) as count FROM quest_template WHERE QuestSortID IN(3457, 3703, 3483, 3562, 3713, 3714, 3836, 3521, 3717, 3716, 3715, 3607, 3519, 3791, 3790, 3789, 3792, 3518, 3522, 3923, 3523, 3847, 3849, 3848, 3845, 3520, 3959, 2367, 2366, 3606) AND LogTitle NOT LIKE "%BETA%"');
 		return $total['count'];
 	}
 
@@ -192,17 +192,17 @@ class QuestDAO extends DAO
 
 	public function getQuestName($id)
 	{
-		$quest = $this->getDb('local')->fetchAssoc('SELECT Title FROM quest_template WHERE entry = ?', array($id));
+		$quest = $this->getDb('local')->fetchAssoc('SELECT LogTitle as Title FROM quest_template WHERE ID = ?', array($id));
 		return $quest['Title'];
 	}
 
 	public function find($id)
     {
-        return $this->getDb('local')->fetchAssoc('SELECT * FROM quest_template WHERE entry = ?', array($id));
+        return $this->getDb('local')->fetchAssoc('SELECT * FROM quest_template WHERE ID = ?', array($id));
     }
 
     public function search($name)
     {
-        return $this->getDb('test')->fetchAll("SELECT entry, Title, RequiredRaces as race FROM quest_template WHERE Title LIKE ?", array("%{$name}%"));
+        return $this->getDb('test')->fetchAll("SELECT ID, LogTitle as Title, AllowableRaces as race FROM quest_template WHERE LogTitle LIKE ?", array("%{$name}%"));
     }
 }

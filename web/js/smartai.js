@@ -1612,6 +1612,8 @@
                     return "Restore Phase";
 				case "165":
 					return (ActionParam1 > 0 ? "Allow" : "Disallow") + " despawning summons";
+				case "166":
+                    return "Remove owned aura '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                 default:
                     return "Error in generateActionComment";
             }

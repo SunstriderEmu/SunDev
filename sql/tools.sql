@@ -1334,7 +1334,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (162,	'ACTION_SET_EVENT_TEMPLATE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Internal event used for the templates. DO NOT USE.'),
 (163,	'ACTION_STORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Store a phase for future usage, value is persistent accross resets. Use with SMART_ACTION_RESTORE_PHASE after SMART_EVENT_RESET.'),
 (164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.'),
-(165,	'ACTION_SET_DESPAWN_SUMMONS',	'set (0/1)', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(165,	'ACTION_SET_DESPAWN_SUMMONS',	'Flags', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (166,	'ACTION_REMOVE_OWNED_AURA',	'spellID', NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------

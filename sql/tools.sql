@@ -1265,7 +1265,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (77,	'ACTION_RESET_SCRIPT_BASE_OBJECT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (78,	'ACTION_CALL_SCRIPT_RESET',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (79,	'ACTION_SET_RANGED_MOVEMENT',	'Attack distance',	'Attack angle',	NULL,	NULL,	NULL,	NULL,	NULL),
-(80,	'ACTION_CALL_TIMED_ACTIONLIST',	'Script entry',	'Timer type (0/1/2)',	NULL,	NULL,	NULL,	NULL,	NULL),
+(80,	'ACTION_CALL_TIMED_ACTIONLIST',	'Script entry',	'Timer type (0/1/2)',	'AllowOverride (0/1)',	NULL,	NULL,	NULL,	NULL),
 (81,	'ACTION_SET_NPC_FLAG',	'Flags',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (82,	'ACTION_ADD_NPC_FLAG',	'Flags',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (83,	'ACTION_REMOVE_NPC_FLAG',	'Flags',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1445,7 +1445,8 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (103,	'EVENT_ENTER_PHASE',	'Phase',	NULL,	NULL,	NULL,	NULL),
   (104,	'EVENT_GO_LOOT_STATE_CHANGED',	'Loot state',	NULL,	NULL,	NULL,	NULL),
   (105,	'EVENT_AFFECTED_BY_MECHANIC',	'Timer',	'Mechanic',	NULL,	NULL,	NULL),
-  (106,	'EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	NULL,	NULL,	NULL,	NULL,	NULL);
+  (106,	'EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	'eventPhaseMask',	NULL,	NULL,	NULL,	NULL),
+  (107,	'SMART_EVENT_ON_MELEE_PROC_HIT',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 

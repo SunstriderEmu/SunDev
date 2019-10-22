@@ -99,13 +99,13 @@ class DAO
                 case 10: // Stats
                     $this->getDb($db)->executeQuery("UPDATE creature_template
                                               SET AIName = ?, ScriptName = ?, rank = ?, type = ?, family = ?, mingold = ?, maxgold = ?,
-                                              exp = ?, unit_class = ?, minlevel = ?, maxlevel = ?, HealthModifier = ?, ManaModifier = ?, ArmorModifier = ?, DamageModifier = ?, BaseAttackTime = ?, RangeAttackTime = ?, BaseVariance = ?, RangeVariance = ?,
-                                              resistance1 = ?, resistance2 = ?, resistance3 = ?, resistance4 = ?, resistance5 = ?, resistance6 = ?
+                                              exp = ?, unit_class = ?, minlevel = ?, maxlevel = ?, HealthModifier = ?, ManaModifier = ?, ArmorModifier = ?, DamageModifier = ?, BaseAttackTime = ?, RangeAttackTime = ?, BaseVariance = ?, RangeVariance = ?
                                               WHERE entry = ?",
                         array($data['script']->info[0], $data['script']->info[1], $data['script']->info[2], $data['script']->info[3], $data['script']->info[4], $data['script']->info[5], $data['script']->info[6],
                             $data['script']->modifiers[0], $data['script']->modifiers[1], $data['script']->modifiers[2], $data['script']->modifiers[3], $data['script']->modifiers[4], $data['script']->modifiers[5], $data['script']->modifiers[6], $data['script']->modifiers[7], $data['script']->modifiers[8], $data['script']->modifiers[9], $data['script']->modifiers[10], $data['script']->modifiers[11],
-                            $data['script']->resistance[0], $data['script']->resistance[1], $data['script']->resistance[2], $data['script']->resistance[3], $data['script']->resistance[4], $data['script']->resistance[5],
                             intval($data['review']->entryorguid)));
+							
+					//TODO: resistances
                     break;
                 case 11: // Equipment
 					if($data['review']->info1 == '0') {

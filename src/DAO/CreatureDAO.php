@@ -10,9 +10,20 @@ class CreatureDAO extends DAO
     public function getCreature($entry)
     {
         $creature = $this->getDb('test')->fetchAssoc('SELECT * from creature_template WHERE entry = ?', array($entry));
+        $creature_resist = $this->getDb('test')->fetchAll('SELECT * from creature_template_resistance WHERE CreatureId = ?', array($entry));
         $minStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['minlevel']));
         $maxStats = $this->getDb('test')->fetchAssoc('SELECT * from creature_classlevelstats WHERE class = ? AND level = ?', array($creature['unit_class'], $creature['maxlevel']));
 
+		for ($i = 1; $i <= 6; $i++)
+			$creature['resistance'.$i] = 0;
+		
+		if ($creature_resist) {
+			foreach ($creature_resist as $resist)
+			{
+				$creature['resistance'.$resist['School']] = $resist['Resistance'];
+			}
+		}
+		
         $creature['gender'] = $this->getGender($entry);
 
         $total = $this->getDb('test')->fetchAssoc('SELECT COUNT(*) as count, map FROM creature c JOIN creature_entry ce ON ce.spawnID = c.spawnID WHERE ce.entry = ?', array($entry));

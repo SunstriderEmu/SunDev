@@ -1872,20 +1872,23 @@
                     '   <option value="1">Random</option>' +
                     '   <option value="2">Waypoint</option>' +
                     '   <option value="3">Max DB</option>' +
-                    '   <option value="4">Animal Random</option>' +
-                    '   <option value="5">Confused</option>' +
-                    '   <option value="6">Chase</option>' +
-                    '   <option value="7">Home</option>' +
-                    '   <option value="8">Flight</option>' +
-                    '   <option value="9">Point</option>' +
-                    '   <option value="10">Fleeing</option>' +
-                    '   <option value="11">Distract</option>' +
-                    '   <option value="12">Assistance</option>' +
-                    '   <option value="13">Assistance Distract</option>' +
-                    '   <option value="14">Timed Fleeing</option>' +
-                    '   <option value="15">Follow</option>' +
-                    '   <option value="16">Rotate</option>' +
-                    '   <option value="17">Effect</option>' +
+                    '   <option value="4">Confused</option>' +
+                    '   <option value="5">Chase</option>' +
+                    '   <option value="6">Home</option>' +
+                    '   <option value="7">Flight</option>' +
+                    '   <option value="8">Point</option>' +
+                    '   <option value="9">Fleeing</option>' +
+                    '   <option value="10">Distract</option>' +
+                    '   <option value="11">Assistance</option>' +
+                    '   <option value="12">Assistance Distract</option>' +
+                    '   <option value="13">Timed Fleeing</option>' +
+                    '   <option value="14">Follow</option>' +
+                    '   <option value="15">Rotate</option>' +
+                    '   <option value="16">Effect</option>' +
+                    '   <option value="17">TC Spline Chain</option>' +
+                    '   <option value="18">Formation</option>' +
+                    '   <option value="19">Fall</option>' +
+                    '   <option value="20">Charge</option>' +
                     '</select>').appendTo(EventParam1DIV);
                     $('#event_param1_val').val(Lines[id].event_param1);
                     displayEventValDefault(2, id);

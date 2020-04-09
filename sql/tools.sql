@@ -1506,7 +1506,7 @@ INSERT INTO `smartai_targets` (`id`, `name`, `param1`, `param2`, `param3`, `targ
   (29,	'TARGET_VEHICLE_ACCESSORY (unused)',	NULL, NULL, NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   
   (101,	'TARGET_PLAYER_CASTING_DISTANCE',	'MaxRange',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Target any player currently casting'),
-  (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL);
+  (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL),
   (103,	'TARGET_SUMMONS',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------

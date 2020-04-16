@@ -1185,16 +1185,16 @@ CREATE TABLE `smartai_actions` (
 --
 
 INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `param4`, `param5`, `param6`, `comment`) VALUES
-(0,	'ACTION_NONE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(1,	'ACTION_TALK',	'GroupId',	'Duration',	'useTalkTarget',	NULL,	NULL,	NULL,	'Duration is not supported, keep 0.'),
-(2,	'ACTION_SET_FACTION',	'FactionId',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(3,	'ACTION_MORPH_TO_ENTRY_OR_MODEL',	'Creature entry',	'Creature model',	NULL,	NULL,	NULL,	NULL,	NULL),
-(4,	'ACTION_SOUND',	'Sound id',	'Only to self',	NULL,	NULL,	NULL,	NULL,	NULL),
-(5,	'ACTION_PLAY_EMOTE',	'Emote',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(6,	'ACTION_FAIL_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(7,	'ACTION_ADD_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(8,	'ACTION_SET_REACT_STATE',	'React state',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(9,	'ACTION_ACTIVATE_GOBJECT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(0,	    'ACTION_NONE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(1,	    'ACTION_TALK',	'GroupId',	'Duration',	'useTalkTarget',	NULL,	NULL,	NULL,	'Duration is not supported, keep 0.'),
+(2,	    'ACTION_SET_FACTION',	'FactionId',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(3,	    'ACTION_MORPH_TO_ENTRY_OR_MODEL',	'Creature entry',	'Creature model',	NULL,	NULL,	NULL,	NULL,	NULL),
+(4,	    'ACTION_SOUND',	'Sound id',	'Only to self',	NULL,	NULL,	NULL,	NULL,	NULL),
+(5,	    'ACTION_PLAY_EMOTE',	'Emote',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(6,	    'ACTION_FAIL_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(7,	    'ACTION_ADD_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(8,	    'ACTION_SET_REACT_STATE',	'React state',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(9,	    'ACTION_ACTIVATE_GOBJECT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (10,	'ACTION_RANDOM_EMOTE',	'Emote 1',	'Emote 2',	'Emote 3',	'Emote 4',	'Emote 5',	'Emote 6',	NULL),
 (11,	'ACTION_CAST',	'Spell ID',	'Cast Flags',	'TriggerFlags',	'Target limits',	NULL,	NULL,	NULL),
 (12,	'ACTION_SUMMON_CREATURE',	'Creature entry',	'Summon type',	'Duration (ms)',	'Attack invoker',	'Attack victim',	NULL,	NULL),
@@ -1235,7 +1235,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (47,	'ACTION_SET_VISIBILITY',	'Visible',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (48,	'ACTION_SET_ACTIVE',	'Active',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (49,	'ACTION_ATTACK_START',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(50,	'ACTION_SUMMON_GO',	'Gameobject entry',	'Duration (ms)', 'Summon type (GOSummonType)',	NULL,	NULL,	NULL,	NULL),
+(50,	'ACTION_SUMMON_GO',	'Gameobject entry',	'Duration', 'Summon type (GOSummonType)',	NULL,	NULL,	NULL,	NULL),
 (51,	'ACTION_KILL_UNIT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (52,	'ACTION_ACTIVATE_TAXI',	'Taxi id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (53,	'ACTION_WP_START',	'Movement',	'Waypoint entry',	'Repeat path',	'Quest id',	'Despawn time after path',	'Reactstate',	NULL),
@@ -1248,7 +1248,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (60,	'ACTION_SET_DISABLE_GRAVITY',	'Fly',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (61,	'ACTION_SET_SWIM',	'Swim',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (62,	'ACTION_TELEPORT',	'Map id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(63,	'ACTION_UNUSED_63',	'Variable id',	'Decimal',	NULL,	NULL,	NULL,	NULL,	NULL),
+(63,	'ACTION_SET_COUNTER',	'id',	'value',	'reset',	NULL,	NULL,	NULL,	NULL),
 (64,	'ACTION_STORE_TARGET_LIST',	'Variable id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (65,	'ACTION_WP_RESUME',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (66,	'ACTION_SET_ORIENTATION',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1446,7 +1446,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (104,	'EVENT_GO_LOOT_STATE_CHANGED',	'Loot state',	NULL,	NULL,	NULL,	NULL),
   (105,	'EVENT_AFFECTED_BY_MECHANIC',	'Timer',	'Mechanic',	NULL,	NULL,	NULL),
   (106,	'EVENT_EVENT_TEMPLATE_PHASE_CHANGE',	'eventPhaseMask',	NULL,	NULL,	NULL,	NULL),
-  (107,	'SMART_EVENT_ON_MELEE_PROC_HIT',	NULL,	NULL,	NULL,	NULL,	NULL);
+  (107,	'EVENT_ON_MELEE_PROC_HIT',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 
@@ -1506,7 +1506,8 @@ INSERT INTO `smartai_targets` (`id`, `name`, `param1`, `param2`, `param3`, `targ
   (29,	'TARGET_VEHICLE_ACCESSORY (unused)',	NULL, NULL, NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   
   (101,	'TARGET_PLAYER_CASTING_DISTANCE',	'MaxRange',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Target any player currently casting'),
-  (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL);
+  (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL),
+  (103,	'TARGET_SUMMONS',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 

@@ -1231,7 +1231,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (43,	'ACTION_MOUNT_TO_ENTRY_OR_MODEL',	'Creature entry',	'Creature model',	NULL,	NULL,	NULL,	NULL,	NULL),
 (44,	'ACTION_SET_INGAME_PHASE_MASK',	'Phasemask',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (45,	'ACTION_SET_DATA',	'Field',	'Data',	NULL,	NULL,	NULL,	NULL,	NULL),
-(46,	'ACTION_MOVE_FORWARD',	'Distance (m)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(46,	'ACTION_ATTACK_STOP',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (47,	'ACTION_SET_VISIBILITY',	'Visible',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (48,	'ACTION_SET_ACTIVE',	'Active',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (49,	'ACTION_ATTACK_START',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1335,7 +1335,8 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (163,	'ACTION_STORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Store a phase for future usage, value is persistent accross resets. Use with SMART_ACTION_RESTORE_PHASE after SMART_EVENT_RESET.'),
 (164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.'),
 (165,	'ACTION_SET_DESPAWN_SUMMONS',	'Flags', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(166,	'ACTION_REMOVE_OWNED_AURA',	'spellID', NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
+(166,	'ACTION_REMOVE_OWNED_AURA',	'spellID', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(167,	'ACTION_MOVE_FORWARD',	'Distance (m)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 

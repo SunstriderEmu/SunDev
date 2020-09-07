@@ -1453,6 +1453,9 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (108,	'EVENT_SOFT_EVADE',	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
+ALTER TABLE `smartai_events`   
+  ADD COLUMN `param5` VARCHAR(50) NULL AFTER `param4`;
+update `smartai_events` set `param5` = 'radius' where `id` = '74' and `name` = 'EVENT_FRIENDLY_HEALTH_PCT' and `param1` = 'HPMin%' and `param2` = 'HPMax%' and `param3` = 'RepeatMin' and `param4` = 'RepeatMax' and `param5` is null and `comment` = 'Buggy, wrongly designed, cannot be fixed, do not use, only kept for TC compat. Use SMART_TARGET_FRIENDLY_HEALTH_PCT instead.';
 
 --
 -- Table structure for table `smartai_targets`

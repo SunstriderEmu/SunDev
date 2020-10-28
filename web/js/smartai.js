@@ -2460,8 +2460,8 @@
                         '   <option value="0">NONE</option>' +
                         '   <option value="1">SERVER_CONTROLLED</option>' +
                         '   <option value="2">NON_ATTACKABLE</option>' +
-                        '   <option value="4">DISABLE_MOVE</option>' +
-                        '   <option value="8">PVP_ATTACKABLE</option>' +
+                        '   <option value="4">REMOVE_CLIENT_CONTROL</option>' +
+                        '   <option value="8">PLAYER_CONTROLLED</option>' +
                         '   <option value="16">RENAME</option>' +
                         '   <option value="32">PREPARATION</option>' +
                         '   <option value="64">UNK_6</option>' +
@@ -2472,9 +2472,9 @@
                         '   <option value="2048">PET_IN_COMBAT</option>' +
                         '   <option value="4096">PVP</option>' +
                         '   <option value="8192">SILENCED</option>' +
-                        '   <option value="16384">UNK_14</option>' +
-                        '   <option value="32768">UNK_15</option>' +
-                        '   <option value="65536">NOT_PL_SPELL_TARGET</option>' +
+                        '   <option value="16384">PERSUADED</option>' +
+                        '   <option value="32768">SWIMMING</option>' +
+                        '   <option value="65536">NON_ATTACKABLE_2</option>' +
                         '   <option value="131072">PACIFIED</option>' +
                         '   <option value="262144">STUNNED</option>' +
                         '   <option value="524288">IN_COMBAT</option>' +
@@ -2483,13 +2483,13 @@
                         '   <option value="4194304">CONFUSED</option>' +
                         '   <option value="8388608">FLEEING</option>' +
                         '   <option value="16777216">PLAYER_CONTROLLED</option>' + //25
-                        '   <option value="33554432">NOT_SELECTABLE</option>' +
+                        '   <option value="33554432">POSSESSED</option>' +
                         '   <option value="67108864">SKINNABLE</option>' +
                         '   <option value="134217728">MOUNT</option>' +
                         '   <option value="268435456">UNK_28</option>' +
                         '   <option value="536870912">UNK_29</option>' +
                         '   <option value="1073741824">SHEATHE</option>' +
-                        '   <option value="2147483648">UNK_31</option>' +
+                        '   <option value="2147483648">IMMUNE</option>' +
                         '</select>').appendTo(ActionParam1DIV);
                         var NPCFlags = '#action_param1_val';
                         var Binary = "0x" + Hex(Lines[id].action_param1);

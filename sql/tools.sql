@@ -1320,6 +1320,13 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (132,	'ACTION_DESPAWN_SPAWNGROUP',	'groupId', 'min seconds',	'max seconds', 'spawnflags',	NULL,	NULL,	NULL),
 (133,	'ACTION_RESPAWN_BY_SPAWNID',	'spawnType', 'min spawnId',	NULL, NULL,	NULL,	NULL,	NULL),
 (134,	'ACTION_INVOKER_CAST',	'Spell ID',	'Cast Flags',	NULL,	NULL,	NULL,	NULL,	NULL),
+(135,	'ACTION_PLAY_CINEMATIC',	'entry',	'cinematic',	NULL,	NULL,	NULL,	NULL,	NULL),
+(136,	'ACTION_SET_MOVEMENT_SPEED',	'movementType',	'speedInteger',	'speedFraction',    NULL,	NULL,	NULL,	NULL),
+(137,	'ACTION_PLAY_SPELL_VISUAL_KIT',	'spellVisualKitId',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(138,	'ACTION_OVERRIDE_LIGHT',	'zoneId',	'overrideLightID',	'transitionMilliseconds',	NULL,	NULL,	NULL,	NULL),
+(139,	'ACTION_OVERRIDE_WEATHER',	'zoneId',	'weatherId',	'intensity',	NULL,	NULL,	NULL,	NULL),
+(140,	'ACTION_SET_AI_ANIM_KIT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(141,	'ACTION_SET_HOVER',	'Enable (0/1)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 
 (150,	'ACTION_SET_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
 (151,	'ACTION_REMOVE_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),

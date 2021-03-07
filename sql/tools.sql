@@ -1327,6 +1327,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (139,	'ACTION_OVERRIDE_WEATHER',	'zoneId',	'weatherId',	'intensity',	NULL,	NULL,	NULL,	NULL),
 (140,	'ACTION_SET_AI_ANIM_KIT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (141,	'ACTION_SET_HOVER',	'Enable (0/1)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(142,	'ACTION_SET_HEALTH_PCT',	'percent',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 
 (150,	'ACTION_SET_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
 (151,	'ACTION_REMOVE_UNIT_FIELD_BYTES_2',	'Choice',	'Choice',	NULL,	NULL,	NULL,	NULL,	NULL),
@@ -1339,7 +1340,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (158,	'ACTION_REMOVE_FROM_FORMATION',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (159,	'ACTION_BREAK_FORMATION',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (162,	'ACTION_SET_EVENT_TEMPLATE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Internal event used for the templates. DO NOT USE.'),
-(163,	'ACTION_STORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Store a phase for future usage, value is persistent accross resets. Use with SMART_ACTION_RESTORE_PHASE after SMART_EVENT_RESET.'),
+(163,	'ACTION_STORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Store a phase for future usage, value is persistent accross resets. Use with ACTION_RESTORE_PHASE after EVENT_RESET.'),
 (164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.'),
 (165,	'ACTION_SET_DESPAWN_SUMMONS',	'Flags', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (166,	'ACTION_REMOVE_OWNED_AURA',	'spellID', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),

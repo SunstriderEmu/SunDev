@@ -54,22 +54,23 @@ SunDev is developed with the micro-framework Silex.
 ## Access
 Just go into the address you put into your host file, such as `dev.sunstrider.com.test`  
 The following admin user is already created in the database (user:password):
+
     - admin:admin
 
 ## Creating a user
     `/user/add`
 
 # Development
-* SmartAI:
+* SmartAI:  
   SmartAI Web Editor inspired by SmartAI Editor by Discover- using a custom jQuery library(smartai.js), [dataTables.js](http://www.datatables.net/), [chosen.js](http://harvesthq.github.io/chosen/) and [jQuery.xcolor.js](https://github.com/infusion/jQuery-xcolor).
 
-* SunEquip:
+* SunEquip:  
   Equipment Web Editor.
 
-* SunDungeon:
+* SunDungeon:  
   Checklist of points to check for every NPCs in Outland Dungeons.
 
-* SunWaypoints:
+* SunWaypoints:  
   Allow to transfer waypoints and set a pause to a point.
 
 # Testing
@@ -80,11 +81,12 @@ The following admin user is already created in the database (user:password):
   Checklist of points to check for every classes including talents and spells.
 
 # Roles
-A role = a fonctionnality access.
+A role = a fonctionnality access.  
 They are listed in `app/app.php`.
 
 # To Do
-Implement:
+Implement: 
+
 * SunGossip: work in progress
 * SunWorld
 * Roles.md wiki

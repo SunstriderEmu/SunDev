@@ -1197,7 +1197,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (9,	    'ACTION_ACTIVATE_GOBJECT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (10,	'ACTION_RANDOM_EMOTE',	'Emote 1',	'Emote 2',	'Emote 3',	'Emote 4',	'Emote 5',	'Emote 6',	NULL),
 (11,	'ACTION_CAST',	'Spell ID',	'Cast Flags',	'TriggerFlags',	'Target limits',	NULL,	NULL,	NULL),
-(12,	'ACTION_SUMMON_CREATURE',	'Creature entry',	'Summon type',	'Duration (ms)',	'Attack invoker',	'Attack victim',	NULL,	NULL),
+(12,	'ACTION_SUMMON_CREATURE',	'Creature entry',	'Summon type',	'Duration (ms)',	'Attack invoker',	'Attack victim',	'Count',	NULL),
 (13,	'ACTION_THREAT_SINGLE_PCT',	'Threat increase %',	'Threat decrease %',	NULL,	NULL,	NULL,	NULL,	NULL),
 (14,	'ACTION_THREAT_ALL_PCT',	'Threat increase %',	'Threat decrease %',	NULL,	NULL,	NULL,	NULL,	NULL),
 (15,	'ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),

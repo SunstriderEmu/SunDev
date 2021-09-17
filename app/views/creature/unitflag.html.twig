@@ -37,15 +37,15 @@
                 <li class="8">UNIT_FLAG_PLAYER_CONTROLLED</li>
                 <li class="16">UNIT_FLAG_RENAME</li>
                 <li class="32">UNIT_FLAG_PREPARATION</li>
-                <li class="64">UNIT_FLAG_UNK_6</li>
+                <li class="64">UNIT_FLAG_IS_PLUS_MOB</li>
                 <li class="128">UNIT_FLAG_NOT_ATTACKABLE_1</li>
                 <li class="256">UNIT_FLAG_IMMUNE_TO_PC</li>
                 <li class="512">UNIT_FLAG_IMMUNE_TO_NPC</li>
                 <li class="1024">UNIT_FLAG_LOOTING</li>
                 <li class="2048">UNIT_FLAG_PET_IN_COMBAT</li>
-                <li class="4096">UNIT_FLAG_PVP</li>
+                <li class="4096">UNIT_FLAG_PVP_ENABLING</li>
                 <li class="8192">UNIT_FLAG_SILENCED</li>
-                <li class="16384">UNIT_FLAG_PERSUADED</li>
+                <li class="16384">UNIT_FLAG_CANNOT_SWIM</li>
                 <li class="32768">UNIT_FLAG_SWIMMING</li>
                 <li class="65536">UNIT_FLAG_NON_ATTACKABLE_2</li>
                 <li class="131072">UNIT_FLAG_PACIFIED</li>
@@ -56,11 +56,11 @@
                 <li class="4194304">UNIT_FLAG_CONFUSED</li>
                 <li class="8388608">UNIT_FLAG_FLEEING</li>
                 <li class="16777216">UNIT_FLAG_POSSESSED</li>
-                <li class="33554432">UNIT_FLAG_NOT_SELECTABLE</li>
+                <li class="33554432">UNIT_FLAG_UNINTERACTIBLE</li>
                 <li class="67108864">UNIT_FLAG_SKINNABLE</li>
                 <li class="134217728">UNIT_FLAG_MOUNT</li>
                 <li class="268435456">UNIT_FLAG_UNK_28</li>
-                <li class="536870912">UNIT_FLAG_UNK_29</li>
+                <li class="536870912">UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT</li>
                 <li class="1073741824">UNIT_FLAG_SHEATHE</li>
                 <li class="2147483648">UNIT_FLAG_IMMUNE</li>
             </ul>
@@ -71,13 +71,13 @@
                 <li>Allows to apply PvP rules to attackable state in addition to faction dependent state</li>
                 <li>Rename</li>
                 <li>Don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP</li>
-                <li>Needed to cast Nontriggered spells in SmartAI</li>
+                <li>Needed to cast Nontriggered spells in SmartAI. "IsPlusMob", something probably deprecated related to some kind of rare/elite mobs</li>
                 <li>UNIT_FLAG_PVP_ATTACKABLE| UNIT_FLAG_NOT_ATTACKABLE_1 is NON_PVP_ATTACKABLE</li>
                 <li>Disables combat/assistance with Player Characters</li>
                 <li>Disables combat/assistance with Non Player Characters</li>
                 <li>Loot animation</li>
                 <li>In combat; 2.0.8</li>
-                <li>Changed in 3.0.3</li>
+                <li>Changed in 3.0.3, now UNIT_BYTES_2_OFFSET_PVP_FLAG from UNIT_FIELD_BYTES_2</li>
                 <li>Can't cast spells</li>
                 <li>Unknown 14 - 2.0.8</li>
                 <li>Unknown 15</li>
@@ -94,9 +94,9 @@
                 <li>Skinnable</li>
                 <li>The client seems to handle it perfectly. Also used when making custom mounts.</li>
                 <li>Unknown 28</li>
-                <li>Unknown 29 - Used in Feign Death spell or NPC will play dead.</li>
+                <li>Prevent automatically playing emotes from parsing chat text, for example "lol" in /say, ending message with ? or !, or using /yell</li>
                 <li>Sheathe</li>
-                <li>Unknown 31</li>
+                <li>Immune to damage</li>
             </ul>
         </div>
     {% endblock %}

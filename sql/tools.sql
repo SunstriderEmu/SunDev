@@ -1452,8 +1452,10 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (76,	'EVENT_DISTANCE_GAMEOBJECT',	'Guid',	'Entry',	'Distance',	'Repeat Timer',	NULL),
   (77,	'EVENT_COUNTER_SET',	'Counter ID',	'Value',	'CooldownMin',	'CooldownMax',	NULL),
   (82,	'EVENT_SUMMONED_UNIT_DIES',	' CreatureId(0=any)',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
-  
-  
+  (83,	'EVENT_ON_SPELL_CAST',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
+  (84,	'EVENT_ON_SPELL_FAILED',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
+  (85,	'EVENT_ON_SPELL_START',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
+
   (100,	'EVENT_FRIENDLY_KILLED',	'MaxRange(0-60)',	'Entry(0=any)',	'Guid(0=any)',	NULL,	NULL),
   (101,	'EVENT_VICTIM_NOT_IN_LOS',	'Check timer',	'Reverts(0/1)',	NULL,	NULL,	NULL),
   (102,	'EVENT_ATTACKED_UNIT_DIED',	NULL,	NULL,	NULL,	NULL,	NULL),

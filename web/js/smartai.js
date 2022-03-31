@@ -2876,7 +2876,7 @@
                     ActionParam2DIV.empty();
                     $('<select class="form-control" id="action_param2_val">' +
                     '   <option value="0">STAND_STATE_TYPE</option>' +
-                    '   <option value="2">STAND_FLAGS_TYPE</option>' +
+                    '   <option value="2">VIS_FLAGS_TYPE</option>' +
                     '   <option value="3">BYTES1_FLAGS_TYPE</option>' +
                     '</select>').appendTo(ActionParam2DIV);
                     $('#action_param2_val').val(Lines[id].action_param2);

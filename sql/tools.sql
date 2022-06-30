@@ -1192,7 +1192,7 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (4,	    'ACTION_SOUND',	'Sound id',	'Only to self',	NULL,	NULL,	NULL,	NULL,	NULL),
 (5,	    'ACTION_PLAY_EMOTE',	'Emote',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (6,	    'ACTION_FAIL_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(7,	    'ACTION_ADD_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(7,	    'ACTION_OFFER_QUEST',	'Quest id',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (8,	    'ACTION_SET_REACT_STATE',	'React state',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (9,	    'ACTION_ACTIVATE_GOBJECT',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (10,	'ACTION_RANDOM_EMOTE',	'Emote 1',	'Emote 2',	'Emote 3',	'Emote 4',	'Emote 5',	'Emote 6',	NULL),
@@ -1455,6 +1455,7 @@ INSERT INTO `smartai_events` (`id`, `name`, `param1`, `param2`, `param3`, `param
   (83,	'EVENT_ON_SPELL_CAST',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
   (84,	'EVENT_ON_SPELL_FAILED',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
   (85,	'EVENT_ON_SPELL_START',	'SpellID',	'CooldownMin',	'CooldownMax',	NULL,	NULL),
+  (86,	'EVENT_ON_DESPAWN',	NULL,	NULL,	NULL,	NULL,	NULL),
 
   (100,	'EVENT_FRIENDLY_KILLED',	'MaxRange(0-60)',	'Entry(0=any)',	'Guid(0=any)',	NULL,	NULL),
   (101,	'EVENT_VICTIM_NOT_IN_LOS',	'Check timer',	'Reverts(0/1)',	NULL,	NULL,	NULL),
@@ -1524,7 +1525,8 @@ INSERT INTO `smartai_targets` (`id`, `name`, `param1`, `param2`, `param3`, `targ
   (26,	'TARGET_CLOSEST_FRIENDLY',	'MaxDist',	'Player only',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   (27,	'TARGET_LOOT_RECIPIENTS',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'All players that have tagged this creature (for kill credit)'),
   (28,	'TARGET_FARTHEST',	'maxDist',	'playerOnly',	'isInLos',	NULL,	NULL,	NULL,	NULL,	NULL),
-  (29,	'TARGET_VEHICLE_ACCESSORY (unused)',	NULL, NULL, NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+  (29,	'TARGET_VEHICLE_PASSENGER',	'seatMask', NULL, NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+  (29,	'TARGET_CLOSEST_UNSPAWNED_GAMEOBJECT',	'entry (0=any)', 'maxDist', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
   
   (101,	'TARGET_PLAYER_CASTING_DISTANCE',	'MaxRange',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Target any player currently casting'),
   (102,	'TARGET_FRIENDLY_HEALTH_PCT',	'Max Dist',	'% Below',	'Entry (0=any)',	NULL,	NULL,	NULL,	NULL,	NULL),

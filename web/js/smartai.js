@@ -1520,7 +1520,7 @@
                 case "126":
                   return "Remove All Owned GameObjects";
                 case "127":
-                  return "Set " + (ActionParam1 == 1 ? "Stop Moving" : "Allow Moving") + " And " + (ActionParam2 == 1 ? "Movement Expired" : "Movement OK");
+                  return "Pause movement slot " + ActionParam1 + " with pause time " + ActionParam2 + ActionParam3 > 0 ? " forced" : "";
 				case "134":
 				  return "Invoker Cast '<a href='http://wowhead.com/spell=" + ActionParam1 + "'>" + getSpellName(ActionParam1) + "</a>'";
                 case "150":

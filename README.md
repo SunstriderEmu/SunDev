@@ -4,6 +4,7 @@ SunDev is developed with the micro-framework Silex.
 # Requirements
 -  HTTP server handling php
 -  [Composer](https://getcomposer.org/)
+-  PHP 5.6
 
 # Installation
 - Clone this repository into a folder of your choice.

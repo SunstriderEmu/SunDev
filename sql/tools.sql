@@ -1349,7 +1349,8 @@ INSERT INTO `smartai_actions` (`id`, `name`, `param1`, `param2`, `param3`, `para
 (164,	'ACTION_RESTORE_PHASE',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'Restore phase stored with SMART_ACTION_STORE_PHASE.'),
 (165,	'ACTION_SET_DESPAWN_SUMMONS',	'Flags', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
 (166,	'ACTION_REMOVE_OWNED_AURA',	'spellID', NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
-(167,	'ACTION_MOVE_FORWARD',	'Distance (m)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
+(167,	'ACTION_MOVE_FORWARD',	'Distance (m)',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL),
+(168,	'ACTION_INSTALL_BOSS_STATE',	'bossId',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
 
 -- --------------------------------------------------------
 
